@@ -1,0 +1,71 @@
+import type { Student, Subject, Score, FeeRecord, Transaction, KPI } from "./types";
+import { getGrade } from "./constants";
+
+/* ─── Students ──────────────────────────────────────── */
+export const STUDENTS: Student[] = [
+  { id: "s1", name: "Amara Okafor",   class: "JSS 3 Alpha", level: "JSS", avatarInitials: "AO" },
+  { id: "s2", name: "Chidi Nwosu",    class: "JSS 3 Alpha", level: "JSS", avatarInitials: "CN" },
+  { id: "s3", name: "Fatima Bello",   class: "JSS 3 Alpha", level: "JSS", avatarInitials: "FB" },
+  { id: "s4", name: "Kolade Adeyemi", class: "JSS 3 Alpha", level: "JSS", avatarInitials: "KA" },
+  { id: "s5", name: "Ngozi Eze",      class: "JSS 3 Alpha", level: "JSS", avatarInitials: "NE" },
+  { id: "s6", name: "Tunde Fashola",  class: "JSS 3 Alpha", level: "JSS", avatarInitials: "TF" },
+];
+
+/* ─── Subjects ──────────────────────────────────────── */
+export const SUBJECTS: Subject[] = [
+  { id: "sub1", name: "Mathematics",        shortCode: "MTH" },
+  { id: "sub2", name: "English Language",   shortCode: "ENG" },
+  { id: "sub3", name: "Basic Science",      shortCode: "BSC" },
+  { id: "sub4", name: "Social Studies",     shortCode: "SST" },
+  { id: "sub5", name: "Civic Education",    shortCode: "CIV" },
+  { id: "sub6", name: "Agricultural Sci.", shortCode: "AGR" },
+];
+
+/* ─── Scores ────────────────────────────────────────── */
+const raw: [string, string, number | null, number | null, number | null][] = [
+  ["s1", "sub1", 18, 17, 52], ["s1", "sub2", 19, 18, 55], ["s1", "sub3", 16, 15, 48],
+  ["s1", "sub4", 20, 19, 58], ["s1", "sub5", 17, 16, 50], ["s1", "sub6", 15, 14, 45],
+  ["s2", "sub1", 14, 13, 42], ["s2", "sub2", 16, 15, 49], ["s2", "sub3", 18, 17, 54],
+  ["s2", "sub4", 15, 14, 44], ["s2", "sub5", 19, 18, 56], ["s2", "sub6", 13, 12, 38],
+  ["s3", "sub1", 20, 19, 60], ["s3", "sub2", 20, 20, 58], ["s3", "sub3", 19, 18, 57],
+  ["s3", "sub4", 18, 17, 53], ["s3", "sub5", 20, 19, 59], ["s3", "sub6", 17, 16, 51],
+  ["s4", "sub1", 10, 9, 28],  ["s4", "sub2", 12, 11, 35], ["s4", "sub3", null, 10, 30],
+  ["s4", "sub4", 11, 10, 32], ["s4", "sub5", 13, 12, 38], ["s4", "sub6", 9, 8, 25],
+  ["s5", "sub1", 17, 16, 50], ["s5", "sub2", 18, 17, 53], ["s5", "sub3", 16, 15, 47],
+  ["s5", "sub4", 19, 18, 55], ["s5", "sub5", 15, 14, 46], ["s5", "sub6", 16, 15, 48],
+  ["s6", "sub1", 13, 12, 39], ["s6", "sub2", 14, 13, 40], ["s6", "sub3", 15, 14, 43],
+  ["s6", "sub4", 12, 11, 36], ["s6", "sub5", 14, 13, 41], ["s6", "sub6", 11, 10, 32],
+];
+
+export const SCORES: Score[] = raw.map(([studentId, subjectId, ca1, ca2, exam]) => {
+  const total = ca1 !== null && ca2 !== null && exam !== null ? ca1 + ca2 + exam : null;
+  return { studentId, subjectId, ca1, ca2, exam, total, grade: getGrade(total) };
+});
+
+/* ─── Fee Records ───────────────────────────────────── */
+export const FEE_RECORDS: FeeRecord[] = [
+  { studentId: "s1", amount: 85000, paid: 85000, balance: 0,     status: "paid",    lastPaymentDate: "2026-01-15" },
+  { studentId: "s2", amount: 85000, paid: 50000, balance: 35000, status: "partial", lastPaymentDate: "2026-02-01" },
+  { studentId: "s3", amount: 85000, paid: 85000, balance: 0,     status: "paid",    lastPaymentDate: "2026-01-10" },
+  { studentId: "s4", amount: 85000, paid: 0,     balance: 85000, status: "owing" },
+  { studentId: "s5", amount: 85000, paid: 85000, balance: 0,     status: "paid",    lastPaymentDate: "2026-01-20" },
+  { studentId: "s6", amount: 85000, paid: 30000, balance: 55000, status: "partial", lastPaymentDate: "2026-01-28" },
+];
+
+/* ─── Transactions ──────────────────────────────────── */
+export const TRANSACTIONS: Transaction[] = [
+  { id: "t1", description: "Term 2 school fees — JSS 3",   amount: 255000, type: "income",  category: "Fees",       date: "2026-01-15" },
+  { id: "t2", description: "Staff salaries — January",     amount: 180000, type: "expense", category: "Payroll",    date: "2026-01-31" },
+  { id: "t3", description: "Generator diesel refill",      amount: 45000,  type: "expense", category: "Utilities",  date: "2026-02-03" },
+  { id: "t4", description: "Term 2 fees — Primary 5",      amount: 170000, type: "income",  category: "Fees",       date: "2026-02-05" },
+  { id: "t5", description: "Textbooks & stationery",       amount: 62000,  type: "expense", category: "Supplies",   date: "2026-02-10" },
+  { id: "t6", description: "UBEC grant disbursement",      amount: 500000, type: "income",  category: "Grant",      date: "2026-02-14" },
+];
+
+/* ─── Admin KPIs ────────────────────────────────────── */
+export const ADMIN_KPIS: KPI[] = [
+  { label: "Cash at Bank",      value: "₦24.3M",  subValue: "+₦1.2M this week", trend: "up",   trendPercent: 5 },
+  { label: "Outstanding Fees",  value: "₦12.45M", subValue: "312 students",     trend: "down",  trendPercent: 8 },
+  { label: "Total Students",    value: "1,248",   subValue: "Enrolled term 2",  trend: "flat" },
+  { label: "Fee Recovery Rate", value: "78%",     subValue: "Target: 90%",      trend: "up",   trendPercent: 3 },
+];

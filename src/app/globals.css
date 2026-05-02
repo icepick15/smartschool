@@ -1,26 +1,120 @@
 @import "tailwindcss";
 
+@theme {
+  /* ─── Fonts ─────────────────────────────────────── */
+  --font-display: var(--font-syne);
+  --font-body:    var(--font-dm-sans);
+  --font-mono:    var(--font-dm-mono);
+
+  /* ─── Brand Colors ──────────────────────────────── */
+  --color-primary:       #7C3AED;
+  --color-primary-hover: #6D28D9;
+  --color-primary-light: #A78BFA;
+  --color-primary-muted: #2D1B69;
+  --color-secondary:     #6366F1;
+  --color-secondary-light: #818CF8;
+
+  /* ─── Semantic Colors ───────────────────────────── */
+  --color-success:       #10B981;
+  --color-success-muted: #064E3B;
+  --color-warning:       #F59E0B;
+  --color-warning-muted: #78350F;
+  --color-danger:        #EF4444;
+  --color-danger-muted:  #7F1D1D;
+  --color-info:          #3B82F6;
+  --color-info-muted:    #1E3A5F;
+
+  /* ─── Backgrounds ───────────────────────────────── */
+  --color-base:     #0A0A0F;
+  --color-surface:  #111118;
+  --color-elevated: #1A1A24;
+  --color-overlay:  #22222F;
+  --color-card:     #161620;
+
+  /* ─── Borders ───────────────────────────────────── */
+  --color-border:        #2A2A3A;
+  --color-border-subtle: #1E1E2C;
+  --color-border-focus:  #7C3AED;
+
+  /* ─── Text / Ink ────────────────────────────────── */
+  --color-ink:   #F8F8FC;
+  --color-ink-2: #C4C4D4;
+  --color-ink-3: #A0A0B8;
+  --color-ink-4: #6B6B84;
+  --color-ink-5: #3D3D52;
+
+  /* ─── Data / Chart Colors ───────────────────────── */
+  --color-gold: #F59E0B;
+  --color-teal: #14B8A6;
+  --color-rose: #F43F5E;
+  --color-sky:  #38BDF8;
+
+  /* ─── Border Radius ─────────────────────────────── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+/* ─── Theme-aware extras (not in @theme so they can be overridden) ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-sidebar:      #0D0D14;
+  --color-nav-active:   #C4B5FD;
+  --color-nav-inactive: #5A5A7A;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Light Theme ───────────────────────────────────── */
+html[data-theme="light"] {
+  /* Backgrounds */
+  --color-base:     #F4F4FA;
+  --color-surface:  #FFFFFF;
+  --color-elevated: #EDEDF7;
+  --color-overlay:  #E6E6F2;
+  --color-card:     #FAFAFF;
+
+  /* Borders */
+  --color-border:        #D8D8EA;
+  --color-border-subtle: #EAEAF4;
+
+  /* Text */
+  --color-ink:   #0A0A14;
+  --color-ink-2: #252535;
+  --color-ink-3: #484860;
+  --color-ink-4: #6A6A84;
+  --color-ink-5: #9898B2;
+
+  /* Semantic muted */
+  --color-success-muted: #D1FAE5;
+  --color-warning-muted: #FEF3C7;
+  --color-danger-muted:  #FEE2E2;
+  --color-info-muted:    #DBEAFE;
+  --color-primary-muted: #EDE9FE;
+
+  /* Sidebar & nav */
+  --color-sidebar:      #EEEEF8;
+  --color-nav-active:   #7C3AED;
+  --color-nav-inactive: #6A6A84;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ──────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-base);
+  color: var(--color-ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Scrollbar ─────────────────────────────────────── */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: var(--color-base); }
+::-webkit-scrollbar-thumb  { background: var(--color-border); border-radius: 2px; }
+
+/* ─── Selection ─────────────────────────────────────── */
+::selection { background: #7C3AED40; color: var(--color-ink); }

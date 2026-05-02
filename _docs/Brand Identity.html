@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartS — Brand Identity System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #0A0A0F; color: #F0F0FF; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #0D0D14; }
+    ::-webkit-scrollbar-thumb { background: #252535; border-radius: 3px; }
+    input, select, textarea { outline: none; }
+    button { cursor: pointer; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#7C3AED",
+  "accentLight": "#A78BFA",
+  "accentSecondary": "#6366F1",
+  "logoStroke": 5
+}/*EDITMODE-END*/;
+
+const { useState, useEffect } = React;
+
+/* ─── LOGO ─────────────────────────────────────────────────────────── */
+function SmartSMark({ size = 40, c1 = "#7C3AED", c2 = "#6366F1" }) {
+  const uid = "g" + size + c1.replace("#","");
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id={uid} x1="30" y1="7" x2="10" y2="38" gradientUnits="userSpaceOnUse">
+          <stop stopColor={c1}/>
+          <stop offset="1" stopColor={c2}/>
+        </linearGradient>
+      </defs>
+      <path
+        d="M 31 8 C 20 7 8 10 8 17 C 8 24 33 21 33 30 C 33 38 20 39 9 38"
+        stroke={"url(#" + uid + ")"} strokeWidth="5.5" strokeLinecap="round" fill="none"/>
+    </svg>
+  );
+}
+
+function SmartSWordmark({ size = 20, color = "#F0F0FF", accent = "#7C3AED", accent2 = "#6366F1" }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: size * 0.28 }}>
+      <SmartSMark size={size * 1.1} c1={accent} c2={accent2}/>
+      <span style={{ fontFamily: "Syne", fontWeight: 800, fontSize: size, color, letterSpacing: "-0.04em", lineHeight: 1 }}>SmartS</span>
+    </div>
+  );
+}
+
+/* ─── NAV ───────────────────────────────────────────────────────────── */
+const SECTIONS = [
+  { id: "strategy",   label: "Brand Strategy"  },
+  { id: "logo",       label: "Logo System"      },
+  { id: "colors",     label: "Color Palette"    },
+  { id: "typography", label: "Typography"       },
+  { id: "components", label: "UI Components"    },
+  { id: "dashboard",  label: "Dashboard UI"     },
+  { id: "mobile",     label: "Mobile App"       },
+  { id: "marketing",  label: "Marketing Kit"    },
+  { id: "voice",      label: "Brand Voice"      },
+];
+
+function SideNav({ active, onNav, accent }) {
+  return (
+    <nav style={{
+      position: "fixed", left: 0, top: 0, bottom: 0, width: 216,
+      background: "#0D0D14", borderRight: "1px solid #1A1A28",
+      display: "flex", flexDirection: "column", zIndex: 100,
+    }}>
+      <div style={{ padding: "22px 22px 24px", borderBottom: "1px solid #1A1A28" }}>
+        <SmartSWordmark size={16} accent={accent}/>
+        <div style={{ fontFamily: "DM Mono", fontSize: 9, color: "#4A4A6A", marginTop: 6, letterSpacing: "0.08em", textTransform: "uppercase" }}>Brand Identity v1.0</div>
+      </div>
+      <div style={{ flex: 1, overflowY: "auto", padding: "12px 0" }}>
+        {SECTIONS.map((s, i) => {
+          const isActive = active === s.id;
+          return (
+            <button key={s.id} onClick={() => onNav(s.id)} style={{
+              display: "block", width: "100%", textAlign: "left",
+              padding: "8px 22px", background: isActive ? accent + "14" : "none",
+              border: "none", borderLeft: isActive ? "2px solid " + accent : "2px solid transparent",
+              fontFamily: "DM Sans", fontSize: 13, fontWeight: isActive ? 600 : 400,
+              color: isActive ? "#C4B5FD" : "#5A5A7A", transition: "all 0.12s",
+            }}>
+              <span style={{ color: "#4A4A6A", fontFamily: "DM Mono", fontSize: 10, marginRight: 8 }}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {s.label}
+            </button>
+          );
+        })}
+      </div>
+      <div style={{ padding: "14px 22px", borderTop: "1px solid #1A1A28" }}>
+        <div style={{ fontFamily: "DM Mono", fontSize: 9, color: "#3A3A55", lineHeight: 1.6 }}>
+          Ice Resources Operating<br/>© 2026 · Confidential
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+/* ─── HELPERS ───────────────────────────────────────────────────────── */
+function SectionHead({ num, title, subtitle }) {
+  return (
+    <div style={{ marginBottom: 40 }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 8 }}>
+        <span style={{ fontFamily: "DM Mono", fontSize: 11, color: "#4A4A6A" }}>{num}</span>
+        <h2 style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 26, color: "#F0F0FF", letterSpacing: "-0.03em" }}>{title}</h2>
+      </div>
+      {subtitle && <p style={{ fontFamily: "DM Sans", fontSize: 14, color: "#5A5A7A", maxWidth: 520, lineHeight: 1.65, paddingLeft: 32 }}>{subtitle}</p>}
+    </div>
+  );
+}
+
+function Card({ children, style = {} }) {
+  return (
+    <div style={{ background: "#111118", border: "1px solid #1E1E2E", borderRadius: 12, ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function Label({ children }) {
+  return (
+    <div style={{ fontFamily: "DM Mono", fontSize: 9, color: "#4A4A6A", textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 14 }}>
+      {children}
+    </div>
+  );
+}
+
+function Badge({ children, color = "#7C3AED" }) {
+  return (
+    <span style={{
+      display: "inline-block", padding: "2px 10px", borderRadius: 100,
+      background: color + "22", color, fontSize: 11, fontWeight: 600,
+      fontFamily: "DM Sans", letterSpacing: "0.01em",
+    }}>{children}</span>
+  );
+}
+
+function Swatch({ hex, name, role }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div onClick={() => { navigator.clipboard?.writeText(hex); setCopied(true); setTimeout(() => setCopied(false), 1400); }}
+      style={{ background: "#111118", border: "1px solid #1E1E2E", borderRadius: 10, overflow: "hidden", cursor: "pointer" }}>
+      <div style={{ height: 68, background: hex }}/>
+      <div style={{ padding: "10px 12px" }}>
+        <div style={{ fontFamily: "DM Mono", fontSize: 11, color: "#F0F0FF", marginBottom: 2 }}>{copied ? "Copied!" : hex}</div>
+        <div style={{ fontSize: 12, fontWeight: 600, color: "#8B8BA7" }}>{name}</div>
+        <div style={{ fontSize: 10, color: "#4A4A6A", marginTop: 2 }}>{role}</div>
+      </div>
+    </div>
+  );
+}
+
+function Btn({ children, variant = "primary", sm, accent = "#7C3AED", onClick }) {
+  const [hov, setHov] = useState(false);
+  const base = {
+    display: "inline-flex", alignItems: "center", gap: 6,
+    padding: sm ? "5px 12px" : "9px 18px",
+    borderRadius: 7, fontFamily: "DM Sans", fontWeight: 500,
+    fontSize: sm ? 12 : 13, transition: "all 0.13s", border: "none",
+  };
+  const v = {
+    primary: { background: hov ? "#6D28D9" : accent, color: "#fff" },
+    secondary: { background: hov ? "#1E1E2E" : "#16161F", color: "#A78BFA", border: "1px solid #252535" },
+    ghost: { background: "none", color: hov ? "#A78BFA" : "#6B6B8A" },
+    danger: { background: hov ? "#450A0A" : "#1F1010", color: "#FCA5A5", border: "1px solid #3B0000" },
+  };
+  return <button style={{ ...base, ...v[variant] }} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} onClick={onClick}>{children}</button>;
+}
+
+/* ─── DASHBOARD ─────────────────────────────────────────────────────── */
+function DashboardUI({ accent }) {
+  const [nav, setNav] = useState("Overview");
+  const navItems = ["Overview", "Students", "Staff", "Timetable", "Finance", "Reports"];
+  const stats = [
+    { l: "Active Students", v: "2,841", d: "+3.2%", up: true },
+    { l: "Staff on Duty",   v: "148",   d: "+1.4%", up: true },
+    { l: "Pending Approvals", v: "23", d: "−5", up: false },
+    { l: "Weekly Revenue",  v: "₦4.2M", d: "+12.1%", up: true },
+  ];
+  const activity = [
+    { text: "Staff leave approved",         sub: "Mr. Adeyemi · HR", time: "2m ago",  dot: "#10B981" },
+    { text: "Timetable conflict flagged",   sub: "System · SS2A",    time: "14m ago", dot: "#F59E0B" },
+    { text: "Invoice #2041 generated",      sub: "Finance · Term 3", time: "1h ago",  dot: accent },
+    { text: "New student enrolled",         sub: "Admissions · JSS1",time: "2h ago",  dot: "#6366F1" },
+  ];
+  return (
+    <div style={{ background: "#0D0D14", border: "1px solid #1E1E2E", borderRadius: 14, overflow: "hidden", fontFamily: "DM Sans" }}>
+      {/* titlebar */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", borderBottom: "1px solid #1A1A28", background: "#0A0A0F" }}>
+        <SmartSMark size={20} c1={accent}/>
+        <span style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 14, color: "#F0F0FF" }}>SmartS</span>
+        <span style={{ background: accent + "22", color: accent, fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 4, letterSpacing: "0.06em" }}>SCHOOL</span>
+        <div style={{ flex: 1 }}/>
+        <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#10B981" }}/>
+        <span style={{ fontSize: 11, color: "#5A5A7A" }}>Greenfield Academy</span>
+        <div style={{ width: 28, height: 28, borderRadius: "50%", background: accent + "33", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>👤</div>
+      </div>
+      <div style={{ display: "flex", height: 400 }}>
+        {/* sidebar */}
+        <div style={{ width: 168, borderRight: "1px solid #1A1A28", paddingTop: 12, flexShrink: 0 }}>
+          {navItems.map(n => (
+            <div key={n} onClick={() => setNav(n)} style={{
+              padding: "8px 16px", fontSize: 12, fontWeight: 500, cursor: "pointer",
+              color: nav === n ? "#C4B5FD" : "#5A5A7A",
+              background: nav === n ? accent + "12" : "none",
+              borderLeft: nav === n ? "2px solid " + accent : "2px solid transparent",
+              transition: "all 0.1s",
+            }}>{n}</div>
+          ))}
+          <div style={{ margin: "16px 12px 0", padding: "12px", background: accent + "12", borderRadius: 8, border: "1px solid " + accent + "30" }}>
+            <div style={{ fontSize: 10, color: accent, fontWeight: 700, marginBottom: 4 }}>PRO PLAN</div>
+            <div style={{ fontSize: 10, color: "#5A5A7A", lineHeight: 1.5 }}>3,000 / 5,000 seats used</div>
+            <div style={{ height: 3, background: "#1E1E2E", borderRadius: 2, marginTop: 8 }}>
+              <div style={{ height: "100%", width: "60%", background: accent, borderRadius: 2 }}/>
+            </div>
+          </div>
+        </div>
+        {/* main */}
+        <div style={{ flex: 1, padding: "18px 20px", overflowY: "auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 18 }}>
+            <div>
+              <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 17, color: "#F0F0FF" }}>Good morning, Admin 👋</div>
+              <div style={{ fontSize: 11, color: "#5A5A7A", marginTop: 3 }}>Wednesday, 30 April 2026</div>
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <Btn sm variant="secondary" accent={accent}>↗ Export</Btn>
+              <Btn sm accent={accent}>+ New Request</Btn>
+            </div>
+          </div>
+          {/* stats */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 16 }}>
+            {stats.map(s => (
+              <div key={s.l} style={{ background: "#111118", border: "1px solid #1E1E2E", borderRadius: 9, padding: "12px 14px" }}>
+                <div style={{ fontSize: 9, color: "#5A5A7A", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.08em" }}>{s.l}</div>
+                <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 20, color: "#F0F0FF" }}>{s.v}</div>
+                <div style={{ fontSize: 10, color: s.up ? "#10B981" : "#EF4444", marginTop: 4 }}>{s.d} vs last week</div>
+              </div>
+            ))}
+          </div>
+          {/* two cols */}
+          <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 12 }}>
+            <div style={{ background: "#111118", border: "1px solid #1E1E2E", borderRadius: 9, padding: 14 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#C4C4E0", marginBottom: 12 }}>Recent Activity</div>
+              {activity.map(a => (
+                <div key={a.text} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", borderBottom: "1px solid #131320" }}>
+                  <div style={{ width: 7, height: 7, borderRadius: "50%", background: a.dot, flexShrink: 0 }}/>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 11, color: "#C4C4E0" }}>{a.text}</div>
+                    <div style={{ fontSize: 10, color: "#4A4A6A" }}>{a.sub}</div>
+                  </div>
+                  <div style={{ fontSize: 10, color: "#4A4A6A", whiteSpace: "nowrap" }}>{a.time}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: "#111118", border: "1px solid #1E1E2E", borderRadius: 9, padding: 14 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: "#C4C4E0", marginBottom: 12 }}>Quick Actions</div>
+              {[
+                { icon: "📋", label: "Approve Leaves" },
+                { icon: "📅", label: "Manage Timetable" },
+                { icon: "💳", label: "Fee Collections" },
+                { icon: "📊", label: "Generate Report" },
+              ].map(a => (
+                <div key={a.label} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", marginBottom: 6, borderRadius: 7, background: "#16161F", cursor: "pointer", transition: "background 0.1s" }}>
+                  <span style={{ fontSize: 14 }}>{a.icon}</span>
+                  <span style={{ fontSize: 12, color: "#C4C4E0" }}>{a.label}</span>
+                  <span style={{ marginLeft: "auto", color: "#4A4A6A", fontSize: 12 }}>→</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── MOBILE SCREENS ────────────────────────────────────────────────── */
+function MobileScreen({ children, label, accent, active, onClick }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+      <div onClick={onClick} style={{
+        width: 190, height: 370, background: "#0A0A0F",
+        border: "1.5px solid " + (active ? accent : "#1E1E2E"),
+        borderRadius: 24, overflow: "hidden", cursor: "pointer",
+        boxShadow: active ? "0 0 24px " + accent + "40" : "none",
+        transition: "all 0.2s",
+      }}>
+        {children}
+      </div>
+      <div style={{ fontFamily: "DM Mono", fontSize: 10, color: active ? accent : "#4A4A6A" }}>{label}</div>
+    </div>
+  );
+}
+
+function MobilePreviews({ accent }) {
+  const [active, setActive] = useState(0);
+  return (
+    <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
+      {/* Splash */}
+      <MobileScreen label="01 · Splash" accent={accent} active={active === 0} onClick={() => setActive(0)}>
+        <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14 }}>
+          <SmartSMark size={60} c1={accent} c2="#6366F1"/>
+          <div style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 26, color: "#F0F0FF", letterSpacing: "-0.04em" }}>SmartS</div>
+          <div style={{ fontFamily: "DM Sans", fontSize: 12, color: "#5A5A7A", letterSpacing: "0.06em", textTransform: "uppercase" }}>School</div>
+        </div>
+      </MobileScreen>
+      {/* Onboard */}
+      <MobileScreen label="02 · Onboarding" accent={accent} active={active === 1} onClick={() => setActive(1)}>
+        <div style={{ height: "100%", display: "flex", flexDirection: "column", padding: "28px 20px 22px" }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+            <div style={{ width: 44, height: 44, background: accent + "22", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginBottom: 20 }}>🏫</div>
+            <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 20, color: "#F0F0FF", lineHeight: 1.2, marginBottom: 10 }}>Your school,<br/>fully connected.</div>
+            <div style={{ fontSize: 12, color: "#5A5A7A", lineHeight: 1.65 }}>Manage staff, students, timetables and finances from one intelligent platform.</div>
+          </div>
+          <div style={{ display: "flex", gap: 5, justifyContent: "center", margin: "18px 0" }}>
+            {[0,1,2].map(i => <div key={i} style={{ width: i===1?18:6, height: 5, borderRadius: 3, background: i===1?accent:"#252535", transition: "width 0.2s" }}/>)}
+          </div>
+          <button style={{ background: accent, color: "#fff", border: "none", borderRadius: 10, padding: "13px", fontFamily: "DM Sans", fontSize: 13, fontWeight: 600 }}>Get Started</button>
+        </div>
+      </MobileScreen>
+      {/* Sign in */}
+      <MobileScreen label="03 · Sign In" accent={accent} active={active === 2} onClick={() => setActive(2)}>
+        <div style={{ height: "100%", display: "flex", flexDirection: "column", padding: "28px 18px 20px" }}>
+          <SmartSMark size={22} c1={accent} c2="#6366F1"/>
+          <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 18, color: "#F0F0FF", marginTop: 22, marginBottom: 4 }}>Welcome back</div>
+          <div style={{ fontSize: 12, color: "#5A5A7A", marginBottom: 24 }}>Sign in to your account</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, flex: 1 }}>
+            <input placeholder="School email" style={{ background: "#111118", border: "1px solid #252535", borderRadius: 8, padding: "10px 12px", color: "#F0F0FF", fontFamily: "DM Sans", fontSize: 12 }}/>
+            <input type="password" placeholder="Password" style={{ background: "#111118", border: "1px solid #252535", borderRadius: 8, padding: "10px 12px", color: "#F0F0FF", fontFamily: "DM Sans", fontSize: 12 }}/>
+            <div style={{ fontSize: 11, color: accent, textAlign: "right", marginTop: -4 }}>Forgot password?</div>
+          </div>
+          <button style={{ background: accent, color: "#fff", border: "none", borderRadius: 10, padding: "13px", fontFamily: "DM Sans", fontSize: 13, fontWeight: 600, marginTop: 16 }}>Sign In</button>
+        </div>
+      </MobileScreen>
+      {/* Dashboard */}
+      <MobileScreen label="04 · Home Tab" accent={accent} active={active === 3} onClick={() => setActive(3)}>
+        <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+          <div style={{ padding: "16px 14px 12px", borderBottom: "1px solid #1A1A28" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <SmartSMark size={18} c1={accent}/>
+              <div style={{ width: 24, height: 24, borderRadius: "50%", background: accent + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 }}>👤</div>
+            </div>
+          </div>
+          <div style={{ flex: 1, padding: "14px", overflowY: "auto" }}>
+            <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 14, color: "#F0F0FF", marginBottom: 14 }}>Overview</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+              {[{ l:"Students", v:"2,841" },{ l:"Staff", v:"148" },{ l:"Pending", v:"23" },{ l:"Revenue", v:"₦4.2M" }].map(s => (
+                <div key={s.l} style={{ background: "#111118", border: "1px solid #1E1E2E", borderRadius: 8, padding: "10px 10px" }}>
+                  <div style={{ fontSize: 9, color: "#5A5A7A", marginBottom: 4, textTransform: "uppercase" }}>{s.l}</div>
+                  <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 14, color: "#F0F0FF" }}>{s.v}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ background: "#111118", border: "1px solid #1E1E2E", borderRadius: 8, padding: "10px" }}>
+              <div style={{ fontSize: 10, fontWeight: 600, color: "#C4C4E0", marginBottom: 8 }}>Recent</div>
+              {["Leave approved · Mr. Adeyemi", "Fee collected · JSS1B", "Report ready · Q2"].map(a => (
+                <div key={a} style={{ fontSize: 10, color: "#5A5A7A", padding: "5px 0", borderBottom: "1px solid #131320" }}>{a}</div>
+              ))}
+            </div>
+          </div>
+          {/* tab bar */}
+          <div style={{ display: "flex", borderTop: "1px solid #1A1A28", padding: "8px 0" }}>
+            {["🏠","👥","📅","💳","⚙️"].map((icon, i) => (
+              <div key={i} style={{ flex: 1, textAlign: "center", fontSize: 16, opacity: i===0?1:0.4 }}>{icon}</div>
+            ))}
+          </div>
+        </div>
+      </MobileScreen>
+    </div>
+  );
+}
+
+/* ─── MAIN APP ──────────────────────────────────────────────────────── */
+function App() {
+  const [tweaks, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
+  const [active, setActive] = useState("strategy");
+  const accent = tweaks.accentColor;
+  const accentL = tweaks.accentLight;
+  const accent2 = tweaks.accentSecondary;
+
+  useEffect(() => {
+    const el = document.getElementById("scroll-area");
+    if (!el) return;
+    function onScroll() {
+      for (const s of [...SECTIONS].reverse()) {
+        const sec = document.getElementById(s.id);
+        if (sec && sec.offsetTop - el.scrollTop < 140) { setActive(s.id); break; }
+      }
+    }
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  function navTo(id) {
+    setActive(id);
+    const el = document.getElementById("scroll-area");
+    const sec = document.getElementById(id);
+    if (el && sec) el.scrollTop = sec.offsetTop - 24;
+  }
+
+  const pad = "72px 64px";
+
+  return (
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+      <SideNav active={active} onNav={navTo} accent={accent}/>
+      <div id="scroll-area" style={{ marginLeft: 216, flex: 1, overflowY: "auto", overflowX: "hidden" }}>
+
+        {/* ── HERO ── */}
+        <div style={{ padding: "96px 64px 80px", borderBottom: "1px solid #1A1A28", position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: -80, right: -80, width: 480, height: 480, background: accent, borderRadius: "50%", filter: "blur(140px)", opacity: 0.12, pointerEvents: "none" }}/>
+          <div style={{ position: "absolute", bottom: -60, left: 100, width: 300, height: 300, background: accent2, borderRadius: "50%", filter: "blur(120px)", opacity: 0.08, pointerEvents: "none" }}/>
+          <div style={{ position: "relative" }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: accent + "18", border: "1px solid " + accent + "40", borderRadius: 100, padding: "4px 14px 4px 6px", marginBottom: 28 }}>
+              <SmartSMark size={16} c1={accent} c2={accent2}/>
+              <span style={{ fontFamily: "DM Sans", fontSize: 12, color: accentL }}>Brand Identity System · v1.0</span>
+            </div>
+            <h1 style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 64, color: "#F0F0FF", letterSpacing: "-0.04em", lineHeight: 0.95, marginBottom: 24 }}>
+              SmartS<br/><span style={{ color: accent }}>Design Language</span>
+            </h1>
+            <p style={{ fontSize: 16, color: "#5A5A7A", maxWidth: 500, lineHeight: 1.7, marginBottom: 32 }}>
+              The complete brand identity, design system, and product visual language for SmartS — the enterprise technology division of Ice Resources Operating.
+            </p>
+            <div style={{ display: "flex", gap: 10 }}>
+              <Btn accent={accent} onClick={() => navTo("strategy")}>Explore Brand →</Btn>
+              <Btn variant="secondary" accent={accent}>April 2026 · Confidential</Btn>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 01 STRATEGY ── */}
+        <div id="strategy" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="01" title="Brand Strategy" subtitle="Positioning, mission, values, and audience definition for the SmartS technology division."/>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 24 }}>
+            {[
+              { l: "Mission", t: "To build intelligent, enterprise-grade software that transforms how institutions manage people, processes, and performance — starting with schools, scaling to the world." },
+              { l: "Vision", t: "To become Africa's most trusted enterprise SaaS platform — a product ecosystem that powers the operating layer of any institution." },
+              { l: "Brand Personality", t: "Premium. Intelligent. Precise. SmartS speaks with quiet confidence — never loud, always clear. It earns trust through craft, depth, and reliability." },
+              { l: "Target Audience", t: "School networks, government education bodies, enterprise institutions, and administrators who need operational clarity at scale." },
+            ].map(c => (
+              <Card key={c.l} style={{ padding: 24 }}>
+                <Label>{c.l}</Label>
+                <p style={{ fontSize: 14, color: "#9090B0", lineHeight: 1.75 }}>{c.t}</p>
+              </Card>
+            ))}
+          </div>
+          <div style={{ marginBottom: 24 }}>
+            <Label>Core Values</Label>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {["Clarity", "Precision", "Scale", "Trust", "Craft", "Integrity"].map(v => (
+                <div key={v} style={{ background: accent + "18", border: "1px solid " + accent + "38", borderRadius: 8, padding: "10px 20px", fontFamily: "Syne", fontWeight: 700, fontSize: 14, color: accentL }}>{v}</div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Label>Product Ecosystem — Phase 1 Roadmap</Label>
+            <div style={{ display: "flex", gap: 12 }}>
+              {[
+                { name: "SmartS School", desc: "School internal operations & workflow", tag: "In Development", c: accent },
+                { name: "SmartS Ops",    desc: "Enterprise process automation platform", tag: "Planned", c: accent2 },
+                { name: "SmartS Insights", desc: "Analytics, reporting & intelligence layer", tag: "Planned", c: "#818CF8" },
+              ].map(p => (
+                <Card key={p.name} style={{ padding: "18px 20px", flex: 1 }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8 }}>
+                    <SmartSMark size={18} c1={p.c} c2={p.c}/>
+                    <span style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 13, color: "#F0F0FF" }}>{p.name}</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: "#5A5A7A", lineHeight: 1.6, marginBottom: 12 }}>{p.desc}</div>
+                  <Badge color={p.c}>{p.tag}</Badge>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ── 02 LOGO ── */}
+        <div id="logo" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="02" title="Logo System" subtitle="The SmartS mark — a fluid S-curve representing flow, connectivity, and intelligent motion at scale."/>
+          <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 16, marginBottom: 16 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {/* Primary */}
+              <Card style={{ padding: "44px 40px", display: "flex", alignItems: "center", gap: 24 }}>
+                <SmartSMark size={60} c1={accent} c2={accent2}/>
+                <span style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 48, color: "#F0F0FF", letterSpacing: "-0.045em" }}>SmartS</span>
+              </Card>
+              {/* Variations */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+                <div style={{ background: "#F0F0FF", borderRadius: 10, padding: "20px 18px", display: "flex", alignItems: "center", gap: 10 }}>
+                  <SmartSMark size={26} c1={accent} c2={accent2}/>
+                  <span style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 18, color: "#0A0A0F", letterSpacing: "-0.04em" }}>SmartS</span>
+                </div>
+                <div style={{ background: accent, borderRadius: 10, padding: "20px 18px", display: "flex", alignItems: "center", gap: 10 }}>
+                  <SmartSMark size={26} c1="#fff" c2="#C4B5FD"/>
+                  <span style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 18, color: "#fff", letterSpacing: "-0.04em" }}>SmartS</span>
+                </div>
+                <div style={{ background: "#111118", border: "1px solid #1E1E2E", borderRadius: 10, padding: "20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <SmartSMark size={44} c1={accent} c2={accent2}/>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <Card style={{ padding: 20, flex: 1 }}>
+                <Label>Clear Space Rule</Label>
+                <div style={{ border: "1.5px dashed #252535", borderRadius: 8, padding: 28, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
+                  <SmartSMark size={40} c1={accent} c2={accent2}/>
+                </div>
+                <p style={{ fontSize: 12, color: "#5A5A7A", lineHeight: 1.65 }}>Minimum clear space equals the cap-height of the S-mark on all four sides.</p>
+              </Card>
+              <Card style={{ padding: 20 }}>
+                <Label>Minimum Sizes</Label>
+                <div style={{ display: "flex", gap: 16, alignItems: "flex-end", flexWrap: "wrap" }}>
+                  {[12, 18, 28, 40].map(s => <SmartSMark key={s} size={s} c1={accent} c2={accent2}/>)}
+                </div>
+                <div style={{ display: "flex", gap: 16, marginTop: 8 }}>
+                  {["12px", "18px", "28px", "40px"].map(s => <div key={s} style={{ fontFamily: "DM Mono", fontSize: 9, color: "#4A4A6A" }}>{s}</div>)}
+                </div>
+              </Card>
+            </div>
+          </div>
+          <Card style={{ padding: 20 }}>
+            <Label>Product Lockups</Label>
+            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+              {[
+                { name: "SmartS School", color: accent },
+                { name: "SmartS Ops", color: accent2 },
+                { name: "SmartS Insights", color: "#818CF8" },
+              ].map(p => (
+                <div key={p.name} style={{ display: "flex", alignItems: "center", gap: 8, background: "#16161F", border: "1px solid #1E1E2E", borderRadius: 8, padding: "10px 16px" }}>
+                  <SmartSMark size={18} c1={p.color} c2={p.color}/>
+                  <span style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 14, color: "#F0F0FF" }}>SmartS</span>
+                  <span style={{ fontFamily: "DM Sans", fontWeight: 400, fontSize: 14, color: "#5A5A7A" }}>{p.name.replace("SmartS ", "")}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* ── 03 COLORS ── */}
+        <div id="colors" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="03" title="Color Palette" subtitle="A restrained, high-contrast palette built for premium digital products. Dark, focused, and violet-led."/>
+          <div style={{ marginBottom: 24 }}>
+            <Label>Primary — Violet Scale</Label>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
+              <Swatch hex="#7C3AED" name="Violet 600" role="Primary action"/>
+              <Swatch hex="#6D28D9" name="Violet 700" role="Hover / pressed"/>
+              <Swatch hex="#A78BFA" name="Violet 400" role="Light accent"/>
+              <Swatch hex="#6366F1" name="Indigo 500" role="Secondary accent"/>
+              <Swatch hex="#818CF8" name="Indigo 400" role="Tertiary / glow"/>
+            </div>
+          </div>
+          <div style={{ marginBottom: 24 }}>
+            <Label>Neutrals — Dark Backgrounds & Surfaces</Label>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 10 }}>
+              <Swatch hex="#0A0A0F" name="Base" role="Page background"/>
+              <Swatch hex="#0D0D14" name="Base 2" role="App shell"/>
+              <Swatch hex="#111118" name="Surface" role="Cards"/>
+              <Swatch hex="#16161F" name="Surface 2" role="Nested cards"/>
+              <Swatch hex="#1E1E2E" name="Border" role="Dividers"/>
+              <Swatch hex="#F0F0FF" name="Foreground" role="Headings"/>
+            </div>
+          </div>
+          <div style={{ marginBottom: 24 }}>
+            <Label>Text Scale</Label>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+              <Swatch hex="#F0F0FF" name="Text Primary" role="Headings"/>
+              <Swatch hex="#C4C4E0" name="Text Secondary" role="Body"/>
+              <Swatch hex="#8B8BA7" name="Text Muted" role="Captions"/>
+              <Swatch hex="#5A5A7A" name="Text Subtle" role="Placeholders"/>
+            </div>
+          </div>
+          <div>
+            <Label>Semantic — Status Colors</Label>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+              <Swatch hex="#10B981" name="Success" role="Approved / active"/>
+              <Swatch hex="#F59E0B" name="Warning" role="Pending / attention"/>
+              <Swatch hex="#EF4444" name="Danger" role="Error / delete"/>
+              <Swatch hex="#3B82F6" name="Info" role="Informational"/>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 04 TYPOGRAPHY ── */}
+        <div id="typography" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="04" title="Typography" subtitle="Syne for display and headings. DM Sans for all UI and body copy. DM Mono for data, labels, and code."/>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
+            <div>
+              <Label>Type Scale</Label>
+              {[
+                { label: "Display · Syne 800 · 56px", style: { fontFamily: "Syne", fontWeight: 800, fontSize: 56, color: "#F0F0FF", letterSpacing: "-0.045em", lineHeight: 1 }, sample: "SmartS" },
+                { label: "H1 · Syne 700 · 36px", style: { fontFamily: "Syne", fontWeight: 700, fontSize: 36, color: "#F0F0FF", letterSpacing: "-0.03em" }, sample: "The future of enterprise." },
+                { label: "H2 · Syne 600 · 24px", style: { fontFamily: "Syne", fontWeight: 600, fontSize: 24, color: "#F0F0FF", letterSpacing: "-0.02em" }, sample: "Dashboard Overview" },
+                { label: "H3 · DM Sans 600 · 18px", style: { fontFamily: "DM Sans", fontWeight: 600, fontSize: 18, color: "#C4C4E0" }, sample: "Staff Management" },
+                { label: "Body · DM Sans 400 · 15px", style: { fontFamily: "DM Sans", fontWeight: 400, fontSize: 15, color: "#9090B0", lineHeight: 1.7 }, sample: "Automate your school's internal operations." },
+                { label: "Caption · DM Sans 400 · 12px", style: { fontFamily: "DM Sans", fontSize: 12, color: "#5A5A7A" }, sample: "Last updated 3 hours ago" },
+                { label: "Mono · DM Mono 400 · 12px", style: { fontFamily: "DM Mono", fontSize: 12, color: "#5A5A7A" }, sample: "SYS_REF · v1.0.4 · IRO/SMARTS" },
+              ].map(t => (
+                <div key={t.label} style={{ padding: "18px 0", borderBottom: "1px solid #1A1A28" }}>
+                  <div style={{ fontFamily: "DM Mono", fontSize: 9, color: "#3A3A55", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.12em" }}>{t.label}</div>
+                  <div style={t.style}>{t.sample}</div>
+                </div>
+              ))}
+            </div>
+            <div>
+              <Label>Font Pairing in Context</Label>
+              <Card style={{ padding: 28, marginBottom: 16 }}>
+                <div style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 28, color: "#F0F0FF", letterSpacing: "-0.035em", lineHeight: 1.1, marginBottom: 14 }}>Built for schools<br/>that mean business.</div>
+                <p style={{ fontFamily: "DM Sans", fontSize: 14, color: "#5A5A7A", lineHeight: 1.75, marginBottom: 20 }}>SmartS School brings every workflow your institution runs — staff, students, timetables, and finance — into one secure, intelligent platform. Less admin. More education.</p>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <Btn accent={accent}>Start Free Trial</Btn>
+                  <Btn variant="secondary" accent={accent}>See Demo</Btn>
+                </div>
+              </Card>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+                {[
+                  { name: "Syne", role: "Headings · Display", fam: "Syne" },
+                  { name: "DM Sans", role: "Body · UI copy", fam: "DM Sans" },
+                  { name: "DM Mono", role: "Data · Labels", fam: "DM Mono" },
+                ].map(f => (
+                  <Card key={f.name} style={{ padding: "14px 16px" }}>
+                    <div style={{ fontFamily: f.fam, fontWeight: 700, fontSize: 16, color: "#F0F0FF", marginBottom: 4 }}>{f.name}</div>
+                    <div style={{ fontFamily: "DM Mono", fontSize: 9, color: "#4A4A6A" }}>{f.role}</div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 05 COMPONENTS ── */}
+        <div id="components" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="05" title="UI Components" subtitle="A minimal, high-contrast component library. Every element earns its place. Zero decoration without function."/>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+            <Card style={{ padding: 24 }}>
+              <Label>Buttons</Label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                <Btn accent={accent}>Primary</Btn>
+                <Btn variant="secondary" accent={accent}>Secondary</Btn>
+                <Btn variant="ghost" accent={accent}>Ghost</Btn>
+                <Btn variant="danger" accent={accent}>Delete</Btn>
+                <Btn sm accent={accent}>Small</Btn>
+                <Btn sm variant="secondary" accent={accent}>↗ Export</Btn>
+              </div>
+            </Card>
+            <Card style={{ padding: 24 }}>
+              <Label>Badges & Status</Label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                <Badge color={accent}>Active</Badge>
+                <Badge color="#10B981">Approved</Badge>
+                <Badge color="#F59E0B">Pending</Badge>
+                <Badge color="#EF4444">Rejected</Badge>
+                <Badge color="#6366F1">New</Badge>
+                <Badge color="#5A5A7A">Archived</Badge>
+                <Badge color="#3B82F6">Info</Badge>
+              </div>
+            </Card>
+            <Card style={{ padding: 24 }}>
+              <Label>Form Inputs</Label>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div>
+                  <label style={{ fontSize: 11, color: "#8B8BA7", fontFamily: "DM Sans", display: "block", marginBottom: 5 }}>School Name</label>
+                  <input defaultValue="Greenfield Academy" style={{ width: "100%", background: "#0A0A0F", border: "1px solid #252535", borderRadius: 8, padding: "9px 13px", color: "#F0F0FF", fontFamily: "DM Sans", fontSize: 13 }}/>
+                </div>
+                <div>
+                  <label style={{ fontSize: 11, color: "#8B8BA7", fontFamily: "DM Sans", display: "block", marginBottom: 5 }}>Plan</label>
+                  <select style={{ width: "100%", background: "#0A0A0F", border: "1px solid #252535", borderRadius: 8, padding: "9px 13px", color: "#F0F0FF", fontFamily: "DM Sans", fontSize: 13 }}>
+                    <option>Enterprise</option><option>Growth</option><option>Starter</option>
+                  </select>
+                </div>
+              </div>
+            </Card>
+            <Card style={{ padding: 24 }}>
+              <Label>Card Components</Label>
+              <div style={{ background: "#16161F", border: "1px solid #252535", borderRadius: 10, padding: 14, marginBottom: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <div style={{ width: 34, height: 34, borderRadius: 9, background: accent + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>📋</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#F0F0FF", fontFamily: "DM Sans" }}>Leave Request</div>
+                    <div style={{ fontSize: 11, color: "#5A5A7A" }}>Mr. Adeyemi — 3 days medical</div>
+                  </div>
+                  <Badge color="#F59E0B">Pending</Badge>
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <Btn sm accent={accent}>Approve</Btn>
+                  <Btn sm variant="ghost" accent={accent}>Decline</Btn>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <div style={{ flex: 1, background: "#16161F", border: "1px solid #252535", borderRadius: 9, padding: "12px 14px" }}>
+                  <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 20, color: "#F0F0FF" }}>148</div>
+                  <div style={{ fontSize: 10, color: "#5A5A7A", marginTop: 2 }}>Staff on Duty</div>
+                </div>
+                <div style={{ flex: 1, background: "#16161F", border: "1px solid #252535", borderRadius: 9, padding: "12px 14px" }}>
+                  <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 20, color: "#10B981" }}>+3.2%</div>
+                  <div style={{ fontSize: 10, color: "#5A5A7A", marginTop: 2 }}>Enrollment Growth</div>
+                </div>
+              </div>
+            </Card>
+          </div>
+          {/* Notification */}
+          <Card style={{ padding: 20 }}>
+            <Label>Toast Notifications</Label>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+              {[
+                { msg: "Leave approved successfully.", color: "#10B981", icon: "✓" },
+                { msg: "Timetable conflict detected in SS2A.", color: "#F59E0B", icon: "!" },
+                { msg: "Failed to generate report. Retry.", color: "#EF4444", icon: "✕" },
+                { msg: "Invoice #2041 sent to parent.", color: accent, icon: "↑" },
+              ].map(n => (
+                <div key={n.msg} style={{ display: "flex", alignItems: "center", gap: 10, background: "#16161F", border: "1px solid #1E1E2E", borderRadius: 8, padding: "10px 14px", minWidth: 260 }}>
+                  <div style={{ width: 20, height: 20, borderRadius: "50%", background: n.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: n.color, fontWeight: 700, flexShrink: 0 }}>{n.icon}</div>
+                  <span style={{ fontSize: 12, color: "#C4C4E0", fontFamily: "DM Sans" }}>{n.msg}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* ── 06 DASHBOARD ── */}
+        <div id="dashboard" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="06" title="Dashboard UI" subtitle="SmartS School — the first product. A command centre for school administrators. Click the sidebar items to explore."/>
+          <DashboardUI accent={accent}/>
+        </div>
+
+        {/* ── 07 MOBILE ── */}
+        <div id="mobile" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="07" title="Mobile App" subtitle="iOS & Android companion app. Click each screen to highlight it."/>
+          <MobilePreviews accent={accent}/>
+        </div>
+
+        {/* ── 08 MARKETING ── */}
+        <div id="marketing" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="08" title="Marketing Kit" subtitle="Social presence, business collateral, and email — all in the SmartS visual language."/>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 20 }}>
+            {/* LinkedIn */}
+            <div>
+              <Label>LinkedIn Banner · 1200×627</Label>
+              <Card style={{ overflow: "hidden" }}>
+                <div style={{ padding: "26px 22px", minHeight: 120, position: "relative", overflow: "hidden" }}>
+                  <div style={{ position: "absolute", top: -30, right: -30, width: 140, height: 140, background: accent, borderRadius: "50%", opacity: 0.18, filter: "blur(40px)" }}/>
+                  <div style={{ position: "absolute", bottom: -20, left: 40, width: 80, height: 80, background: accent2, borderRadius: "50%", opacity: 0.12, filter: "blur(30px)" }}/>
+                  <SmartSWordmark size={14} accent={accent} accent2={accent2}/>
+                  <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 17, color: "#F0F0FF", lineHeight: 1.2, marginTop: 14, marginBottom: 8 }}>The OS for modern schools.</div>
+                  <div style={{ fontFamily: "DM Sans", fontSize: 11, color: "#5A5A7A" }}>Automate operations. Empower staff. Scale with confidence.</div>
+                </div>
+              </Card>
+            </div>
+            {/* Twitter/X */}
+            <div>
+              <Label>Twitter / X · Post Card</Label>
+              <Card style={{ overflow: "hidden" }}>
+                <div style={{ padding: "22px 18px", minHeight: 120, borderTop: "3px solid " + accent }}>
+                  <div style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 20, color: "#F0F0FF", marginBottom: 8 }}>SmartS School<br/>is here.</div>
+                  <div style={{ fontFamily: "DM Sans", fontSize: 12, color: "#5A5A7A", marginBottom: 14 }}>One platform. Every workflow.</div>
+                  <Badge color={accent}>Try it free →</Badge>
+                </div>
+              </Card>
+            </div>
+            {/* Business Card */}
+            <div>
+              <Label>Business Card · 3.5×2 in</Label>
+              <Card>
+                <div style={{ padding: "18px 18px", minHeight: 120, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <SmartSWordmark size={14} accent={accent} accent2={accent2}/>
+                  <div>
+                    <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 13, color: "#F0F0FF", marginBottom: 2 }}>Amara Okonkwo</div>
+                    <div style={{ fontFamily: "DM Sans", fontSize: 11, color: "#5A5A7A", marginBottom: 8 }}>Head of Enterprise · SmartS School</div>
+                    <div style={{ fontFamily: "DM Mono", fontSize: 9, color: "#4A4A6A" }}>amara@smarts.io · +234 800 000 0000</div>
+                    <div style={{ fontFamily: "DM Mono", fontSize: 9, color: "#4A4A6A", marginTop: 2 }}>smarts.io · Lagos, Nigeria</div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+          {/* Email */}
+          <div style={{ marginBottom: 20 }}>
+            <Label>Email Template</Label>
+            <Card style={{ overflow: "hidden", maxWidth: 560 }}>
+              <div style={{ background: "#0A0A0F", borderBottom: "3px solid " + accent, padding: "16px 24px", display: "flex", alignItems: "center", gap: 10 }}>
+                <SmartSWordmark size={16} accent={accent} accent2={accent2}/>
+              </div>
+              <div style={{ padding: "28px 24px" }}>
+                <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 20, color: "#F0F0FF", marginBottom: 10 }}>Welcome to SmartS School 👋</div>
+                <div style={{ fontFamily: "DM Sans", fontSize: 14, color: "#5A5A7A", lineHeight: 1.75, marginBottom: 22 }}>Your institution is now set up. Start by adding your staff, importing student data, or exploring the timetable builder. We are here if you need help.</div>
+                <Btn accent={accent}>Open Dashboard →</Btn>
+                <div style={{ marginTop: 24, paddingTop: 18, borderTop: "1px solid #1A1A28", fontFamily: "DM Mono", fontSize: 9, color: "#3A3A55" }}>SmartS School · Ice Resources Operating · smarts.io · Unsubscribe</div>
+              </div>
+            </Card>
+          </div>
+          {/* Pitch Deck Style */}
+          <div>
+            <Label>Pitch Deck Slide Style</Label>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <Card style={{ padding: "32px 28px", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: -40, right: -40, width: 200, height: 200, background: accent, borderRadius: "50%", opacity: 0.12, filter: "blur(60px)" }}/>
+                <Badge color={accent}>Title Slide</Badge>
+                <div style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 28, color: "#F0F0FF", letterSpacing: "-0.04em", marginTop: 16, marginBottom: 8 }}>Transforming how<br/>schools operate.</div>
+                <div style={{ fontFamily: "DM Sans", fontSize: 13, color: "#5A5A7A" }}>SmartS School · Investor Deck · 2026</div>
+              </Card>
+              <Card style={{ padding: "28px" }}>
+                <Badge color="#5A5A7A">Content Slide</Badge>
+                <div style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 18, color: "#F0F0FF", marginTop: 12, marginBottom: 14 }}>The Problem</div>
+                {["School administrators juggle 6+ disconnected tools daily.", "No single source of truth for staff, students, or finances.", "Manual processes create costly errors at scale."].map(p => (
+                  <div key={p} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
+                    <div style={{ width: 5, height: 5, borderRadius: "50%", background: accent, marginTop: 6, flexShrink: 0 }}/>
+                    <div style={{ fontSize: 13, color: "#9090B0", lineHeight: 1.5 }}>{p}</div>
+                  </div>
+                ))}
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* ── 09 BRAND VOICE ── */}
+        <div id="voice" style={{ padding: pad, borderBottom: "1px solid #1A1A28" }}>
+          <SectionHead num="09" title="Brand Voice" subtitle="How SmartS speaks — confident, precise, and always in service of the reader. Never loud. Never vague."/>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 28 }}>
+            {[
+              { tone: "Confident", not: "Arrogant", eg: "SmartS handles the complexity, so your team can focus on what matters most." },
+              { tone: "Precise", not: "Technical", eg: "Every approval, every record — tracked, traceable, and always accessible." },
+              { tone: "Warm", not: "Casual", eg: "Your school runs better when everyone has the right tools in hand." },
+              { tone: "Future-oriented", not: "Vague", eg: "Built to scale with your institution, from one campus to a thousand." },
+            ].map(t => (
+              <Card key={t.tone} style={{ padding: 20 }}>
+                <div style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "baseline" }}>
+                  <span style={{ fontFamily: "Syne", fontWeight: 700, fontSize: 15, color: accentL }}>{t.tone}</span>
+                  <span style={{ fontFamily: "DM Sans", fontSize: 11, color: "#4A4A6A" }}>— not {t.not}</span>
+                </div>
+                <p style={{ fontFamily: "DM Sans", fontSize: 14, color: "#8080A0", lineHeight: 1.7, fontStyle: "italic" }}>"{t.eg}"</p>
+              </Card>
+            ))}
+          </div>
+          <div style={{ marginBottom: 28 }}>
+            <Label>Tagline Options</Label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {[
+                { line: "Run the school. Not the spreadsheet.", note: "Direct · problem-aware" },
+                { line: "Where operations meet intelligence.", note: "Premium · aspirational" },
+                { line: "Every school. One platform.",          note: "Scale-focused" },
+                { line: "Built for institutions that move fast.", note: "Enterprise-forward" },
+                { line: "Smart operations. Smarter schools.",   note: "Name wordplay" },
+              ].map((t, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 16, padding: "13px 20px", background: "#111118", border: "1px solid #1E1E2E", borderRadius: 9 }}>
+                  <span style={{ fontFamily: "DM Mono", fontSize: 10, color: "#4A4A6A", width: 22, flexShrink: 0 }}>0{i+1}</span>
+                  <span style={{ fontFamily: "Syne", fontWeight: 600, fontSize: 16, color: "#F0F0FF", flex: 1 }}>{t.line}</span>
+                  <Badge color="#5A5A7A">{t.note}</Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+          <Card style={{ padding: 24 }}>
+            <Label>Sample Website Copy</Label>
+            <div style={{ fontFamily: "Syne", fontWeight: 800, fontSize: 38, color: "#F0F0FF", letterSpacing: "-0.04em", lineHeight: 1.05, marginBottom: 14 }}>
+              The operating system<br/>for modern schools.
+            </div>
+            <div style={{ fontFamily: "DM Sans", fontSize: 16, color: "#5A5A7A", lineHeight: 1.75, marginBottom: 20, maxWidth: 520 }}>
+              SmartS School is an all-in-one platform that automates the workflows your school already runs — from HR and timetabling to fees and reporting. Less admin. More education.
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <Btn accent={accent}>Start free trial →</Btn>
+              <Btn variant="secondary" accent={accent}>Book a demo</Btn>
+            </div>
+          </Card>
+        </div>
+
+        {/* FOOTER */}
+        <div style={{ padding: "36px 64px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <SmartSWordmark size={16} accent={accent} accent2={accent2}/>
+          <span style={{ fontFamily: "DM Mono", fontSize: 10, color: "#3A3A55" }}>Ice Resources Operating · SmartS v1.0 · April 2026 · Confidential</span>
+        </div>
+
+      </div>
+
+      {/* TWEAKS */}
+      <window.TweaksPanel>
+        <window.TweakSection label="Brand Colors"/>
+        <window.TweakColor label="Primary Accent" value={tweaks.accentColor} onChange={v => setTweak("accentColor", v)}/>
+        <window.TweakColor label="Light Accent" value={tweaks.accentLight} onChange={v => setTweak("accentLight", v)}/>
+        <window.TweakColor label="Secondary Accent" value={tweaks.accentSecondary} onChange={v => setTweak("accentSecondary", v)}/>
+      </window.TweaksPanel>
+
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
