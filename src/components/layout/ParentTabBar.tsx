@@ -16,7 +16,7 @@ export function ParentTabBar() {
   return (
     <div
       className="sticky top-0 z-30 border-b border-border overflow-x-auto"
-      style={{ background: "#0D0D14" }}
+      style={{ background: "var(--color-sidebar)" }}
     >
       <div className="flex gap-1 px-4 py-2 min-w-max">
         {TABS.map(({ label, href }) => {
@@ -27,7 +27,7 @@ export function ParentTabBar() {
               href={href}
               className="shrink-0 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all duration-150"
               style={{
-                background: isActive ? "#7C3AED" : "transparent",
+                background: isActive ? "var(--color-primary)" : "transparent",
                 color: isActive ? "#fff" : "#5A5A7A",
                 fontFamily: "var(--font-dm-sans)",
               }}

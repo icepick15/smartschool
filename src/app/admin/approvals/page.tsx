@@ -42,15 +42,15 @@ function loadStatuses(): Record<string, ApprovalStatus> {
 }
 
 const TYPE_CONFIG: Record<ApprovalType, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-  leave:    { label: "Leave",    color: "#6366F1", bg: "#6366F120", icon: <Calendar size={12} />     },
-  purchase: { label: "Purchase", color: "#F59E0B", bg: "#F59E0B20", icon: <ShoppingCart size={12} /> },
-  policy:   { label: "Policy",   color: "#A78BFA", bg: "#7C3AED20", icon: <FileText size={12} />     },
+  leave:    { label: "Leave",    color: "var(--color-secondary)",    bg: "#6366F120",                   icon: <Calendar size={12} />     },
+  purchase: { label: "Purchase", color: "var(--color-warning)",     bg: "#F59E0B20",                   icon: <ShoppingCart size={12} /> },
+  policy:   { label: "Policy",   color: "var(--color-primary-light)", bg: "var(--color-primary-badge)", icon: <FileText size={12} />     },
 };
 
 const PRIORITY_CONFIG: Record<Priority, { color: string }> = {
-  low:    { color: "#5A5A7A" },
-  medium: { color: "#F59E0B" },
-  high:   { color: "#EF4444" },
+  low:    { color: "var(--color-nav-inactive)" },
+  medium: { color: "var(--color-warning)" },
+  high:   { color: "var(--color-danger)" },
 };
 
 const TABS: { key: FilterTab; label: string }[] = [
@@ -106,7 +106,7 @@ export default function ApprovalsPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "#111118" }}>
+      <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "var(--color-surface)" }}>
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -114,8 +114,8 @@ export default function ApprovalsPage() {
             className="flex-1 px-3 py-2 rounded-lg text-[12px] font-medium transition-all duration-150"
             style={{
               fontFamily: "var(--font-dm-sans)",
-              background: filter === tab.key ? "#7C3AED" : "transparent",
-              color:      filter === tab.key ? "#fff"    : "#5A5A7A",
+              background: filter === tab.key ? "var(--color-primary)" : "transparent",
+              color:      filter === tab.key ? "#fff"    : "var(--color-nav-inactive)",
             }}
           >
             {tab.label} <span className="opacity-60">({counts[tab.key]})</span>
@@ -134,7 +134,7 @@ export default function ApprovalsPage() {
             <div
               key={req.id}
               className="rounded-xl border border-border p-5 flex flex-col gap-3"
-              style={{ background: "#111118" }}
+              style={{ background: "var(--color-surface)" }}
             >
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex flex-col gap-1.5">
@@ -177,8 +177,8 @@ export default function ApprovalsPage() {
                   <span
                     className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full"
                     style={{
-                      background: req.status === "approved" ? "#10B98120" : "#EF444420",
-                      color:      req.status === "approved" ? "#10B981"   : "#EF4444",
+                      background: req.status === "approved" ? "var(--color-success-subtle)" : "#EF444420",
+                      color:      req.status === "approved" ? "var(--color-success)"        : "var(--color-danger)",
                       fontFamily: "var(--font-dm-mono)",
                     }}
                   >

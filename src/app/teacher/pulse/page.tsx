@@ -10,11 +10,11 @@ import type { BehaviorRating } from "@/lib/types";
 const STORAGE_KEY = "smartschool_pulse_2026-05-01";
 
 const RATINGS: { value: BehaviorRating; label: string; color: string; bg: string }[] = [
-  { value: 1, label: "Needs Attention", color: "#EF4444", bg: "#EF444412" },
+  { value: 1, label: "Needs Attention", color: "var(--color-danger)", bg: "#EF444412" },
   { value: 2, label: "Below Average",   color: "#F97316", bg: "#F9731612" },
-  { value: 3, label: "Average",         color: "#F59E0B", bg: "#F59E0B12" },
-  { value: 4, label: "Good",            color: "#10B981", bg: "#10B98112" },
-  { value: 5, label: "Excellent",       color: "#7C3AED", bg: "#7C3AED12" },
+  { value: 3, label: "Average",         color: "var(--color-warning)", bg: "#F59E0B12" },
+  { value: 4, label: "Good",            color: "var(--color-success)", bg: "#10B98112" },
+  { value: 5, label: "Excellent",       color: "var(--color-primary)", bg: "#7C3AED12" },
 ];
 
 type PulseEntry = { rating: BehaviorRating | null; note: string };
@@ -97,7 +97,7 @@ export default function FridayPulsePage() {
       {/* Class Mood Summary */}
       <div
         className="rounded-xl border border-border p-5 flex flex-col gap-4"
-        style={{ background: "#111118" }}
+        style={{ background: "var(--color-surface)" }}
       >
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -120,7 +120,7 @@ export default function FridayPulsePage() {
                 className="text-[32px] font-bold leading-none"
                 style={{
                   fontFamily: "var(--font-syne)",
-                  color: RATINGS[Math.round(avgRating) - 1]?.color ?? "#7C3AED",
+                  color: RATINGS[Math.round(avgRating) - 1]?.color ?? "var(--color-primary)",
                 }}
               >
                 {avgRating.toFixed(1)}
@@ -136,7 +136,7 @@ export default function FridayPulsePage() {
         </div>
 
         {/* Distribution bar */}
-        <div className="flex gap-1 h-2.5 rounded-full overflow-hidden" style={{ background: "#1A1A24" }}>
+        <div className="flex gap-1 h-2.5 rounded-full overflow-hidden" style={{ background: "var(--color-elevated)" }}>
           {rated > 0 && dist.map(({ value, color, count }) =>
             count > 0 ? (
               <div
@@ -176,7 +176,7 @@ export default function FridayPulsePage() {
               key={student.id}
               className="rounded-xl border flex flex-col gap-4 p-5 transition-all duration-200"
               style={{
-                background: cfg ? cfg.bg : "#111118",
+                background: cfg ? cfg.bg : "var(--color-surface)",
                 borderColor: cfg ? `${cfg.color}33` : "var(--color-border)",
                 borderLeftColor: cfg ? cfg.color : "transparent",
                 borderLeftWidth: 3,
@@ -186,7 +186,7 @@ export default function FridayPulsePage() {
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0"
-                  style={{ background: "#7C3AED22", color: "#A78BFA", fontFamily: "var(--font-dm-mono)" }}
+                  style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
                 >
                   {student.avatarInitials}
                 </div>

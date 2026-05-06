@@ -89,3 +89,14 @@ export interface BehaviorEntry {
   rating: BehaviorRating;
   note?: string;
 }
+
+/* ─── Diary ──────────────────────────────────────────── */
+export interface Diary {
+  id: string;
+  studentId: string;
+  teacherName: string;
+  subject: string;
+  message: string;
+  date: string;
+  time: string;
+}

@@ -58,15 +58,15 @@ export default function AcademicPage() {
       {/* KPI cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Enrolled",    value: totalStudents,        icon: <Users size={16} />,      color: "#6366F1" },
-          { label: "Classes",     value: CLASSES.length,       icon: <BookOpen size={16} />,   color: "#7C3AED" },
-          { label: "Subjects",    value: SUBJECTS.length,      icon: <BarChart2 size={16} />,  color: "#F59E0B" },
-          { label: "Completion",  value: `${avgCompletion}%`,  icon: <CheckSquare size={16} />, color: "#10B981" },
+          { label: "Enrolled",    value: totalStudents,        icon: <Users size={16} />,      color: "var(--color-secondary)" },
+          { label: "Classes",     value: CLASSES.length,       icon: <BookOpen size={16} />,   color: "var(--color-primary)" },
+          { label: "Subjects",    value: SUBJECTS.length,      icon: <BarChart2 size={16} />,  color: "var(--color-warning)" },
+          { label: "Completion",  value: `${avgCompletion}%`,  icon: <CheckSquare size={16} />, color: "var(--color-success)" },
         ].map(({ label, value, icon, color }) => (
           <div
             key={label}
             className="rounded-xl border border-border p-4 flex flex-col gap-3"
-            style={{ background: "#111118" }}
+            style={{ background: "var(--color-surface)" }}
           >
             <div className="flex items-center justify-between">
               <span
@@ -93,14 +93,14 @@ export default function AcademicPage() {
         <div className="flex flex-col divide-y divide-border">
           {CLASSES.map((cls) => (
             <div key={cls.name} className="py-3 flex items-center gap-4">
-              <div className="w-2 h-2 rounded-full shrink-0" style={{ background: cls.live ? "#10B981" : "#2E2E3E" }} />
+              <div className="w-2 h-2 rounded-full shrink-0" style={{ background: cls.live ? "var(--color-success)" : "#2E2E3E" }} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1.5">
                   <span className="text-ink text-[13px] font-semibold">{cls.name}</span>
                   {cls.live && (
                     <span
                       className="text-[9px] px-1.5 py-0.5 rounded font-semibold"
-                      style={{ background: "#10B98120", color: "#10B981", fontFamily: "var(--font-dm-mono)" }}
+                      style={{ background: "var(--color-success-subtle)", color: "var(--color-success)", fontFamily: "var(--font-dm-mono)" }}
                     >
                       LIVE
                     </span>
@@ -137,7 +137,7 @@ export default function AcademicPage() {
             <Link
               href="/teacher/scores"
               className="text-[12px] font-semibold"
-              style={{ color: "#A78BFA" }}
+              style={{ color: "var(--color-primary-light)" }}
             >
               Open Score Grid →
             </Link>
@@ -148,13 +148,13 @@ export default function AcademicPage() {
             <div
               key={sub.id}
               className="rounded-lg border border-border p-3 flex flex-col gap-2"
-              style={{ background: "#0D0D14" }}
+              style={{ background: "var(--color-sidebar)" }}
             >
               <div className="flex items-center justify-between">
                 <span className="text-ink text-[13px] font-medium">{sub.name}</span>
                 <span
                   className="text-[11px] font-bold"
-                  style={{ fontFamily: "var(--font-dm-mono)", color: avg >= 75 ? "#10B981" : avg >= 50 ? "#F59E0B" : "#EF4444" }}
+                  style={{ fontFamily: "var(--font-dm-mono)", color: avg >= 75 ? "var(--color-success)" : avg >= 50 ? "var(--color-warning)" : "var(--color-danger)" }}
                 >
                   Avg: {avg > 0 ? avg : "—"}
                 </span>

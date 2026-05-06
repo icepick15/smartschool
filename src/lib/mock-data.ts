@@ -1,4 +1,4 @@
-import type { Student, Subject, Score, FeeRecord, Transaction, KPI } from "./types";
+import type { Student, Subject, Score, FeeRecord, Transaction, KPI, Diary } from "./types";
 import { getGrade } from "./constants";
 
 /* ─── Students ──────────────────────────────────────── */
@@ -25,7 +25,7 @@ export const SUBJECTS: Subject[] = [
 const raw: [string, string, number | null, number | null, number | null][] = [
   ["s1", "sub1", 18, 17, 52], ["s1", "sub2", 19, 18, 55], ["s1", "sub3", 16, 15, 48],
   ["s1", "sub4", 20, 19, 58], ["s1", "sub5", 17, 16, 50], ["s1", "sub6", 15, 14, 45],
-  ["s2", "sub1", 14, 13, 42], ["s2", "sub2", 16, 15, 49], ["s2", "sub3", 18, 17, 54],
+  ["s2", "sub1", 8, 7, 22], ["s2", "sub2", 16, 15, 49], ["s2", "sub3", 18, 17, 54],
   ["s2", "sub4", 15, 14, 44], ["s2", "sub5", 19, 18, 56], ["s2", "sub6", 13, 12, 38],
   ["s3", "sub1", 20, 19, 60], ["s3", "sub2", 20, 20, 58], ["s3", "sub3", 19, 18, 57],
   ["s3", "sub4", 18, 17, 53], ["s3", "sub5", 20, 19, 59], ["s3", "sub6", 17, 16, 51],
@@ -60,6 +60,28 @@ export const TRANSACTIONS: Transaction[] = [
   { id: "t4", description: "Term 2 fees — Primary 5",      amount: 170000, type: "income",  category: "Fees",       date: "2026-02-05" },
   { id: "t5", description: "Textbooks & stationery",       amount: 62000,  type: "expense", category: "Supplies",   date: "2026-02-10" },
   { id: "t6", description: "UBEC grant disbursement",      amount: 500000, type: "income",  category: "Grant",      date: "2026-02-14" },
+];
+
+/* ─── Diaries ───────────────────────────────────────── */
+export const DIARIES: Diary[] = [
+  {
+    id: "d1",
+    studentId: "s2",
+    teacherName: "Mrs Adeleke",
+    subject: "Mathematics",
+    message: "Chidi was attentive in class today. We covered fractions — he participated well but needs more practice at home. I've sent exercises in his notebook.",
+    date: "2026-05-06",
+    time: "2:45pm",
+  },
+  {
+    id: "d2",
+    studentId: "s1",
+    teacherName: "Mrs Adeleke",
+    subject: "English Language",
+    message: "Amara submitted an excellent essay today. Her vocabulary and structure are improving each week. Keep encouraging her reading habit.",
+    date: "2026-05-05",
+    time: "1:30pm",
+  },
 ];
 
 /* ─── Admin KPIs ────────────────────────────────────── */

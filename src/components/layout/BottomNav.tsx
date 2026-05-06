@@ -18,7 +18,7 @@ export function BottomNav() {
   return (
     <nav
       className="flex items-center border-t border-border"
-      style={{ background: "#0D0D14" }}
+      style={{ background: "var(--color-sidebar)" }}
     >
       {ITEMS.map(({ label, href, icon: Icon }) => {
         const isActive = pathname === href || (href !== "/teacher" && pathname.startsWith(href));
@@ -30,12 +30,12 @@ export function BottomNav() {
           >
             <Icon
               size={20}
-              style={{ color: isActive ? "#7C3AED" : "#5A5A7A" }}
+              style={{ color: isActive ? "var(--color-primary)" : "#5A5A7A" }}
             />
             <span
               className="text-[10px] leading-none"
               style={{
-                color: isActive ? "#A78BFA" : "#5A5A7A",
+                color: isActive ? "var(--color-primary-light)" : "#5A5A7A",
                 fontFamily: "var(--font-dm-mono)",
               }}
             >

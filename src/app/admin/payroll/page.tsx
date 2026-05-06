@@ -94,15 +94,15 @@ export default function PayrollPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Staff",    value: staff.length,           icon: <Users size={16} />,       color: "#6366F1" },
-          { label: "Total Payroll",  value: formatNaira(totalPayroll), icon: <Wallet size={16} />,   color: "#7C3AED" },
-          { label: "Paid Out",       value: formatNaira(paidTotal),  icon: <CheckCircle size={16} />, color: "#10B981" },
-          { label: "Pending",        value: formatNaira(pendingTotal), icon: <Clock size={16} />,    color: "#F59E0B" },
+          { label: "Total Staff",    value: staff.length,           icon: <Users size={16} />,       color: "var(--color-secondary)" },
+          { label: "Total Payroll",  value: formatNaira(totalPayroll), icon: <Wallet size={16} />,   color: "var(--color-primary)" },
+          { label: "Paid Out",       value: formatNaira(paidTotal),  icon: <CheckCircle size={16} />, color: "var(--color-success)" },
+          { label: "Pending",        value: formatNaira(pendingTotal), icon: <Clock size={16} />,    color: "var(--color-warning)" },
         ].map(({ label, value, icon, color }) => (
           <div
             key={label}
             className="rounded-xl border border-border p-4 flex flex-col gap-3"
-            style={{ background: "#111118" }}
+            style={{ background: "var(--color-surface)" }}
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] tracking-widest text-ink-4 uppercase" style={{ fontFamily: "var(--font-dm-mono)" }}>
@@ -118,7 +118,7 @@ export default function PayrollPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "#111118" }}>
+      <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "var(--color-surface)" }}>
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -126,7 +126,7 @@ export default function PayrollPage() {
             className="flex-1 px-3 py-2 rounded-lg text-[12px] font-medium transition-all duration-150"
             style={{
               fontFamily: "var(--font-dm-sans)",
-              background: filter === tab.key ? "#7C3AED" : "transparent",
+              background: filter === tab.key ? "var(--color-primary)" : "transparent",
               color:      filter === tab.key ? "#fff"    : "#5A5A7A",
             }}
           >
@@ -136,10 +136,10 @@ export default function PayrollPage() {
       </div>
 
       {/* Staff list */}
-      <div className="rounded-xl border border-border overflow-hidden" style={{ background: "#111118" }}>
+      <div className="rounded-xl border border-border overflow-hidden" style={{ background: "var(--color-surface)" }}>
         <div
           className="grid px-5 py-3 border-b border-border"
-          style={{ gridTemplateColumns: "1fr 140px 120px 100px 120px", background: "#0D0D14" }}
+          style={{ gridTemplateColumns: "1fr 140px 120px 100px 120px", background: "var(--color-sidebar)" }}
         >
           {["Staff Member", "Role", "Department", "Salary", "Status"].map((h) => (
             <span key={h} className="text-[10px] tracking-widest text-ink-4 uppercase" style={{ fontFamily: "var(--font-dm-mono)" }}>
@@ -157,7 +157,7 @@ export default function PayrollPage() {
               <div className="flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
-                  style={{ background: "#7C3AED22", color: "#A78BFA", fontFamily: "var(--font-dm-mono)" }}
+                  style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
                 >
                   {member.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                 </div>
@@ -174,7 +174,7 @@ export default function PayrollPage() {
                 {member.status === "paid" ? (
                   <span
                     className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full"
-                    style={{ background: "#10B98120", color: "#10B981", fontFamily: "var(--font-dm-mono)" }}
+                    style={{ background: "var(--color-success-subtle)", color: "var(--color-success)", fontFamily: "var(--font-dm-mono)" }}
                   >
                     <CheckCircle size={10} /> Paid
                   </span>

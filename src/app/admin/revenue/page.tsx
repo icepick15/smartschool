@@ -19,9 +19,9 @@ const TABS: { key: FilterTab; label: string }[] = [
 ];
 
 const STATUS_CONFIG: Record<FeeStatus, { label: string; color: string; bg: string; progressVariant: "success" | "warning" | "danger" }> = {
-  paid:    { label: "Paid",    color: "#10B981", bg: "#10B98120", progressVariant: "success" },
-  partial: { label: "Partial", color: "#F59E0B", bg: "#F59E0B20", progressVariant: "warning" },
-  owing:   { label: "Owing",   color: "#EF4444", bg: "#EF444420", progressVariant: "danger"  },
+  paid:    { label: "Paid",    color: "var(--color-success)", bg: "var(--color-success-subtle)", progressVariant: "success" },
+  partial: { label: "Partial", color: "var(--color-warning)", bg: "#F59E0B20",                   progressVariant: "warning" },
+  owing:   { label: "Owing",   color: "var(--color-danger)",  bg: "#EF444420",                   progressVariant: "danger"  },
 };
 
 export default function RevenueGatePage() {
@@ -69,7 +69,7 @@ export default function RevenueGatePage() {
         </div>
         <div
           className="px-3 py-1.5 rounded-lg text-success text-[12px] font-semibold"
-          style={{ background: "#10B98120", fontFamily: "var(--font-dm-mono)" }}
+          style={{ background: "var(--color-success-subtle)", fontFamily: "var(--font-dm-mono)" }}
         >
           {recoveryRate}% RECOVERED
         </div>
@@ -78,15 +78,15 @@ export default function RevenueGatePage() {
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Expected",   value: formatNaira(totalExpected), icon: <Wallet size={16} />,        color: "#6366F1" },
-          { label: "Collected",        value: formatNaira(totalPaid),     icon: <CheckCircle size={16} />,   color: "#10B981" },
-          { label: "Outstanding",      value: formatNaira(totalOwing),    icon: <AlertTriangle size={16} />, color: "#EF4444" },
-          { label: "Students Flagged", value: `${counts.owing + counts.partial}`, icon: <Clock size={16} />, color: "#F59E0B" },
+          { label: "Total Expected",   value: formatNaira(totalExpected), icon: <Wallet size={16} />,        color: "var(--color-secondary)" },
+          { label: "Collected",        value: formatNaira(totalPaid),     icon: <CheckCircle size={16} />,   color: "var(--color-success)" },
+          { label: "Outstanding",      value: formatNaira(totalOwing),    icon: <AlertTriangle size={16} />, color: "var(--color-danger)" },
+          { label: "Students Flagged", value: `${counts.owing + counts.partial}`, icon: <Clock size={16} />, color: "var(--color-warning)" },
         ].map(({ label, value, icon, color }) => (
           <div
             key={label}
             className="rounded-xl border border-border p-4 flex flex-col gap-3"
-            style={{ background: "#111118" }}
+            style={{ background: "var(--color-surface)" }}
           >
             <div className="flex items-center justify-between">
               <span
@@ -108,7 +108,7 @@ export default function RevenueGatePage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "#111118" }}>
+      <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "var(--color-surface)" }}>
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -116,7 +116,7 @@ export default function RevenueGatePage() {
             className="flex-1 px-3 py-2 rounded-lg text-[12px] font-medium transition-all duration-150"
             style={{
               fontFamily: "var(--font-dm-sans)",
-              background: filter === tab.key ? "#7C3AED" : "transparent",
+              background: filter === tab.key ? "var(--color-primary)" : "transparent",
               color: filter === tab.key ? "#fff" : "#5A5A7A",
             }}
           >
@@ -134,14 +134,14 @@ export default function RevenueGatePage() {
             <div
               key={student.id}
               className="rounded-xl border border-border p-5 flex flex-col gap-4"
-              style={{ background: "#111118" }}
+              style={{ background: "var(--color-surface)" }}
             >
               {/* Top row */}
               <div className="flex items-center justify-between gap-4 flex-wrap">
                 <div className="flex items-center gap-3">
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0"
-                    style={{ background: "#7C3AED22", color: "#A78BFA", fontFamily: "var(--font-dm-mono)" }}
+                    style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
                   >
                     {student.avatarInitials}
                   </div>
@@ -159,7 +159,7 @@ export default function RevenueGatePage() {
                   </span>
                   <span
                     className="text-[16px] font-bold"
-                    style={{ fontFamily: "var(--font-syne)", color: fee.balance > 0 ? "#EF4444" : "#10B981" }}
+                    style={{ fontFamily: "var(--font-syne)", color: fee.balance > 0 ? "var(--color-danger)" : "var(--color-success)" }}
                   >
                     {fee.balance > 0 ? `${formatNaira(fee.balance)} due` : "Cleared"}
                   </span>

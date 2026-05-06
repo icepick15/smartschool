@@ -11,10 +11,10 @@ interface CircularProgressProps {
 }
 
 const strokeColors: Record<Variant, string> = {
-  primary: "#7C3AED",
-  success: "#10B981",
-  warning: "#F59E0B",
-  danger:  "#EF4444",
+  primary: "var(--color-primary)",
+  success: "var(--color-success)",
+  warning: "var(--color-warning)",
+  danger:  "var(--color-danger)",
 };
 
 export function CircularProgress({
@@ -42,7 +42,7 @@ export function CircularProgress({
             cy={center}
             r={radius}
             fill="none"
-            stroke="#2A2A3A"
+            stroke="var(--color-border)"
             strokeWidth={strokeWidth}
           />
           {/* Progress */}

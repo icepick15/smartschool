@@ -41,9 +41,9 @@ function loadStatuses(): Record<string, Status> {
 }
 
 const STATUS_CONFIG: Record<Status, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-  pending:  { label: "Pending",  color: "#F59E0B", bg: "#F59E0B20", icon: <Clock size={12} />        },
-  approved: { label: "Approved", color: "#10B981", bg: "#10B98120", icon: <CheckCircle size={12} />  },
-  rejected: { label: "Rejected", color: "#EF4444", bg: "#EF444420", icon: <XCircle size={12} />      },
+  pending:  { label: "Pending",  color: "var(--color-warning)", bg: "#F59E0B20",                   icon: <Clock size={12} />        },
+  approved: { label: "Approved", color: "var(--color-success)", bg: "var(--color-success-subtle)", icon: <CheckCircle size={12} />  },
+  rejected: { label: "Rejected", color: "var(--color-danger)",  bg: "#EF444420",                   icon: <XCircle size={12} />      },
 };
 
 const TABS: { key: FilterTab; label: string }[] = [
@@ -112,15 +112,15 @@ export default function SmartSpendPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Requests",        value: `${requests.length}`,       icon: <Wallet size={16} />,        color: "#6366F1" },
-          { label: "Pending Amount",  value: formatNaira(totalPending),  icon: <Clock size={16} />,         color: "#F59E0B" },
-          { label: "Approved Total",  value: formatNaira(totalApproved), icon: <CheckCircle size={16} />,   color: "#10B981" },
-          { label: "Awaiting Review", value: `${counts.pending}`,        icon: <XCircle size={16} />,       color: "#EF4444" },
+          { label: "Requests",        value: `${requests.length}`,       icon: <Wallet size={16} />,        color: "var(--color-secondary)" },
+          { label: "Pending Amount",  value: formatNaira(totalPending),  icon: <Clock size={16} />,         color: "var(--color-warning)" },
+          { label: "Approved Total",  value: formatNaira(totalApproved), icon: <CheckCircle size={16} />,   color: "var(--color-success)" },
+          { label: "Awaiting Review", value: `${counts.pending}`,        icon: <XCircle size={16} />,       color: "var(--color-danger)" },
         ].map(({ label, value, icon, color }) => (
           <div
             key={label}
             className="rounded-xl border border-border p-4 flex flex-col gap-3"
-            style={{ background: "#111118" }}
+            style={{ background: "var(--color-surface)" }}
           >
             <div className="flex items-center justify-between">
               <span
@@ -142,7 +142,7 @@ export default function SmartSpendPage() {
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "#111118" }}>
+      <div className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "var(--color-surface)" }}>
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -150,7 +150,7 @@ export default function SmartSpendPage() {
             className="flex-1 px-3 py-2 rounded-lg text-[12px] font-medium transition-all duration-150"
             style={{
               fontFamily: "var(--font-dm-sans)",
-              background: filter === tab.key ? "#7C3AED" : "transparent",
+              background: filter === tab.key ? "var(--color-primary)" : "transparent",
               color:      filter === tab.key ? "#fff"    : "#5A5A7A",
             }}
           >
@@ -168,7 +168,7 @@ export default function SmartSpendPage() {
             <div
               key={req.id}
               className="rounded-xl border border-border p-5 flex flex-col gap-4"
-              style={{ background: "#111118" }}
+              style={{ background: "var(--color-surface)" }}
             >
               <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div className="flex flex-col gap-1">
@@ -182,7 +182,7 @@ export default function SmartSpendPage() {
                     </span>
                     <span
                       className="text-[10px] px-2 py-0.5 rounded-md"
-                      style={{ background: "#1A1A24", color: "#5A5A7A", fontFamily: "var(--font-dm-mono)" }}
+                      style={{ background: "var(--color-elevated)", color: "#5A5A7A", fontFamily: "var(--font-dm-mono)" }}
                     >
                       {req.category}
                     </span>
@@ -205,7 +205,7 @@ export default function SmartSpendPage() {
                   </span>
                   <span
                     className="text-[18px] font-bold"
-                    style={{ fontFamily: "var(--font-syne)", color: "#F8F8FC" }}
+                    style={{ fontFamily: "var(--font-syne)", color: "var(--color-ink)" }}
                   >
                     {formatNaira(req.amount)}
                   </span>

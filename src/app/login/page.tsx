@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Phone, Lock, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, Phone, Lock } from "lucide-react";
 import { StatusBanner } from "@/components/brand/StatusBanner";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
 import { SmartSchoolMark } from "@/components/brand/SmartSchoolMark";
@@ -13,15 +13,26 @@ import { SCHOOL_NAME, SCHOOL_LOCATION, ROLE_ROUTES } from "@/lib/constants";
 type Role = "teacher" | "admin";
 
 const ROLES: { id: Role; label: string; emoji: string; sub: string }[] = [
-  { id: "teacher", label: "Teacher",    emoji: "👩‍🏫", sub: "Enter & track scores" },
-  { id: "admin",   label: "MD / Bursar", emoji: "💼", sub: "Finance & oversight"  },
+  { id: "teacher", label: "Teacher",    emoji: "👩‍🏫", sub: "Upload marks · generate results" },
+  { id: "admin",   label: "MD / Bursar", emoji: "💼", sub: "Fee recovery · full oversight"  },
 ];
 
-const FEATURES = [
-  "Score entry, broadsheet & report cards",
-  "Fee management with Revenue Gate",
-  "Friday Pulse behavioural tracking",
-  "Works offline — no internet required",
+const FEATURES: { icon: string; title: string; desc: string }[] = [
+  {
+    icon: "📊",
+    title: "One-Click Report Cards",
+    desc: "Marks in → report cards, broadsheet & class ranking out. 60 seconds.",
+  },
+  {
+    icon: "💰",
+    title: "Pay-to-View Fee Gate",
+    desc: "Results locked until fees clear. Schools hit 92% collection, ₦10M+ recovered per term.",
+  },
+  {
+    icon: "📈",
+    title: "Weekly Student Check-In",
+    desc: "Track grades + behaviour every week. Catch Tolu dropping in Maths before it's too late.",
+  },
 ];
 
 function LoginForm() {
@@ -81,9 +92,9 @@ function LoginForm() {
                 onClick={() => setRole(id)}
                 className="flex flex-col gap-1.5 p-[18px] rounded-xl border text-left transition-all duration-150"
                 style={{
-                  background: "#111118",
-                  borderColor: isSelected ? "#7C3AED" : "#2A2A3A",
-                  boxShadow: isSelected ? "0 0 0 1px #7C3AED" : "none",
+                  background: "var(--color-surface)",
+                  borderColor: isSelected ? "var(--color-primary)" : "var(--color-border)",
+                  boxShadow: isSelected ? "0 0 0 1px var(--color-primary)" : "none",
                   transform: isSelected ? "scale(1.02)" : "scale(1)",
                 }}
               >
@@ -147,7 +158,7 @@ function LoginForm() {
         <p className="text-ink-4 text-[13px]">Forgot PIN?</p>
         <button
           className="text-[13px] font-semibold"
-          style={{ color: "#A78BFA", fontFamily: "var(--font-dm-sans)" }}
+          style={{ color: "var(--color-primary-light)", fontFamily: "var(--font-dm-sans)" }}
         >
           WhatsApp support 💬
         </button>
@@ -163,7 +174,7 @@ export default function LoginPage() {
       {/* ── Left branding panel (desktop only) ── */}
       <div
         className="hidden md:flex md:w-[480px] lg:w-[540px] shrink-0 flex-col justify-between p-12 border-r border-border"
-        style={{ background: "#0D0D14" }}
+        style={{ background: "var(--color-sidebar)" }}
       >
         <SmartSchoolWordmark size={16} />
 
@@ -171,20 +182,28 @@ export default function LoginPage() {
           <SmartSchoolMark size={64} />
           <div className="flex flex-col gap-3">
             <h2
-              className="text-ink text-[38px] font-extrabold leading-tight"
+              className="text-ink text-[36px] font-extrabold leading-tight"
               style={{ fontFamily: "var(--font-syne)" }}
             >
-              Your school,<br />powered smart.
+              Stop losing ₦10M<br />per term to unpaid<br />fees &amp; manual chaos.
             </h2>
-            <p className="text-ink-4 text-[15px] leading-relaxed max-w-[340px]">
-              Scores, fees, and reports — everything your school needs in one place.
+            <p className="text-ink-4 text-[14px] leading-relaxed max-w-[320px]">
+              Results, rankings, and fee collection — automated so your staff stops drowning in paperwork.
             </p>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {FEATURES.map((f) => (
-              <div key={f} className="flex items-center gap-3">
-                <CheckCircle size={15} className="text-success shrink-0" />
-                <span className="text-ink-3 text-[13px]">{f}</span>
+              <div key={f.title} className="flex items-start gap-3">
+                <span className="text-[20px] leading-none mt-0.5 shrink-0">{f.icon}</span>
+                <div className="flex flex-col gap-0.5">
+                  <span
+                    className="text-ink text-[13px] font-semibold"
+                    style={{ fontFamily: "var(--font-dm-sans)" }}
+                  >
+                    {f.title}
+                  </span>
+                  <span className="text-ink-4 text-[12px] leading-relaxed">{f.desc}</span>
+                </div>
               </div>
             ))}
           </div>

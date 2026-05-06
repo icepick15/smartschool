@@ -13,17 +13,16 @@ import {
   LogOut,
 } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { SCHOOL_NAME, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 
 const NAV_ITEMS = [
-  { label: "Home",        href: "/teacher",            icon: LayoutDashboard },
-  { label: "Broadsheet",  href: "/teacher/broadsheet", icon: BookOpen        },
-  { label: "Score Grid",  href: "/teacher/scores",     icon: Grid3X3         },
-  { label: "Results",     href: "/teacher/results",    icon: FileText        },
-  { label: "Friday Pulse", href: "/teacher/pulse",     icon: Star            },
-  { label: "Analytics",   href: "/teacher/analytics",  icon: BarChart2       },
-  { label: "Messages",    href: "/teacher/messages",   icon: MessageSquare   },
+  { label: "Home",           href: "/teacher",            icon: LayoutDashboard },
+  { label: "Class Ranking",  href: "/teacher/broadsheet", icon: BookOpen        },
+  { label: "Upload Marks",   href: "/teacher/scores",     icon: Grid3X3         },
+  { label: "Results",        href: "/teacher/results",    icon: FileText        },
+  { label: "Weekly Check-In", href: "/teacher/pulse",    icon: Star            },
+  { label: "Analytics",      href: "/teacher/analytics",  icon: BarChart2       },
+  { label: "Messages",       href: "/teacher/messages",   icon: MessageSquare   },
 ];
 
 interface TeacherSideNavProps {
@@ -52,7 +51,7 @@ export function TeacherSideNav({ isOpen, onClose }: TeacherSideNavProps) {
           <p className="text-ink-5 text-[11px]">{SCHOOL_NAME}</p>
           <span
             className="text-[9px] font-medium px-1.5 py-0.5 rounded"
-            style={{ background: "#7C3AED20", color: "#A78BFA", fontFamily: "var(--font-dm-mono)" }}
+            style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
           >
             Teacher
           </span>
@@ -76,8 +75,8 @@ export function TeacherSideNav({ isOpen, onClose }: TeacherSideNavProps) {
               onClick={onClose}
               className="flex items-center gap-3 px-5 py-2 text-[13px] transition-colors duration-100"
               style={{
-                borderLeft: isActive ? "2px solid #7C3AED" : "2px solid transparent",
-                background: isActive ? "#7C3AED14" : "transparent",
+                borderLeft: isActive ? "2px solid var(--color-primary)" : "2px solid transparent",
+                background: isActive ? "var(--color-primary-subtle)" : "transparent",
                 color: isActive ? "var(--color-nav-active)" : "var(--color-nav-inactive)",
                 fontFamily: "var(--font-dm-sans)",
                 fontWeight: isActive ? 600 : 400,
@@ -101,7 +100,6 @@ export function TeacherSideNav({ isOpen, onClose }: TeacherSideNavProps) {
             Term {CURRENT_TERM} · {CURRENT_SESSION}
           </p>
         </div>
-        <ThemeToggle />
         <button
           onClick={handleSignOut}
           className="flex items-center gap-2 text-[12px] text-ink-4 hover:text-danger transition-colors"

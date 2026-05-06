@@ -13,40 +13,44 @@ import {
 } from "recharts";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { SUBJECTS } from "@/lib/mock-data";
 
+/* Chidi Nwosu (s2) — historical scores per term */
 const TREND_DATA = [
-  { term: "T1 '24", Math: 70, English: 68, Science: 65, Social: 78 },
-  { term: "T2 '24", Math: 75, English: 72, Science: 74, Social: 80 },
-  { term: "T3 '24", Math: 72, English: 76, Science: 70, Social: 77 },
-  { term: "T1 '25", Math: 80, English: 78, Science: 76, Social: 82 },
-  { term: "T2 '25", Math: 87, English: 92, Science: 79, Social: 97 },
+  { term: "T1 '24", Math: 55, English: 58, Science: 65, Civic: 70 },
+  { term: "T2 '24", Math: 62, English: 60, Science: 68, Civic: 72 },
+  { term: "T3 '24", Math: 58, English: 63, Science: 70, Civic: 75 },
+  { term: "T1 '25", Math: 60, English: 62, Science: 74, Civic: 78 },
+  { term: "T2 '25", Math: 37, English: 80, Science: 89, Civic: 93 },
 ];
 
 const SUBJECT_LINES = [
-  { key: "Math",    color: "#6366F1" },
-  { key: "English", color: "#F59E0B" },
-  { key: "Science", color: "#7C3AED" },
-  { key: "Social",  color: "#10B981" },
+  { key: "Math",    color: "var(--color-danger)"    },
+  { key: "English", color: "var(--color-warning)"   },
+  { key: "Science", color: "var(--color-primary)"   },
+  { key: "Civic",   color: "var(--color-success)"   },
 ];
 
+/* Chidi's T2 '25 scores vs class avg */
 const CLASS_COMPARISON = [
-  { subject: "MTH", student: 87, classAvg: 68 },
-  { subject: "ENG", subject2: "ENG", student: 92, classAvg: 72 },
-  { subject: "BSC", student: 79, classAvg: 65 },
-  { subject: "SST", student: 97, classAvg: 71 },
-  { subject: "CIV", student: 83, classAvg: 69 },
-  { subject: "AGR", student: 74, classAvg: 63 },
+  { subject: "MTH", student: 37,  classAvg: 68 },
+  { subject: "ENG", student: 80,  classAvg: 72 },
+  { subject: "BSC", student: 89,  classAvg: 65 },
+  { subject: "SST", student: 73,  classAvg: 71 },
+  { subject: "CIV", student: 93,  classAvg: 69 },
+  { subject: "AGR", student: 63,  classAvg: 63 },
 ];
 
 const TOOLTIP_STYLE = {
-  backgroundColor: "#16161F",
-  border: "1px solid #2A2A3A",
+  backgroundColor: "var(--color-elevated)",
+  border: "1px solid var(--color-border)",
   borderRadius: 8,
   fontFamily: "var(--font-dm-mono)",
   fontSize: 11,
-  color: "#F8F8FC",
+  color: "var(--color-ink)",
 };
+
+const TICK_STYLE = { fill: "var(--color-nav-inactive)", fontSize: 9, fontFamily: "var(--font-dm-mono)" } as const;
+const GRID_STROKE = "var(--color-border)";
 
 export default function TrendsPage() {
   return (
@@ -62,20 +66,20 @@ export default function TrendsPage() {
       {/* Rank badge */}
       <div
         className="flex items-center gap-4 p-4 rounded-xl border border-border"
-        style={{ background: "#111118" }}
+        style={{ background: "var(--color-surface)" }}
       >
         <div
           className="w-[52px] h-[52px] rounded-xl flex items-center justify-center shrink-0"
-          style={{ background: "#6366F112" }}
+          style={{ background: "var(--color-primary-badge)" }}
         >
-          <span className="text-[24px] font-extrabold" style={{ color: "#6366F1", fontFamily: "var(--font-syne)" }}>
-            #1
+          <span className="text-[24px] font-extrabold" style={{ color: "var(--color-primary-light)", fontFamily: "var(--font-syne)" }}>
+            #4
           </span>
         </div>
         <div>
-          <p className="text-ink text-[13px] font-semibold">Amara Okafor</p>
-          <p className="text-ink-4 text-[11px]">Rank 1 of 6 students</p>
-          <p className="text-success text-[11px] font-medium mt-0.5">+19 pts vs class avg</p>
+          <p className="text-ink text-[13px] font-semibold">Chidi Nwosu</p>
+          <p className="text-ink-4 text-[11px]">Rank 4 of 6 students · JSS 3 Alpha</p>
+          <p className="text-warning text-[11px] font-medium mt-0.5">⚠ Maths dropped 23 pts — needs attention</p>
         </div>
       </div>
 
@@ -86,7 +90,6 @@ export default function TrendsPage() {
         </p>
         <p className="text-ink-4 text-[11px] mb-4">Last 5 terms</p>
 
-        {/* Legend */}
         <div className="flex flex-wrap gap-3 mb-3">
           {SUBJECT_LINES.map(({ key, color }) => (
             <div key={key} className="flex items-center gap-1.5">
@@ -98,19 +101,9 @@ export default function TrendsPage() {
 
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={TREND_DATA} margin={{ top: 4, right: 4, bottom: 4, left: -20 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E1E2E" />
-            <XAxis
-              dataKey="term"
-              tick={{ fill: "#5A5A7A", fontSize: 9, fontFamily: "var(--font-dm-mono)" }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis
-              domain={[50, 100]}
-              tick={{ fill: "#5A5A7A", fontSize: 9, fontFamily: "var(--font-dm-mono)" }}
-              axisLine={false}
-              tickLine={false}
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke={GRID_STROKE} />
+            <XAxis dataKey="term" tick={TICK_STYLE} axisLine={false} tickLine={false} />
+            <YAxis domain={[30, 100]} tick={TICK_STYLE} axisLine={false} tickLine={false} />
             <Tooltip contentStyle={TOOLTIP_STYLE} />
             {SUBJECT_LINES.map(({ key, color }) => (
               <Line
@@ -136,26 +129,15 @@ export default function TrendsPage() {
 
         <ResponsiveContainer width="100%" height={160}>
           <BarChart data={CLASS_COMPARISON} barGap={2} margin={{ top: 4, right: 4, bottom: 4, left: -20 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E1E2E" />
-            <XAxis
-              dataKey="subject"
-              tick={{ fill: "#5A5A7A", fontSize: 9, fontFamily: "var(--font-dm-mono)" }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis
-              domain={[40, 100]}
-              tick={{ fill: "#5A5A7A", fontSize: 9, fontFamily: "var(--font-dm-mono)" }}
-              axisLine={false}
-              tickLine={false}
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke={GRID_STROKE} />
+            <XAxis dataKey="subject" tick={TICK_STYLE} axisLine={false} tickLine={false} />
+            <YAxis domain={[25, 100]} tick={TICK_STYLE} axisLine={false} tickLine={false} />
             <Tooltip contentStyle={TOOLTIP_STYLE} />
-            <Bar dataKey="classAvg" fill="#2A2A3A" radius={[3, 3, 0, 0]} name="Class Avg" />
-            <Bar dataKey="student"  fill="#7C3AED" radius={[3, 3, 0, 0]} name="Amara" />
+            <Bar dataKey="classAvg" fill="var(--color-border)" radius={[3, 3, 0, 0]} name="Class Avg" />
+            <Bar dataKey="student"  fill="var(--color-primary)" radius={[3, 3, 0, 0]} name="Chidi" />
           </BarChart>
         </ResponsiveContainer>
 
-        {/* Delta chips */}
         <div className="flex flex-wrap gap-2 mt-3">
           {CLASS_COMPARISON.map(({ subject, student, classAvg }) => {
             const delta = student - classAvg;
@@ -180,17 +162,17 @@ export default function TrendsPage() {
           <span>🌟</span>
           <p
             className="text-[11px] font-bold"
-            style={{ color: "#A78BFA", fontFamily: "var(--font-dm-sans)" }}
+            style={{ color: "var(--color-primary-light)", fontFamily: "var(--font-dm-sans)" }}
           >
             AI Recommendation
           </p>
         </div>
         <p className="text-[13px] leading-relaxed" style={{ color: "#C4C4E0" }}>
-          Amara is excelling in language subjects. To maintain momentum, focus on consistent revision in Agricultural Science where scores dipped slightly this term.
+          Chidi's Maths score fell from 60 to 37 this term while every other subject improved — this is likely a focus or comprehension issue, not a general learning one. A targeted Maths intervention before Term 3 should lift him back above the class average.
         </p>
         <div className="flex gap-2 flex-wrap">
-          <Badge variant="success" size="sm" dot>💪 Strength: Mathematics</Badge>
-          <Badge variant="warning" size="sm" dot>📖 Focus: Agric Science</Badge>
+          <Badge variant="success" size="sm" dot>💪 Strength: Civic Education (93)</Badge>
+          <Badge variant="danger"  size="sm" dot>📖 Urgent: Mathematics (37)</Badge>
         </div>
       </div>
 

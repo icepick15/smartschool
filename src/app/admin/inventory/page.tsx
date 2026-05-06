@@ -33,10 +33,10 @@ const ITEMS: InventoryItem[] = [
 ];
 
 const CONDITION_CONFIG: Record<Condition, { color: string; bg: string }> = {
-  New:  { color: "#6366F1", bg: "#6366F120" },
-  Good: { color: "#10B981", bg: "#10B98120" },
-  Fair: { color: "#F59E0B", bg: "#F59E0B20" },
-  Poor: { color: "#EF4444", bg: "#EF444420" },
+  New:  { color: "var(--color-secondary)", bg: "#6366F120" },
+  Good: { color: "var(--color-success)",   bg: "var(--color-success-subtle)" },
+  Fair: { color: "var(--color-warning)",   bg: "#F59E0B20" },
+  Poor: { color: "var(--color-danger)",    bg: "#EF444420" },
 };
 
 const CATEGORIES = ["all", ...Array.from(new Set(ITEMS.map((i) => i.category)))];
@@ -78,15 +78,15 @@ export default function InventoryPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Items",    value: ITEMS.length,    icon: <Package size={16} />,        color: "#6366F1" },
-          { label: "Categories",     value: categories,      icon: <CheckCircle size={16} />,    color: "#7C3AED" },
-          { label: "Low Stock",      value: lowStock,        icon: <AlertTriangle size={16} />,  color: "#F59E0B" },
-          { label: "Last Audit",     value: "Apr 2026",      icon: <Clock size={16} />,          color: "#10B981" },
+          { label: "Total Items",    value: ITEMS.length,    icon: <Package size={16} />,        color: "var(--color-secondary)" },
+          { label: "Categories",     value: categories,      icon: <CheckCircle size={16} />,    color: "var(--color-primary)" },
+          { label: "Low Stock",      value: lowStock,        icon: <AlertTriangle size={16} />,  color: "var(--color-warning)" },
+          { label: "Last Audit",     value: "Apr 2026",      icon: <Clock size={16} />,          color: "var(--color-success)" },
         ].map(({ label, value, icon, color }) => (
           <div
             key={label}
             className="rounded-xl border border-border p-4 flex flex-col gap-3"
-            style={{ background: "#111118" }}
+            style={{ background: "var(--color-surface)" }}
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] tracking-widest text-ink-4 uppercase" style={{ fontFamily: "var(--font-dm-mono)" }}>
@@ -110,9 +110,9 @@ export default function InventoryPage() {
             className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all duration-150 capitalize"
             style={{
               fontFamily: "var(--font-dm-sans)",
-              background: filter === cat ? "#7C3AED" : "#111118",
+              background: filter === cat ? "var(--color-primary)" : "var(--color-surface)",
               color:      filter === cat ? "#fff"    : "#5A5A7A",
-              border:     filter === cat ? "1px solid #7C3AED" : "1px solid #2A2A3A",
+              border:     filter === cat ? "1px solid var(--color-primary)" : "1px solid var(--color-border)",
             }}
           >
             {cat}
@@ -121,10 +121,10 @@ export default function InventoryPage() {
       </div>
 
       {/* Inventory table */}
-      <div className="rounded-xl border border-border overflow-hidden" style={{ background: "#111118" }}>
+      <div className="rounded-xl border border-border overflow-hidden" style={{ background: "var(--color-surface)" }}>
         <div
           className="grid px-5 py-3 border-b border-border"
-          style={{ gridTemplateColumns: "1fr 120px 80px 80px 130px", background: "#0D0D14" }}
+          style={{ gridTemplateColumns: "1fr 120px 80px 80px 130px", background: "var(--color-sidebar)" }}
         >
           {["Item", "Category", "Qty", "Condition", "Last Checked"].map((h) => (
             <span
@@ -154,7 +154,7 @@ export default function InventoryPage() {
                 <span className="text-ink-5 text-[12px]">{item.category}</span>
                 <span
                   className="text-[13px] font-bold"
-                  style={{ fontFamily: "var(--font-dm-mono)", color: isLow ? "#F59E0B" : "#F8F8FC" }}
+                  style={{ fontFamily: "var(--font-dm-mono)", color: isLow ? "var(--color-warning)" : "var(--color-ink)" }}
                 >
                   {item.quantity}
                 </span>

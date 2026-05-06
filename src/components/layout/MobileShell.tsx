@@ -11,7 +11,7 @@ export function MobileShell({ children, hideBottomNav = false }: MobileShellProp
       {/* Phone frame — centered on desktop, full-bleed on mobile */}
       <div
         className="relative w-full max-w-[430px] min-h-screen flex flex-col"
-        style={{ background: "#0A0A0F" }}
+        style={{ background: "var(--color-base)" }}
       >
         <div className="flex-1 overflow-y-auto pb-[64px]">{children}</div>
         {!hideBottomNav && (

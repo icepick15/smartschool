@@ -68,15 +68,15 @@ export default function ResultsPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Students", value: STUDENTS.length,  icon: null,                             color: "#6366F1" },
-          { label: "Fee Cleared",    value: totalReady,        icon: <CheckCircle size={16} />,        color: "#10B981" },
-          { label: "Fee Locked",     value: totalLocked,       icon: <Lock size={16} />,               color: "#EF4444" },
-          { label: "Released",       value: totalReleased,     icon: <Unlock size={16} />,             color: "#7C3AED" },
+          { label: "Total Students", value: STUDENTS.length,  icon: null,                             color: "var(--color-secondary)" },
+          { label: "Fee Cleared",    value: totalReady,        icon: <CheckCircle size={16} />,        color: "var(--color-success)" },
+          { label: "Fee Locked",     value: totalLocked,       icon: <Lock size={16} />,               color: "var(--color-danger)" },
+          { label: "Released",       value: totalReleased,     icon: <Unlock size={16} />,             color: "var(--color-primary)" },
         ].map(({ label, value, icon, color }) => (
           <div
             key={label}
             className="rounded-xl border border-border p-4 flex flex-col gap-3"
-            style={{ background: "#111118" }}
+            style={{ background: "var(--color-surface)" }}
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] tracking-widest text-ink-4 uppercase" style={{ fontFamily: "var(--font-dm-mono)" }}>
@@ -98,7 +98,7 @@ export default function ResultsPage() {
             key={student.id}
             className="rounded-xl border p-5 flex flex-col gap-4"
             style={{
-              background: "#111118",
+              background: "var(--color-surface)",
               borderColor: locked ? "#F59E0B33" : isReleased ? "#10B98133" : "var(--color-border)",
             }}
           >
@@ -106,7 +106,7 @@ export default function ResultsPage() {
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0"
-                  style={{ background: "#7C3AED22", color: "#A78BFA", fontFamily: "var(--font-dm-mono)" }}
+                  style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
                 >
                   {student.avatarInitials}
                 </div>
@@ -131,14 +131,14 @@ export default function ResultsPage() {
                 {locked ? (
                   <div
                     className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full"
-                    style={{ background: "#F59E0B20", color: "#F59E0B", fontFamily: "var(--font-dm-mono)" }}
+                    style={{ background: "#F59E0B20", color: "var(--color-warning)", fontFamily: "var(--font-dm-mono)" }}
                   >
                     <Lock size={11} /> Fee Locked
                   </div>
                 ) : isReleased ? (
                   <div
                     className="flex items-center gap-1.5 text-[11px] font-semibold px-3 py-1.5 rounded-full"
-                    style={{ background: "#10B98120", color: "#10B981", fontFamily: "var(--font-dm-mono)" }}
+                    style={{ background: "var(--color-success-subtle)", color: "var(--color-success)", fontFamily: "var(--font-dm-mono)" }}
                   >
                     <CheckCircle size={11} /> Released
                   </div>

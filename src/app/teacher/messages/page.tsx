@@ -73,7 +73,7 @@ export default function MessagesPage() {
       {composing && (
         <div
           className="rounded-xl border border-border p-6 flex flex-col gap-4"
-          style={{ background: "#111118" }}
+          style={{ background: "var(--color-surface)" }}
         >
           <div className="flex items-center justify-between">
             <p className="text-ink text-[15px] font-semibold" style={{ fontFamily: "var(--font-syne)" }}>
@@ -97,8 +97,8 @@ export default function MessagesPage() {
                 onClick={() => setRecipientType("all")}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium transition-all border"
                 style={{
-                  background: recipientType === "all" ? "#7C3AED20" : "transparent",
-                  borderColor: recipientType === "all" ? "#7C3AED" : "#2A2A3A",
+                  background: recipientType === "all" ? "var(--color-primary-badge)" : "transparent",
+                  borderColor: recipientType === "all" ? "var(--color-primary)" : "var(--color-border)",
                   color:       recipientType === "all" ? "#C4B5FD"  : "#5A5A7A",
                   fontFamily: "var(--font-dm-sans)",
                 }}
@@ -109,8 +109,8 @@ export default function MessagesPage() {
                 onClick={() => setRecipientType("individual")}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium transition-all border"
                 style={{
-                  background: recipientType === "individual" ? "#7C3AED20" : "transparent",
-                  borderColor: recipientType === "individual" ? "#7C3AED" : "#2A2A3A",
+                  background: recipientType === "individual" ? "var(--color-primary-badge)" : "transparent",
+                  borderColor: recipientType === "individual" ? "var(--color-primary)" : "var(--color-border)",
                   color:       recipientType === "individual" ? "#C4B5FD"  : "#5A5A7A",
                   fontFamily: "var(--font-dm-sans)",
                 }}
@@ -124,7 +124,7 @@ export default function MessagesPage() {
                 value={selectedStudent}
                 onChange={(e) => setSelectedStudent(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg text-[13px] text-ink border border-border outline-none focus:border-primary transition-colors"
-                style={{ background: "#0D0D14", fontFamily: "var(--font-dm-sans)" }}
+                style={{ background: "var(--color-sidebar)", fontFamily: "var(--font-dm-sans)" }}
               >
                 <option value="">Select a student…</option>
                 {STUDENTS.map((s) => (
@@ -145,7 +145,7 @@ export default function MessagesPage() {
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg text-[13px] text-ink border border-border outline-none focus:border-primary transition-colors placeholder:text-ink-5"
-              style={{ background: "#0D0D14", fontFamily: "var(--font-dm-sans)" }}
+              style={{ background: "var(--color-sidebar)", fontFamily: "var(--font-dm-sans)" }}
             />
           </div>
 
@@ -160,7 +160,7 @@ export default function MessagesPage() {
               value={body}
               onChange={(e) => setBody(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg text-[13px] text-ink border border-border outline-none focus:border-primary transition-colors placeholder:text-ink-5 resize-none"
-              style={{ background: "#0D0D14", fontFamily: "var(--font-dm-sans)" }}
+              style={{ background: "var(--color-sidebar)", fontFamily: "var(--font-dm-sans)" }}
             />
           </div>
 
@@ -191,7 +191,7 @@ export default function MessagesPage() {
           <div
             key={msg.id}
             className="rounded-xl border border-border p-5 flex flex-col gap-2 hover:bg-white/[0.015] transition-colors"
-            style={{ background: "#111118" }}
+            style={{ background: "var(--color-surface)" }}
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex flex-col gap-1">

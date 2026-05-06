@@ -11,14 +11,14 @@ import { getGrade, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 
 const TOOLTIP_STYLE = {
   backgroundColor: "#16161F",
-  border: "1px solid #2A2A3A",
+  border: "1px solid var(--color-border)",
   borderRadius: 8,
   fontFamily: "var(--font-dm-mono)",
   fontSize: 11,
-  color: "#F8F8FC",
+  color: "var(--color-ink)",
 };
 
-const BAR_COLORS = ["#7C3AED", "#6366F1", "#10B981", "#F59E0B", "#EF4444", "#A78BFA"];
+const BAR_COLORS = ["var(--color-primary)", "var(--color-secondary)", "var(--color-success)", "var(--color-warning)", "var(--color-danger)", "var(--color-primary-light)"];
 
 export default function AnalyticsPage() {
   /* subject averages */
@@ -67,14 +67,14 @@ export default function AnalyticsPage() {
       {/* Stat cards */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Class Average", value: classAvg,      sub: getGrade(classAvg), color: "#7C3AED" },
-          { label: "Top Score",     value: topScore.avg,  sub: topScore.name.split(" ")[0], color: "#10B981" },
-          { label: "Pass Rate",     value: `${passRate}%`, sub: `${passCount}/${studentData.length} students`, color: "#6366F1" },
+          { label: "Class Average", value: classAvg,      sub: getGrade(classAvg), color: "var(--color-primary)" },
+          { label: "Top Score",     value: topScore.avg,  sub: topScore.name.split(" ")[0], color: "var(--color-success)" },
+          { label: "Pass Rate",     value: `${passRate}%`, sub: `${passCount}/${studentData.length} students`, color: "var(--color-secondary)" },
         ].map(({ label, value, sub, color }) => (
           <div
             key={label}
             className="rounded-xl border border-border p-4 flex flex-col gap-2"
-            style={{ background: "#111118" }}
+            style={{ background: "var(--color-surface)" }}
           >
             <span className="text-[10px] tracking-widest text-ink-4 uppercase" style={{ fontFamily: "var(--font-dm-mono)" }}>
               {label}
@@ -133,8 +133,8 @@ export default function AnalyticsPage() {
                 <div
                   className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0"
                   style={{
-                    background: i === 0 ? "#F59E0B20" : "#1A1A24",
-                    color:      i === 0 ? "#F59E0B"   : "#5A5A7A",
+                    background: i === 0 ? "#F59E0B20" : "var(--color-elevated)",
+                    color:      i === 0 ? "var(--color-warning)"   : "#5A5A7A",
                     fontFamily: "var(--font-dm-mono)",
                   }}
                 >
@@ -144,7 +144,7 @@ export default function AnalyticsPage() {
                 {/* Avatar */}
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0"
-                  style={{ background: "#7C3AED22", color: "#A78BFA", fontFamily: "var(--font-dm-mono)" }}
+                  style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
                 >
                   {student.avatarInitials}
                 </div>
@@ -161,8 +161,8 @@ export default function AnalyticsPage() {
                     className="text-[11px] px-2 py-0.5 rounded-full"
                     style={{
                       fontFamily: "var(--font-dm-mono)",
-                      background: isAboveAvg ? "#10B98120" : "#EF444420",
-                      color:      isAboveAvg ? "#10B981"   : "#EF4444",
+                      background: isAboveAvg ? "var(--color-success-subtle)" : "#EF444420",
+                      color:      isAboveAvg ? "var(--color-success)"        : "var(--color-danger)",
                     }}
                   >
                     {isAboveAvg ? "▲" : "▼"} {Math.abs(student.avg - classAvg)}
@@ -177,7 +177,7 @@ export default function AnalyticsPage() {
                     className="text-[12px] font-bold w-5 text-center"
                     style={{
                       fontFamily: "var(--font-dm-mono)",
-                      color: student.grade === "A" ? "#10B981" : student.grade === "B" ? "#6366F1" : student.grade === "C" ? "#F59E0B" : "#EF4444",
+                      color: student.grade === "A" ? "var(--color-success)" : student.grade === "B" ? "var(--color-secondary)" : student.grade === "C" ? "var(--color-warning)" : "var(--color-danger)",
                     }}
                   >
                     {student.grade}

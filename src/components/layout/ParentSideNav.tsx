@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FileText, Grid3X3, TrendingUp, BarChart2, LogOut } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { SCHOOL_NAME, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 import { STUDENTS } from "@/lib/mock-data";
 
@@ -43,7 +42,7 @@ export function ParentSideNav({ isOpen, onClose }: ParentSideNavProps) {
           <p className="text-ink-5 text-[11px]">{SCHOOL_NAME}</p>
           <span
             className="text-[9px] font-medium px-1.5 py-0.5 rounded"
-            style={{ background: "#10B98120", color: "#10B981", fontFamily: "var(--font-dm-mono)" }}
+            style={{ background: "var(--color-success-subtle)", color: "var(--color-success)", fontFamily: "var(--font-dm-mono)" }}
           >
             Parent
           </span>
@@ -54,7 +53,7 @@ export function ParentSideNav({ isOpen, onClose }: ParentSideNavProps) {
       <div className="px-5 py-4 border-b border-border flex items-center gap-3">
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0"
-          style={{ background: "#7C3AED22", color: "#A78BFA", fontFamily: "var(--font-dm-mono)" }}
+          style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
         >
           {STUDENT.avatarInitials}
         </div>
@@ -81,8 +80,8 @@ export function ParentSideNav({ isOpen, onClose }: ParentSideNavProps) {
               onClick={onClose}
               className="flex items-center gap-3 px-5 py-2 text-[13px] transition-colors duration-100"
               style={{
-                borderLeft: isActive ? "2px solid #7C3AED" : "2px solid transparent",
-                background: isActive ? "#7C3AED14" : "transparent",
+                borderLeft: isActive ? "2px solid var(--color-primary)" : "2px solid transparent",
+                background: isActive ? "var(--color-primary-subtle)" : "transparent",
                 color: isActive ? "var(--color-nav-active)" : "var(--color-nav-inactive)",
                 fontFamily: "var(--font-dm-sans)",
                 fontWeight: isActive ? 600 : 400,
@@ -106,7 +105,6 @@ export function ParentSideNav({ isOpen, onClose }: ParentSideNavProps) {
             Term {CURRENT_TERM} · {CURRENT_SESSION}
           </p>
         </div>
-        <ThemeToggle />
         <button
           onClick={handleSignOut}
           className="flex items-center gap-2 text-[12px] text-ink-4 hover:text-danger transition-colors"

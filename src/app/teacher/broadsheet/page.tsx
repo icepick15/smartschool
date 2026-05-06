@@ -40,7 +40,7 @@ export default function BroadsheetPage() {
               key={subject.id}
               href={`/teacher/scores?subject=${subject.id}`}
               className="flex items-center gap-4 px-5 py-4 rounded-xl border border-border transition-all duration-150 hover:border-primary/50 hover:scale-[0.99] active:scale-[0.98]"
-              style={{ background: "#111118" }}
+              style={{ background: "var(--color-surface)" }}
             >
               <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center text-[24px] shrink-0"

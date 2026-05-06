@@ -14,7 +14,6 @@ import {
   LogOut,
 } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { SCHOOL_NAME, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 
 const NAV_SECTIONS = [
@@ -68,7 +67,7 @@ export function SideNav({ isOpen, onClose }: SideNavProps) {
           <SmartSchoolWordmark size={15} />
           <span
             className="text-[9px] font-medium tracking-widest text-success uppercase px-1.5 py-0.5 rounded"
-            style={{ background: "#10B98120", color: "#10B981", fontFamily: "var(--font-dm-mono)" }}
+            style={{ background: "var(--color-success-subtle)", color: "var(--color-success)", fontFamily: "var(--font-dm-mono)" }}
           >
             ONLINE
           </span>
@@ -97,8 +96,8 @@ export function SideNav({ isOpen, onClose }: SideNavProps) {
                   onClick={onClose}
                   className="flex items-center gap-3 px-5 py-2 text-[13px] transition-colors duration-100"
                   style={{
-                    borderLeft: isActive ? "2px solid #7C3AED" : "2px solid transparent",
-                    background: isActive ? "#7C3AED14" : "transparent",
+                    borderLeft: isActive ? "2px solid var(--color-primary)" : "2px solid transparent",
+                    background: isActive ? "var(--color-primary-subtle)" : "transparent",
                     color: isActive ? "var(--color-nav-active)" : "var(--color-nav-inactive)",
                     fontFamily: "var(--font-dm-sans)",
                     fontWeight: isActive ? 600 : 400,
@@ -121,7 +120,6 @@ export function SideNav({ isOpen, onClose }: SideNavProps) {
         >
           Term {CURRENT_TERM} · {CURRENT_SESSION}
         </div>
-        <ThemeToggle />
         <button
           onClick={handleSignOut}
           className="flex items-center gap-2 text-[12px] text-ink-4 hover:text-danger transition-colors"

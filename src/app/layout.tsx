@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Syne, DM_Sans, DM_Mono } from "next/font/google";
-import { ThemeProvider } from "@/lib/theme-context";
 import "./globals.css";
 
 const syne = Syne({
@@ -43,14 +42,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme="dark"
-      suppressHydrationWarning
       className={`${syne.variable} ${dmSans.variable} ${dmMono.variable}`}
     >
       <body className="min-h-screen bg-base text-ink antialiased">
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );
