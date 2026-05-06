@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, AlertTriangle, CheckCircle, Clock, Wallet } from "lucide-react";
+import { ArrowLeft, AlertTriangle, CheckCircle, Clock, Wallet, MessageCircle } from "lucide-react";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Button } from "@/components/ui/Button";
 import { FEE_RECORDS, STUDENTS } from "@/lib/mock-data";
@@ -25,7 +25,16 @@ const STATUS_CONFIG: Record<FeeStatus, { label: string; color: string; bg: strin
 };
 
 export default function RevenueGatePage() {
-  const [filter, setFilter] = useState<FilterTab>("all");
+  const [filter,   setFilter]   = useState<FilterTab>("all");
+  const [sentIds,  setSentIds]  = useState<Set<string>>(new Set());
+  const [sending,  setSending]  = useState<string | null>(null);
+
+  async function handleWhatsApp(studentId: string) {
+    setSending(studentId);
+    await new Promise(r => setTimeout(r, 900));
+    setSending(null);
+    setSentIds(prev => new Set(prev).add(studentId));
+  }
 
   const records = FEE_RECORDS.map((fee) => ({
     fee,
@@ -189,7 +198,22 @@ export default function RevenueGatePage() {
               {/* Actions */}
               {fee.status !== "paid" && (
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="sm">Send Reminder</Button>
+                  {sentIds.has(student.id) ? (
+                    <div className="flex items-center gap-1.5 text-[12px] font-medium" style={{ color: "#25D366" }}>
+                      <CheckCircle size={13} />
+                      WhatsApp sent
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => handleWhatsApp(student.id)}
+                      disabled={sending === student.id}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                      style={{ background: "#25D366", fontFamily: "var(--font-dm-sans)" }}
+                    >
+                      <MessageCircle size={13} />
+                      {sending === student.id ? "Sending…" : "WhatsApp Reminder"}
+                    </button>
+                  )}
                   <Button variant="primary" size="sm">Record Payment</Button>
                 </div>
               )}

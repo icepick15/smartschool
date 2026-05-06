@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Lock, AlertTriangle, BookOpen, CheckCircle } from "lucide-react";
+import { Lock, AlertTriangle, BookOpen, CheckCircle, Share2, Trophy } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -20,6 +20,12 @@ const CLASS_AVGS: Record<string, number> = {
 const CLASSMATES_PAID = 28;
 const CLASS_SIZE      = 34;
 
+async function fireConfetti() {
+  const confetti = (await import("canvas-confetti")).default;
+  confetti({ particleCount: 160, spread: 90, origin: { y: 0.65 }, colors: ["#7C3AED", "#10B981", "#F59E0B", "#6366F1", "#C4B5FD"] });
+  setTimeout(() => confetti({ particleCount: 80, spread: 120, origin: { y: 0.5 }, colors: ["#7C3AED", "#10B981"] }), 400);
+}
+
 function scoreVariant(total: number | null) {
   if (total === null) return "default" as const;
   if (total >= 75)    return "success"  as const;
@@ -29,10 +35,12 @@ function scoreVariant(total: number | null) {
 }
 
 export default function ParentHomePage() {
-  const [fee,     setFee]     = useState<FeeRecord | null>(null);
-  const [scores,  setScores]  = useState<Score[]>([]);
-  const [diaries, setDiaries] = useState<Diary[]>([]);
+  const [fee,          setFee]          = useState<FeeRecord | null>(null);
+  const [scores,       setScores]       = useState<Score[]>([]);
+  const [diaries,      setDiaries]      = useState<Diary[]>([]);
   const [paying,       setPaying]       = useState(false);
+  const [justPaid,     setJustPaid]     = useState(false);
+  const [shared,       setShared]       = useState(false);
   const [meetingState, setMeetingState] = useState<"idle" | "booking" | "booked">("idle");
 
   const loadState = useCallback(() => {
@@ -54,13 +62,15 @@ export default function ParentHomePage() {
     setPaying(true);
     await new Promise(r => setTimeout(r, 1400));
     updateFee(DEMO_STUDENT_ID, {
-      paid: fee!.amount,
-      balance: 0,
-      status: "paid",
+      paid:            fee!.amount,
+      balance:         0,
+      status:          "paid",
       lastPaymentDate: new Date().toISOString().split("T")[0],
     });
     loadState();
     setPaying(false);
+    setJustPaid(true);
+    fireConfetti();
   }
 
   async function handleBookMeeting() {
@@ -69,8 +79,21 @@ export default function ParentHomePage() {
     setMeetingState("booked");
   }
 
+  function handleShare() {
+    const text = `🏆 I just unlocked ${FIRST_NAME}'s school report on SmartSchool! Top 10% of parents act this fast. #SmartSchool`;
+    if (navigator.share) {
+      navigator.share({ text }).catch(() => null);
+    } else {
+      navigator.clipboard.writeText(text).catch(() => null);
+      setShared(true);
+      setTimeout(() => setShared(false), 2500);
+    }
+  }
+
   function handleReset() {
     resetStore(FEE_RECORDS, SCORES, DIARIES);
+    setJustPaid(false);
+    setShared(false);
     loadState();
   }
 
@@ -123,6 +146,42 @@ export default function ParentHomePage() {
 
         {/* Left — action card stack */}
         <div className="flex flex-col gap-4 w-[380px] shrink-0">
+
+          {/* ── TOP 10% SUCCESS CARD ── */}
+          {justPaid && (
+            <div
+              className="rounded-xl border p-5 flex flex-col gap-4"
+              style={{ background: "linear-gradient(135deg, #7C3AED18, #10B98118)", borderColor: "var(--color-success)" }}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+                  style={{ background: "#F59E0B20" }}
+                >
+                  <Trophy size={22} style={{ color: "#F59E0B" }} />
+                </div>
+                <div>
+                  <p className="text-ink text-[17px] font-extrabold leading-tight" style={{ fontFamily: "var(--font-syne)" }}>
+                    Top 10% Parent
+                  </p>
+                  <p className="text-ink-4 text-[12px]">Only 1 in 10 parents act this fast</p>
+                </div>
+              </div>
+
+              <p className="text-ink-3 text-[13px] leading-relaxed">
+                {FIRST_NAME}'s result is now unlocked. You're among the parents who don't wait — your child will feel the difference.
+              </p>
+
+              <button
+                onClick={handleShare}
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-[13px] font-semibold transition-opacity hover:opacity-80"
+                style={{ background: "var(--color-primary)", color: "#fff", fontFamily: "var(--font-dm-sans)" }}
+              >
+                <Share2 size={14} />
+                {shared ? "Copied to clipboard!" : "Share your achievement →"}
+              </button>
+            </div>
+          )}
 
           {/* Fee Gate Card */}
           {isLocked && (
@@ -240,7 +299,7 @@ export default function ParentHomePage() {
           )}
 
           {/* All-clear state */}
-          {!isLocked && !lowestRisk && diaries.length === 0 && (
+          {!isLocked && !lowestRisk && diaries.length === 0 && !justPaid && (
             <div
               className="rounded-xl border p-5 flex flex-col items-center gap-3 text-center"
               style={{ background: "var(--color-success-subtle)", borderColor: "var(--color-success)" }}

@@ -53,7 +53,16 @@ function ScoreGridInner() {
 
   const [scores,     setScores]     = useState<ScoreMap>(() => initFromMock(subjectId));
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
-  const [isOffline]                 = useState(false);
+  const [isOffline,  setIsOffline]  = useState(false);
+
+  useEffect(() => {
+    setIsOffline(!navigator.onLine);
+    const on  = () => setIsOffline(false);
+    const off = () => setIsOffline(true);
+    window.addEventListener("online",  on);
+    window.addEventListener("offline", off);
+    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
+  }, []);
 
   /* Seed the shared store once and load scores from it */
   useEffect(() => {

@@ -11,6 +11,7 @@ import {
   Printer,
   FileText,
   Lock,
+  MessageCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -71,8 +72,10 @@ function formatNairaM(n: number) {
 }
 
 export default function CommandCenterPage() {
-  const [fees,   setFees]   = useState<FeeRecord[]>([]);
-  const [scores, setScores] = useState<Score[]>([]);
+  const [fees,        setFees]        = useState<FeeRecord[]>([]);
+  const [scores,      setScores]      = useState<Score[]>([]);
+  const [blasting,    setBlasting]    = useState(false);
+  const [blastResult, setBlastResult] = useState("");
 
   const loadState = useCallback(() => {
     setFees(getFees());
@@ -91,6 +94,15 @@ export default function CommandCenterPage() {
   const recoveryRate   = totalAmount > 0 ? Math.round((totalPaid / totalAmount) * 100) : 0;
   const owingCount     = fees.filter(f => f.balance > 0).length;
   const atRiskCount    = scores.filter(s => s.total !== null && s.total < 40).length;
+
+  async function handleWhatsAppBlast() {
+    setBlasting(true);
+    setBlastResult("");
+    await new Promise(r => setTimeout(r, 1400));
+    setBlasting(false);
+    setBlastResult(`✓ ${owingCount} parents notified on WhatsApp`);
+    setTimeout(() => setBlastResult(""), 4000);
+  }
 
   const kpis: KPIData[] = [
     { label: "Cash at Bank",      value: "₦24.3M",            subValue: "+₦1.2M this week",        trend: "up"   },
@@ -153,12 +165,26 @@ export default function CommandCenterPage() {
             Revenue Gate Active
           </p>
           <p className="text-ink-5 text-xs">
-            {owingCount} student{owingCount !== 1 ? "s" : ""} with outstanding balances are flagged. Results withheld pending payment.
+            {owingCount} parent{owingCount !== 1 ? "s" : ""} with outstanding fees — results withheld until cleared.
           </p>
+          {blastResult && (
+            <p className="text-success text-[12px] font-medium mt-1">{blastResult}</p>
+          )}
         </div>
-        <Link href="/admin/revenue">
-          <Button variant="secondary" size="sm">View Recovery List →</Button>
-        </Link>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link href="/admin/revenue">
+            <Button variant="ghost" size="sm">View List</Button>
+          </Link>
+          <button
+            onClick={handleWhatsAppBlast}
+            disabled={blasting}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+            style={{ background: "#25D366", fontFamily: "var(--font-dm-sans)" }}
+          >
+            <MessageCircle size={14} />
+            {blasting ? "Sending…" : "WhatsApp All Debtors"}
+          </button>
+        </div>
       </div>
 
       {/* ─── Main Grid ───────────────────────────────── */}

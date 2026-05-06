@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import { ParentSideNav } from "./ParentSideNav";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
+import { SyncPill } from "@/components/ui/SyncPill";
 
 export function ParentShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -35,6 +36,7 @@ export function ParentShell({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="flex-1 overflow-y-auto">
+          <SyncPill />
           {children}
         </main>
       </div>
