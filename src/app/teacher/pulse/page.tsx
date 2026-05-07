@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { STUDENTS } from "@/lib/mock-data";
 import { CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
@@ -9,32 +9,62 @@ import type { BehaviorRating } from "@/lib/types";
 
 const STORAGE_KEY = "smartschool_pulse_2026-05-01";
 
-const RATINGS: { value: BehaviorRating; label: string; color: string; bg: string }[] = [
-  { value: 1, label: "Needs Attention", color: "var(--color-danger)", bg: "#EF444412" },
-  { value: 2, label: "Below Average",   color: "#F97316", bg: "#F9731612" },
-  { value: 3, label: "Average",         color: "var(--color-warning)", bg: "#F59E0B12" },
-  { value: 4, label: "Good",            color: "var(--color-success)", bg: "#10B98112" },
-  { value: 5, label: "Excellent",       color: "var(--color-primary)", bg: "#7C3AED12" },
-];
+const DIMENSIONS = [
+  { key: "punctuality",     label: "Punctuality",      icon: "⏰" },
+  { key: "time_management", label: "Time Management",  icon: "🕐" },
+  { key: "social_life",     label: "Social Life",      icon: "🤝" },
+  { key: "cleanliness",     label: "Cleanliness",      icon: "✨" },
+  { key: "effort",          label: "Urgency / Effort", icon: "🎯" },
+] as const;
 
-type PulseEntry = { rating: BehaviorRating | null; note: string };
+type DimensionKey = typeof DIMENSIONS[number]["key"];
+type DimRatings = Record<DimensionKey, BehaviorRating | null>;
+type PulseEntry = { ratings: DimRatings; note: string };
 type PulseState = Record<string, PulseEntry>;
+
+const EMPTY_RATINGS: DimRatings = {
+  punctuality: null, time_management: null, social_life: null, cleanliness: null, effort: null,
+};
+
+const RATING_COLORS: Record<number, string> = {
+  1: "var(--color-danger)",
+  2: "#F97316",
+  3: "var(--color-warning)",
+  4: "var(--color-success)",
+  5: "var(--color-primary)",
+};
+
+const RATING_LABELS = ["Needs Attention", "Below Average", "Average", "Good", "Excellent"];
 
 function getInitial(): PulseState {
   if (typeof window !== "undefined") {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) try { return JSON.parse(saved); } catch {}
   }
-  return Object.fromEntries(STUDENTS.map((s) => [s.id, { rating: null, note: "" }]));
+  return Object.fromEntries(
+    STUDENTS.map(s => [s.id, { ratings: { ...EMPTY_RATINGS }, note: "" }])
+  );
+}
+
+function getAvg(ratings: DimRatings): number | null {
+  const vals = Object.values(ratings).filter((r): r is BehaviorRating => r !== null);
+  if (!vals.length) return null;
+  return vals.reduce((s, v) => s + v, 0) / vals.length;
 }
 
 export default function FridayPulsePage() {
   const [pulse, setPulse] = useState<PulseState>(getInitial);
   const [submitted, setSubmitted] = useState(false);
 
-  function setRating(studentId: string, rating: BehaviorRating) {
-    setPulse((prev) => {
-      const next = { ...prev, [studentId]: { ...prev[studentId], rating } };
+  function setDimRating(studentId: string, dim: DimensionKey, rating: BehaviorRating) {
+    setPulse(prev => {
+      const next = {
+        ...prev,
+        [studentId]: {
+          ...prev[studentId],
+          ratings: { ...prev[studentId].ratings, [dim]: rating },
+        },
+      };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       return next;
     });
@@ -42,7 +72,7 @@ export default function FridayPulsePage() {
   }
 
   function setNote(studentId: string, note: string) {
-    setPulse((prev) => {
+    setPulse(prev => {
       const next = { ...prev, [studentId]: { ...prev[studentId], note } };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       return next;
@@ -56,16 +86,18 @@ export default function FridayPulsePage() {
   }
 
   const entries = Object.values(pulse);
-  const rated   = entries.filter((e) => e.rating !== null).length;
-  const total   = STUDENTS.length;
-  const avgRating = rated > 0
-    ? entries.reduce((s, e) => s + (e.rating ?? 0), 0) / rated
-    : 0;
-  const dist = RATINGS.map(({ value, color }) => ({
-    value,
-    color,
-    count: entries.filter((e) => e.rating === value).length,
-  }));
+  const fullyRated = entries.filter(e =>
+    Object.values(e.ratings).every(r => r !== null)
+  ).length;
+  const total = STUDENTS.length;
+
+  const dimAvgs = DIMENSIONS.map(({ key, label }) => {
+    const vals = entries
+      .map(e => e.ratings[key])
+      .filter((r): r is BehaviorRating => r !== null);
+    const avg = vals.length ? vals.reduce((s, v) => s + v, 0) / vals.length : null;
+    return { key, label, avg };
+  });
 
   return (
     <div className="px-8 py-8 max-w-[1280px] mx-auto flex flex-col gap-6">
@@ -88,148 +120,154 @@ export default function FridayPulsePage() {
           size="md"
           icon={<Send size={14} />}
           onClick={handleSubmit}
-          disabled={rated === 0}
+          disabled={fullyRated === 0}
         >
-          {submitted ? "✓ Submitted!" : `Submit Pulse (${rated}/${total})`}
+          {submitted ? "✓ Submitted!" : `Submit Pulse (${fullyRated}/${total} complete)`}
         </Button>
       </div>
 
-      {/* Class Mood Summary */}
+      {/* Class averages per dimension */}
       <div
         className="rounded-xl border border-border p-5 flex flex-col gap-4"
         style={{ background: "var(--color-surface)" }}
       >
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p
-              className="text-ink text-[15px] font-semibold"
-              style={{ fontFamily: "var(--font-syne)" }}
-            >
-              Class Mood
-            </p>
-            <p
-              className="text-ink-5 text-[12px] mt-0.5"
-              style={{ fontFamily: "var(--font-dm-mono)" }}
-            >
-              {rated} of {total} students rated
-            </p>
-          </div>
-          {avgRating > 0 && (
-            <div className="text-right">
-              <p
-                className="text-[32px] font-bold leading-none"
+        <p
+          className="text-ink text-[15px] font-semibold"
+          style={{ fontFamily: "var(--font-syne)" }}
+        >
+          Class Behaviour Averages
+        </p>
+        <div className="grid grid-cols-5 gap-3">
+          {dimAvgs.map(({ key, label, avg }) => (
+            <div key={key} className="flex flex-col items-center gap-2 text-center">
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center text-[16px] font-bold"
                 style={{
-                  fontFamily: "var(--font-syne)",
-                  color: RATINGS[Math.round(avgRating) - 1]?.color ?? "var(--color-primary)",
+                  background: avg ? `${RATING_COLORS[Math.round(avg)]}22` : "var(--color-elevated)",
+                  color: avg ? RATING_COLORS[Math.round(avg)] : "var(--color-ink-5)",
+                  fontFamily: "var(--font-dm-mono)",
                 }}
               >
-                {avgRating.toFixed(1)}
-              </p>
-              <p
-                className="text-ink-5 text-[10px] uppercase tracking-widest mt-0.5"
-                style={{ fontFamily: "var(--font-dm-mono)" }}
-              >
-                class avg
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Distribution bar */}
-        <div className="flex gap-1 h-2.5 rounded-full overflow-hidden" style={{ background: "var(--color-elevated)" }}>
-          {rated > 0 && dist.map(({ value, color, count }) =>
-            count > 0 ? (
-              <div
-                key={value}
-                className="h-full transition-all duration-500 first:rounded-l-full last:rounded-r-full"
-                style={{ flex: count, background: color }}
-              />
-            ) : null
-          )}
-        </div>
-
-        {/* Legend */}
-        <div className="flex items-center gap-5 flex-wrap">
-          {dist.map(({ value, color, count }) => (
-            <div key={value} className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full shrink-0" style={{ background: color }} />
+                {avg ? avg.toFixed(1) : "—"}
+              </div>
               <span
-                className="text-ink-5 text-[11px]"
-                style={{ fontFamily: "var(--font-dm-mono)" }}
+                className="text-ink-4 text-[10px] leading-tight"
+                style={{ fontFamily: "var(--font-dm-sans)" }}
               >
-                {RATINGS[value - 1].label}: {count}
+                {label}
               </span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Student cards grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {STUDENTS.map((student) => {
-          const entry   = pulse[student.id];
-          const rating  = entry?.rating ?? null;
-          const cfg     = rating !== null ? RATINGS[rating - 1] : null;
+      {/* Student cards */}
+      <div className="flex flex-col gap-4">
+        {STUDENTS.map(student => {
+          const entry      = pulse[student.id];
+          const overallAvg = getAvg(entry.ratings);
 
           return (
             <div
               key={student.id}
-              className="rounded-xl border flex flex-col gap-4 p-5 transition-all duration-200"
-              style={{
-                background: cfg ? cfg.bg : "var(--color-surface)",
-                borderColor: cfg ? `${cfg.color}33` : "var(--color-border)",
-                borderLeftColor: cfg ? cfg.color : "transparent",
-                borderLeftWidth: 3,
-              }}
+              className="rounded-xl border p-5 flex flex-col gap-4"
+              style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
             >
-              {/* Student row */}
+              {/* Student header */}
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center text-[12px] font-bold shrink-0"
-                  style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
+                  style={{
+                    background: "var(--color-primary-badge)",
+                    color: "var(--color-primary-light)",
+                    fontFamily: "var(--font-dm-mono)",
+                  }}
                 >
                   {student.avatarInitials}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-ink text-[14px] font-semibold truncate">{student.name}</p>
+                <div className="flex-1">
+                  <p className="text-ink text-[14px] font-semibold">{student.name}</p>
                   <p className="text-ink-5 text-[11px]">{student.class}</p>
                 </div>
-                {cfg && (
-                  <span
-                    className="text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0"
-                    style={{ background: cfg.bg, color: cfg.color, fontFamily: "var(--font-dm-mono)", border: `1px solid ${cfg.color}40` }}
-                  >
-                    {cfg.label}
-                  </span>
+                {overallAvg !== null && (
+                  <div className="text-right">
+                    <p
+                      className="text-[20px] font-bold leading-none"
+                      style={{
+                        fontFamily: "var(--font-syne)",
+                        color: RATING_COLORS[Math.round(overallAvg)],
+                      }}
+                    >
+                      {overallAvg.toFixed(1)}
+                    </p>
+                    <p
+                      className="text-ink-5 text-[9px] uppercase tracking-widest mt-0.5"
+                      style={{ fontFamily: "var(--font-dm-mono)" }}
+                    >
+                      avg
+                    </p>
+                  </div>
                 )}
               </div>
 
-              {/* Star rating */}
-              <div className="flex items-center gap-2">
-                {RATINGS.map(({ value, color }) => {
-                  const filled = rating !== null && value <= rating;
+              {/* 5 behavior dimension rows */}
+              <div className="flex flex-col gap-3">
+                {DIMENSIONS.map(({ key, label, icon }) => {
+                  const dimRating = entry.ratings[key];
                   return (
-                    <button
-                      key={value}
-                      onClick={() => setRating(student.id, value)}
-                      className="transition-transform duration-100 hover:scale-125 focus:outline-none"
-                      aria-label={`Rate ${RATINGS[value - 1].label}`}
-                    >
-                      <Star
-                        size={26}
-                        color={filled ? color : "#2E2E3E"}
-                        fill={filled ? color : "none"}
-                      />
-                    </button>
+                    <div key={key} className="flex items-center gap-3">
+                      <div
+                        className="flex items-center gap-1.5 shrink-0"
+                        style={{ width: 168 }}
+                      >
+                        <span className="text-[13px]">{icon}</span>
+                        <span
+                          className="text-ink-3 text-[12px]"
+                          style={{ fontFamily: "var(--font-dm-sans)" }}
+                        >
+                          {label}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        {([1, 2, 3, 4, 5] as BehaviorRating[]).map(v => {
+                          const filled = dimRating !== null && v <= dimRating;
+                          return (
+                            <button
+                              key={v}
+                              onClick={() => setDimRating(student.id, key, v)}
+                              className="w-6 h-6 rounded-full border-2 transition-all duration-100 hover:scale-110 focus:outline-none"
+                              style={{
+                                background:  filled ? RATING_COLORS[dimRating!] : "transparent",
+                                borderColor: filled ? RATING_COLORS[dimRating!] : "var(--color-border)",
+                              }}
+                              aria-label={`Rate ${label} as ${v}`}
+                            />
+                          );
+                        })}
+                      </div>
+
+                      {dimRating !== null && (
+                        <span
+                          className="text-[11px] font-semibold"
+                          style={{
+                            color: RATING_COLORS[dimRating],
+                            fontFamily: "var(--font-dm-mono)",
+                          }}
+                        >
+                          {RATING_LABELS[dimRating - 1]}
+                        </span>
+                      )}
+                    </div>
                   );
                 })}
               </div>
 
-              {/* Note input */}
+              {/* Note */}
               <textarea
                 placeholder="Add a note… (optional)"
                 value={entry?.note ?? ""}
-                onChange={(e) => setNote(student.id, e.target.value)}
+                onChange={e => setNote(student.id, e.target.value)}
                 rows={2}
                 className="w-full text-[12px] text-ink-3 bg-transparent resize-none outline-none border border-border rounded-lg px-3 py-2 placeholder:text-ink-5 focus:border-primary transition-colors"
                 style={{ fontFamily: "var(--font-dm-sans)" }}

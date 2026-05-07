@@ -84,6 +84,22 @@ export const DIARIES: Diary[] = [
   },
 ];
 
+/* ─── Teacher Profile ──────────────────────────────── */
+export const TEACHER_PROFILE = {
+  name:           "Mr. Adeleke",
+  subRole:        "subject_teacher" as "class_teacher" | "subject_teacher",
+  assignedClass:  "JSS 3 Alpha",
+  mySubjectIds:   ["sub1", "sub2", "sub3"], // Mathematics, English Language, Basic Science
+};
+
+/* ─── Today's Timetable (admin-set) ─────────────────── */
+export type TimetableSlot = { period: number; time: string; subjectId: string; class: string };
+export const TODAY_TIMETABLE: TimetableSlot[] = [
+  { period: 1, time: "8:00–8:45",   subjectId: "sub1", class: "JSS 3 Alpha" },
+  { period: 2, time: "9:00–9:45",   subjectId: "sub3", class: "JSS 3 Alpha" },
+  { period: 3, time: "10:00–10:45", subjectId: "sub2", class: "JSS 3 Alpha" },
+];
+
 /* ─── Admin KPIs ────────────────────────────────────── */
 export const ADMIN_KPIS: KPI[] = [
   { label: "Cash at Bank",      value: "₦24.3M",  subValue: "+₦1.2M this week", trend: "up",   trendPercent: 5 },

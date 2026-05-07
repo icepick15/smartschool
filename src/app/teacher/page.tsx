@@ -7,7 +7,7 @@ import { CircularProgress } from "@/components/ui/CircularProgress";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { STUDENTS, SCORES, FEE_RECORDS, DIARIES } from "@/lib/mock-data";
+import { STUDENTS, SCORES, FEE_RECORDS, DIARIES, SUBJECTS, TODAY_TIMETABLE } from "@/lib/mock-data";
 import { seedStore, getScores, addDiary } from "@/lib/store";
 import { SCHOOL_NAME, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 import type { Score } from "@/lib/types";
@@ -22,10 +22,13 @@ const QUICK_ACTIONS = [
 ];
 
 const GLANCE_ROWS = [
-  { label: "Students Present",     value: "—",         color: "var(--color-ink-4)" },
-  { label: "Scores Pending",       value: "3 subjects", color: "var(--color-warning)" },
-  { label: "Fees Collected Today", value: "₦156,000",  color: "var(--color-primary-light)" },
+  { label: "Students Present", value: "—",          color: "var(--color-ink-4)" },
+  { label: "Scores Pending",   value: "3 subjects", color: "var(--color-warning)" },
 ];
+
+// First period in today's timetable (admin-set)
+const CURRENT_SLOT  = TODAY_TIMETABLE[0];
+const CURRENT_SUBJ  = SUBJECTS.find(s => s.id === CURRENT_SLOT.subjectId);
 
 const TODAY = new Date().toISOString().split("T")[0];
 
@@ -111,7 +114,7 @@ export default function TeacherHomePage() {
           <h1 className="text-ink text-[26px] font-extrabold leading-none" style={{ fontFamily: "var(--font-syne)" }}>
             Mr. Adeleke
           </h1>
-          <p className="text-ink-4 text-[13px]">JSS 3 Alpha · {SCHOOL_NAME}</p>
+          <p className="text-ink-4 text-[13px]">Class Teacher · JSS 3 Alpha · {SCHOOL_NAME}</p>
         </div>
         <div className="flex items-center gap-3">
           {atRiskCount > 0 && <Badge variant="danger" dot>{atRiskCount} at risk</Badge>}
@@ -142,13 +145,18 @@ export default function TeacherHomePage() {
                 <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.55)" }}>
                   {atRiskCount > 0 ? `⚠ ${atRiskCount} student${atRiskCount > 1 ? "s" : ""} below pass mark` : "✓ All students above pass mark"}
                 </p>
-                <button
-                  onClick={handleStartClass}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold text-white w-fit transition-opacity hover:opacity-90"
-                  style={{ background: "rgba(255,255,255,0.18)" }}
-                >
-                  Start Today&apos;s Class →
-                </button>
+                <div className="flex flex-col gap-1">
+                  <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>
+                    Period {CURRENT_SLOT.period} · {CURRENT_SLOT.time} · {CURRENT_SLOT.class}
+                  </p>
+                  <button
+                    onClick={handleStartClass}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold text-white w-fit transition-opacity hover:opacity-90"
+                    style={{ background: "rgba(255,255,255,0.18)" }}
+                  >
+                    Start {CURRENT_SUBJ?.name ?? "Class"} →
+                  </button>
+                </div>
               </div>
               <CircularProgress value={classAvg || 0} size={100} strokeWidth={8} variant="primary" label={classAvg ? `${classAvg}` : "—"} />
             </div>
@@ -163,10 +171,10 @@ export default function TeacherHomePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white text-[18px] font-extrabold" style={{ fontFamily: "var(--font-syne)" }}>
-                    Class in Session
+                    {CURRENT_SUBJ?.name ?? "Class"} in Session
                   </p>
                   <p className="text-[12px] mt-0.5" style={{ color: "rgba(255,255,255,0.6)" }}>
-                    JSS 3 Alpha · Mark attendance
+                    {CURRENT_SLOT.class} · Period {CURRENT_SLOT.period} · Mark attendance
                   </p>
                 </div>
                 <span className="text-white text-[28px] font-extrabold" style={{ fontFamily: "var(--font-syne)" }}>
@@ -352,6 +360,57 @@ export default function TeacherHomePage() {
                 </span>
               </div>
             ))}
+          </div>
+
+          {/* Today's timetable */}
+          <p
+            className="text-ink-5 text-[10px] uppercase tracking-widest mt-4 mb-2"
+            style={{ fontFamily: "var(--font-dm-mono)" }}
+          >
+            Today&apos;s Classes
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {TODAY_TIMETABLE.map(slot => {
+              const subj = SUBJECTS.find(s => s.id === slot.subjectId);
+              const isCurrent = slot.period === CURRENT_SLOT.period;
+              return (
+                <div
+                  key={slot.period}
+                  className="flex items-center justify-between px-2 py-1.5 rounded-lg"
+                  style={{
+                    background: isCurrent ? "var(--color-primary-badge)" : "transparent",
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    {isCurrent && (
+                      <span
+                        className="w-1.5 h-1.5 rounded-full shrink-0"
+                        style={{ background: "var(--color-primary-light)" }}
+                      />
+                    )}
+                    <span
+                      className="text-[12px]"
+                      style={{
+                        color:      isCurrent ? "var(--color-primary-light)" : "var(--color-ink-3)",
+                        fontFamily: "var(--font-dm-sans)",
+                        fontWeight: isCurrent ? 600 : 400,
+                      }}
+                    >
+                      P{slot.period} · {subj?.shortCode}
+                    </span>
+                  </div>
+                  <span
+                    className="text-[10px]"
+                    style={{
+                      color:      isCurrent ? "var(--color-primary-light)" : "var(--color-ink-5)",
+                      fontFamily: "var(--font-dm-mono)",
+                    }}
+                  >
+                    {slot.time}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </Card>
       </div>

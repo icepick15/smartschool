@@ -279,18 +279,28 @@ export default function CommandCenterPage() {
               className="rounded-xl border p-5 flex flex-col gap-4"
               style={{ background: "var(--color-surface)", borderColor: "#F59E0B33" }}
             >
-              <div className="flex flex-col items-center text-center gap-2">
-                <Lock size={36} className="text-warning" />
-                <h3 className="text-ink text-base font-bold" style={{ fontFamily: "var(--font-syne)" }}>
-                  Results Locked
-                </h3>
-                <p className="text-ink-4 text-xs leading-relaxed">
-                  <span className="text-danger font-medium">{lockedStudent.name}</span>
-                  {" "}has an outstanding balance preventing result release.
-                </p>
+              <div className="flex items-center gap-3">
+                <Lock size={18} className="text-warning shrink-0" />
+                <div>
+                  <p className="text-ink text-[13px] font-bold" style={{ fontFamily: "var(--font-syne)" }}>
+                    Results Locked
+                  </p>
+                  <p className="text-ink-5 text-[11px]">
+                    Highest outstanding balance
+                  </p>
+                </div>
               </div>
 
               <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
+                    style={{ background: "#F59E0B20", color: "var(--color-warning)", fontFamily: "var(--font-dm-mono)" }}
+                  >
+                    {lockedStudent.avatarInitials}
+                  </div>
+                  <span className="text-ink text-[13px] font-semibold">{lockedStudent.name}</span>
+                </div>
                 {[
                   { label: "Term Fees", value: `₦${lockedFee.amount.toLocaleString()}` },
                   { label: "Paid",      value: `₦${lockedFee.paid.toLocaleString()}`,    color: "text-success" },
@@ -307,9 +317,18 @@ export default function CommandCenterPage() {
 
               <ProgressBar value={lockedFee.paid} max={lockedFee.amount} variant="danger" size="xs" />
 
-              <Button variant="primary" size="md" fullWidth>
-                PAY &amp; UNLOCK NOW
-              </Button>
+              <div className="flex flex-col gap-2">
+                <button
+                  className="flex items-center justify-center gap-2 w-full px-4 py-2 rounded-xl text-[13px] font-bold text-white transition-opacity hover:opacity-90"
+                  style={{ background: "#25D366", fontFamily: "var(--font-dm-sans)" }}
+                >
+                  <MessageCircle size={14} />
+                  Notify Parent on WhatsApp
+                </button>
+                <Link href="/admin/revenue">
+                  <Button variant="ghost" size="sm" fullWidth>View Revenue Gate →</Button>
+                </Link>
+              </div>
             </div>
           )}
 

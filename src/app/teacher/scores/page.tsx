@@ -7,7 +7,7 @@ import { ArrowLeft, WifiOff, AlertTriangle } from "lucide-react";
 import { ScoreCell } from "@/components/ui/ScoreCell";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
-import { STUDENTS, SCORES, SUBJECTS, FEE_RECORDS, DIARIES } from "@/lib/mock-data";
+import { STUDENTS, SCORES, SUBJECTS, FEE_RECORDS, DIARIES, TEACHER_PROFILE } from "@/lib/mock-data";
 import { seedStore, getScores, upsertScore } from "@/lib/store";
 import { getGrade } from "@/lib/constants";
 import type { Score } from "@/lib/types";
@@ -46,10 +46,14 @@ function initFromMock(subjectId: string): ScoreMap {
   return initial;
 }
 
+const MY_SUBJECTS = SUBJECTS.filter(s => TEACHER_PROFILE.mySubjectIds.includes(s.id));
+
 function ScoreGridInner() {
-  const searchParams = useSearchParams();
-  const subjectId    = searchParams.get("subject") ?? "sub1";
-  const subject      = SUBJECTS.find(s => s.id === subjectId) ?? SUBJECTS[0];
+  const searchParams   = useSearchParams();
+  const rawSubjectId   = searchParams.get("subject") ?? MY_SUBJECTS[0].id;
+  // Enforce teacher can only view their assigned subjects
+  const subjectId      = MY_SUBJECTS.some(s => s.id === rawSubjectId) ? rawSubjectId : MY_SUBJECTS[0].id;
+  const subject        = MY_SUBJECTS.find(s => s.id === subjectId) ?? MY_SUBJECTS[0];
 
   const [scores,     setScores]     = useState<ScoreMap>(() => initFromMock(subjectId));
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
@@ -307,12 +311,12 @@ function ScoreGridInner() {
         </div>
       </div>
 
-      {/* ── Subject switcher ──────────────────────────── */}
+      {/* ── Subject switcher (assigned subjects only) ────── */}
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-ink-5 text-[11px]" style={{ fontFamily: "var(--font-dm-mono)" }}>
-          Switch subject:
+          My subjects:
         </span>
-        {SUBJECTS.map(sub => (
+        {MY_SUBJECTS.map(sub => (
           <Link
             key={sub.id}
             href={`/teacher/scores?subject=${sub.id}`}

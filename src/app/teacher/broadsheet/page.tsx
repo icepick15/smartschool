@@ -1,19 +1,24 @@
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { STUDENTS, SCORES, SUBJECTS } from "@/lib/mock-data";
+import { getGrade, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
-import { SUBJECTS } from "@/lib/mock-data";
-import { CURRENT_TERM } from "@/lib/constants";
 
-const SUBJECT_META: Record<string, { emoji: string; bg: string }> = {
-  sub1: { emoji: "🔢", bg: "#7C3AED18" },
-  sub2: { emoji: "📚", bg: "#6366F118" },
-  sub3: { emoji: "🔬", bg: "#10B98118" },
-  sub4: { emoji: "🌍", bg: "#F59E0B18" },
-  sub5: { emoji: "🏛️", bg: "#3B82F618" },
-  sub6: { emoji: "🌱", bg: "#14B8A618" },
-};
+const NUM_SUBJECTS = SUBJECTS.length;
+
+function getRowColor(avg: number): string {
+  if (avg < 40) return "var(--color-danger)";
+  if (avg < 60) return "#F97316";
+  return "var(--color-ink)";
+}
 
 export default function BroadsheetPage() {
+  const ranked = STUDENTS.map(student => {
+    const scores   = SCORES.filter(s => s.studentId === student.id && s.total !== null);
+    const sumTotal = scores.reduce((s, r) => s + (r.total ?? 0), 0);
+    const avg      = scores.length ? Math.round(sumTotal / scores.length) : 0;
+    const cumPct   = Math.round((sumTotal / (NUM_SUBJECTS * 100)) * 100);
+    return { student, sumTotal, avg, cumPct, grade: getGrade(avg) };
+  }).sort((a, b) => b.sumTotal - a.sumTotal);
+
   return (
     <div className="px-8 py-8 max-w-[1280px] mx-auto flex flex-col gap-6">
 
@@ -24,41 +29,137 @@ export default function BroadsheetPage() {
             className="text-ink text-[26px] font-extrabold leading-none"
             style={{ fontFamily: "var(--font-syne)" }}
           >
-            Broadsheet
+            Class Ranking
           </h1>
-          <p className="text-ink-4 text-[13px] mt-1">Select a subject to enter or review scores</p>
+          <p className="text-ink-4 text-[13px] mt-1">
+            JSS 3 Alpha · Term {CURRENT_TERM} {CURRENT_SESSION} · {NUM_SUBJECTS} subjects
+          </p>
         </div>
-        <Badge variant="primary" size="md">CA1 · Term {CURRENT_TERM}</Badge>
+        <Badge variant="primary" size="md">Term {CURRENT_TERM}</Badge>
       </div>
 
-      {/* Subject grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {SUBJECTS.map((subject) => {
-          const meta = SUBJECT_META[subject.id] ?? { emoji: "📖", bg: "#7C3AED18" };
-          return (
-            <Link
-              key={subject.id}
-              href={`/teacher/scores?subject=${subject.id}`}
-              className="flex items-center gap-4 px-5 py-4 rounded-xl border border-border transition-all duration-150 hover:border-primary/50 hover:scale-[0.99] active:scale-[0.98]"
-              style={{ background: "var(--color-surface)" }}
+      {/* Ranking table */}
+      <div
+        className="rounded-xl border border-border overflow-hidden"
+        style={{ background: "var(--color-surface)" }}
+      >
+        {/* Column headers */}
+        <div
+          className="grid px-5 py-3 border-b border-border"
+          style={{
+            gridTemplateColumns: "48px 1fr 110px 100px 80px",
+            background: "var(--color-sidebar)",
+          }}
+        >
+          {["POS", "STUDENT", "TOTAL SCORE", "CUMULATIVE %", "GRADE"].map(col => (
+            <span
+              key={col}
+              className="text-[10px] tracking-widest text-ink-4 uppercase text-center first:text-left last:text-center"
+              style={{ fontFamily: "var(--font-dm-mono)" }}
             >
+              {col}
+            </span>
+          ))}
+        </div>
+
+        {/* Rows */}
+        <div className="flex flex-col divide-y divide-border">
+          {ranked.map(({ student, sumTotal, avg, cumPct, grade }, idx) => {
+            const pos      = idx + 1;
+            const rowColor = getRowColor(avg);
+            const isLow    = avg < 40;
+            const isTop3   = pos <= 3;
+
+            return (
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-[24px] shrink-0"
-                style={{ background: meta.bg }}
+                key={student.id}
+                className="grid items-center px-5"
+                style={{
+                  gridTemplateColumns: "48px 1fr 110px 100px 80px",
+                  minHeight: 52,
+                  borderLeft: isLow ? "3px solid var(--color-danger)" : "3px solid transparent",
+                  background: isLow ? "var(--color-danger-muted)" : "transparent",
+                }}
               >
-                {meta.emoji}
+                {/* Position */}
+                <span
+                  className="text-[14px] font-bold"
+                  style={{
+                    fontFamily: "var(--font-dm-mono)",
+                    color: isTop3 ? "var(--color-primary)" : "var(--color-ink-4)",
+                  }}
+                >
+                  #{pos}
+                </span>
+
+                {/* Student */}
+                <div className="flex items-center gap-3 py-2">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0"
+                    style={{
+                      background: isLow ? "#EF444420" : "var(--color-primary-badge)",
+                      color:      isLow ? "var(--color-danger)" : "var(--color-primary-light)",
+                      fontFamily: "var(--font-dm-mono)",
+                    }}
+                  >
+                    {student.avatarInitials}
+                  </div>
+                  <span
+                    className="text-[13px] font-semibold"
+                    style={{ color: rowColor }}
+                  >
+                    {student.name}
+                  </span>
+                </div>
+
+                {/* Total score */}
+                <div className="flex items-center justify-center">
+                  <span
+                    className="text-[15px] font-bold"
+                    style={{ fontFamily: "var(--font-dm-mono)", color: rowColor }}
+                  >
+                    {sumTotal}
+                    <span className="text-[11px] font-normal text-ink-5 ml-0.5">
+                      /{NUM_SUBJECTS * 100}
+                    </span>
+                  </span>
+                </div>
+
+                {/* Cumulative % */}
+                <div className="flex items-center justify-center">
+                  <span
+                    className="text-[14px] font-semibold"
+                    style={{ fontFamily: "var(--font-dm-mono)", color: rowColor }}
+                  >
+                    {cumPct}%
+                  </span>
+                </div>
+
+                {/* Grade */}
+                <div className="flex items-center justify-center">
+                  <span
+                    className="text-[13px] font-bold px-2 py-0.5 rounded"
+                    style={{
+                      fontFamily:  "var(--font-dm-mono)",
+                      color:       rowColor,
+                      background:  isLow ? "#EF444420" : avg < 60 ? "#F9731620" : "var(--color-primary-badge)",
+                    }}
+                  >
+                    {grade}
+                  </span>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-ink text-[15px] font-semibold leading-tight">
-                  {subject.name}
-                </p>
-                <p className="text-ink-4 text-[12px] mt-0.5">6 students · CA1</p>
-              </div>
-              <ChevronRight size={16} className="text-ink-5 shrink-0" />
-            </Link>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
+
+      <p
+        className="text-ink-5 text-[11px] text-center"
+        style={{ fontFamily: "var(--font-dm-mono)" }}
+      >
+        Subject-level scores are visible to each subject teacher · Class Teacher view
+      </p>
     </div>
   );
 }
