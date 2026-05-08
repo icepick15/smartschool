@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FileText, Grid3X3, TrendingUp, BarChart2, LogOut } from "lucide-react";
+import { FileText, Grid3X3, TrendingUp, BarChart2, GraduationCap, LogOut } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
 import { SCHOOL_NAME, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 import { STUDENTS } from "@/lib/mock-data";
 
 const NAV_ITEMS = [
-  { label: "Academic Report",  href: "/parent",          icon: FileText   },
-  { label: "Subject Heatmap",  href: "/parent/subjects", icon: Grid3X3    },
-  { label: "Performance Trend", href: "/parent/trends",  icon: TrendingUp },
-  { label: "vs Class Average", href: "/parent/compare",  icon: BarChart2  },
+  { label: "Academic Report",   href: "/parent",           icon: FileText       },
+  { label: "Subject Heatmap",   href: "/parent/subjects",  icon: Grid3X3        },
+  { label: "Performance Trend", href: "/parent/trends",    icon: TrendingUp     },
+  { label: "vs Class Average",  href: "/parent/compare",   icon: BarChart2      },
+  { label: "Academic Passport", href: "/parent/passport",  icon: GraduationCap  },
 ];
 
 const STUDENT = STUDENTS[0];

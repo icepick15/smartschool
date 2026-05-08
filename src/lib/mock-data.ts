@@ -1,4 +1,4 @@
-import type { Student, Subject, Score, FeeRecord, Transaction, KPI, Diary } from "./types";
+import type { Student, Subject, Score, FeeRecord, Transaction, KPI, Diary, FixPack, TeacherCompliance } from "./types";
 import { getGrade } from "./constants";
 
 /* ─── Students ──────────────────────────────────────── */
@@ -106,4 +106,34 @@ export const ADMIN_KPIS: KPI[] = [
   { label: "Outstanding Fees",  value: "₦12.45M", subValue: "312 students",     trend: "down",  trendPercent: 8 },
   { label: "Total Students",    value: "1,248",   subValue: "Enrolled term 2",  trend: "flat" },
   { label: "Fee Recovery Rate", value: "78%",     subValue: "Target: 90%",      trend: "up",   trendPercent: 3 },
+];
+
+/* ─── Teacher Compliance (seeded) ──────────────────── */
+export const TEACHER_COMPLIANCE: TeacherCompliance[] = [
+  { id: "tc1", name: "Mrs. Adeleke",  onTimePercent: 94, periodsLogged: 47, periodsExpected: 50, streakDays: 14, phone: "08012345678" },
+  { id: "tc2", name: "Mr. Okonkwo",   onTimePercent: 78, periodsLogged: 39, periodsExpected: 50, streakDays: 5,  phone: "08023456789" },
+  { id: "tc3", name: "Mrs. Fashola",  onTimePercent: 55, periodsLogged: 28, periodsExpected: 50, streakDays: 2,  phone: "08034567890" },
+  { id: "tc4", name: "Mr. Babatunde", onTimePercent: 88, periodsLogged: 44, periodsExpected: 50, streakDays: 9,  phone: "08045678901" },
+  { id: "tc5", name: "Mrs. Nwosu",    onTimePercent: 42, periodsLogged: 21, periodsExpected: 50, streakDays: 0,  phone: "08056789012" },
+];
+
+/* ─── Fix Packs (seeded) ────────────────────────────── */
+export const FIX_PACKS: FixPack[] = [
+  {
+    id:          "fp1",
+    studentId:   "s2",
+    teacherName: "Mr. Adeleke",
+    subject:     "Mathematics",
+    title:       "Chidi Maths Fix Pack",
+    items: [
+      { id: "fp1-1", text: "Complete fractions worksheet pages 24–28",          completed: false },
+      { id: "fp1-2", text: "Daily 20-min revision on fractions & decimals",     completed: false },
+      { id: "fp1-3", text: "One-on-one session with Mr Adeleke on Thursday",    completed: false },
+      { id: "fp1-4", text: "Parent to review Chidi's notes every evening",      completed: false },
+      { id: "fp1-5", text: "Mini re-test on Friday — target 50+/100",           completed: false },
+    ],
+    createdAt: "2026-05-06",
+    purchased: false,
+    price:     5000,
+  },
 ];

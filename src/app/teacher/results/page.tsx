@@ -78,7 +78,7 @@ export default function ResultsPage() {
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Total Students",    value: STUDENTS.length, icon: null,                             color: "var(--color-secondary)" },
+          { label: "Futures You Control", value: STUDENTS.length, icon: null,                             color: "var(--color-secondary)" },
           { label: "Results Available", value: totalAvailable,  icon: <CheckCircle size={16} />,        color: "var(--color-success)"   },
           { label: "Awaiting Payment",  value: totalLocked,     icon: <Lock size={16} />,               color: "var(--color-warning)"   },
         ].map(({ label, value, icon, color }) => (

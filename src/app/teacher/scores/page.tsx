@@ -117,6 +117,10 @@ function ScoreGridInner() {
   }
 
   const positions  = computePositions(scores);
+  const noScoresYet = STUDENTS.every(st => {
+    const s = scores[st.id];
+    return s?.ca1 === null && s?.ca2 === null && s?.exam === null;
+  });
   const atRiskIds  = STUDENTS
     .filter(st => {
       const s = scores[st.id];
@@ -149,7 +153,7 @@ function ScoreGridInner() {
               )}
             </div>
             <p className="text-ink-4 text-[13px] mt-1">
-              JSS 3 Alpha · {STUDENTS.length} students
+              Decide Tolu&apos;s Week · JSS 3 Alpha
             </p>
           </div>
         </div>
@@ -204,6 +208,20 @@ function ScoreGridInner() {
               {STUDENTS.filter(s => atRiskIds.includes(s.id)).map(s => s.name.split(" ")[0]).join(", ")}.
               Parent alert sent automatically.
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* ── Empty-state nudge ────────────────────────── */}
+      {noScoresYet && (
+        <div
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-[13px]"
+          style={{ background: "var(--color-primary-badge)", borderLeft: "3px solid var(--color-primary)" }}
+        >
+          <span className="text-[16px]">⏳</span>
+          <div>
+            <p className="text-ink font-semibold">Tolu&apos;s first score appears here.</p>
+            <p className="text-ink-4 text-[12px]">32 parents waiting. Tap any cell to start.</p>
           </div>
         </div>
       )}

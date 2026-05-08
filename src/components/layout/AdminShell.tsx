@@ -5,9 +5,13 @@ import { Menu } from "lucide-react";
 import { SideNav } from "./SideNav";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
 import { SyncPill } from "@/components/ui/SyncPill";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
+  const ready = useRequireAuth("admin");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  if (!ready) return null;
 
   return (
     <div className="min-h-screen bg-base flex">

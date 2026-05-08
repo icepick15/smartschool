@@ -5,9 +5,13 @@ import { Menu } from "lucide-react";
 import { TeacherSideNav } from "./TeacherSideNav";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
 import { SyncPill } from "@/components/ui/SyncPill";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 export function TeacherShell({ children }: { children: React.ReactNode }) {
+  const ready = useRequireAuth("teacher");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  if (!ready) return null;
 
   return (
     <div className="min-h-screen bg-base flex">

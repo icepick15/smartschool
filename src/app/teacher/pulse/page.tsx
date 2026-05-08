@@ -39,7 +39,20 @@ const RATING_LABELS = ["Needs Attention", "Below Average", "Average", "Good", "E
 function getInitial(): PulseState {
   if (typeof window !== "undefined") {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) try { return JSON.parse(saved); } catch {}
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return Object.fromEntries(
+          STUDENTS.map(s => {
+            const entry = parsed[s.id];
+            return [s.id, {
+              ratings: { ...EMPTY_RATINGS, ...(entry?.ratings ?? {}) },
+              note: entry?.note ?? "",
+            }];
+          })
+        );
+      } catch {}
+    }
   }
   return Object.fromEntries(
     STUDENTS.map(s => [s.id, { ratings: { ...EMPTY_RATINGS }, note: "" }])
@@ -122,7 +135,7 @@ export default function FridayPulsePage() {
           onClick={handleSubmit}
           disabled={fullyRated === 0}
         >
-          {submitted ? "✓ Submitted!" : `Submit Pulse (${fullyRated}/${total} complete)`}
+          {submitted ? "✓ Submitted!" : fullyRated > 0 ? `Save Tolu From PTA Shame (${fullyRated}/${total})` : "Save Tolu From PTA Shame"}
         </Button>
       </div>
 

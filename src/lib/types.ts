@@ -100,3 +100,34 @@ export interface Diary {
   date: string;
   time: string;
 }
+
+/* ─── Teacher Compliance ─────────────────────────────── */
+export interface TeacherCompliance {
+  id: string;
+  name: string;
+  onTimePercent: number;
+  periodsLogged: number;
+  periodsExpected: number;
+  streakDays: number;
+  phone: string;
+}
+
+/* ─── Fix Pack ───────────────────────────────────────── */
+export interface FixPackItem {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+export interface FixPack {
+  id: string;
+  studentId: string;
+  teacherName: string;
+  subject: string;
+  title: string;
+  items: FixPackItem[];
+  createdAt: string;
+  purchased: boolean;
+  purchasedAt?: string;
+  price: number;
+}

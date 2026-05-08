@@ -10,19 +10,21 @@ import {
   Star,
   BarChart2,
   MessageSquare,
+  CalendarCheck,
   LogOut,
 } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
 import { SCHOOL_NAME, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 
 const NAV_ITEMS = [
-  { label: "Home",           href: "/teacher",            icon: LayoutDashboard },
-  { label: "Class Ranking",  href: "/teacher/broadsheet", icon: BookOpen        },
-  { label: "Upload Marks",   href: "/teacher/scores",     icon: Grid3X3         },
-  { label: "Results",        href: "/teacher/results",    icon: FileText        },
-  { label: "Weekly Check-In", href: "/teacher/pulse",    icon: Star            },
-  { label: "Analytics",      href: "/teacher/analytics",  icon: BarChart2       },
-  { label: "Messages",       href: "/teacher/messages",   icon: MessageSquare   },
+  { label: "Home",           href: "/teacher",             icon: LayoutDashboard },
+  { label: "Class Ranking",  href: "/teacher/broadsheet",  icon: BookOpen        },
+  { label: "Upload Marks",   href: "/teacher/scores",      icon: Grid3X3         },
+  { label: "Results",        href: "/teacher/results",     icon: FileText        },
+  { label: "Weekly Check-In", href: "/teacher/pulse",      icon: Star            },
+  { label: "Weekly Report",  href: "/teacher/friday",      icon: CalendarCheck   },
+  { label: "Analytics",      href: "/teacher/analytics",   icon: BarChart2       },
+  { label: "Messages",       href: "/teacher/messages",    icon: MessageSquare   },
 ];
 
 interface TeacherSideNavProps {

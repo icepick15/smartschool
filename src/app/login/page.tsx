@@ -1,58 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Phone, Lock } from "lucide-react";
-import { StatusBanner } from "@/components/brand/StatusBanner";
+import { Phone, MessageCircle } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
 import { SmartSchoolMark } from "@/components/brand/SmartSchoolMark";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { SCHOOL_NAME, SCHOOL_LOCATION, ROLE_ROUTES } from "@/lib/constants";
+import { SCHOOL_NAME, SCHOOL_LOCATION } from "@/lib/constants";
+import { getSession, setPendingAuth, type SessionRole } from "@/lib/session";
 
-type Role = "teacher" | "admin";
-
-const ROLES: { id: Role; label: string; emoji: string; sub: string }[] = [
-  { id: "teacher", label: "Teacher",    emoji: "👩‍🏫", sub: "Upload marks · generate results" },
-  { id: "admin",   label: "MD / Bursar", emoji: "💼", sub: "Fee recovery · full oversight"  },
+const ROLES: { id: SessionRole; label: string; emoji: string; sub: string }[] = [
+  { id: "teacher", label: "Teacher",     emoji: "👩‍🏫", sub: "Upload marks · class diary" },
+  { id: "admin",   label: "MD / Bursar", emoji: "💼",  sub: "Fee recovery · full oversight" },
+  { id: "parent",  label: "Parent",      emoji: "👨‍👧", sub: "Results · fees · diary" },
 ];
 
-const FEATURES: { icon: string; title: string; desc: string }[] = [
-  {
-    icon: "📊",
-    title: "One-Click Report Cards",
-    desc: "Marks in → report cards, broadsheet & class ranking out. 60 seconds.",
-  },
-  {
-    icon: "💰",
-    title: "Pay-to-View Fee Gate",
-    desc: "Results locked until fees clear. Schools hit 92% collection, ₦10M+ recovered per term.",
-  },
-  {
-    icon: "📈",
-    title: "Weekly Student Check-In",
-    desc: "Track grades + behaviour every week. Catch Tolu dropping in Maths before it's too late.",
-  },
+const FEATURES = [
+  { icon: "📊", title: "One-Click Report Cards",   desc: "Marks in → report cards and broadsheet out. 60 seconds." },
+  { icon: "💰", title: "Pay-to-View Fee Gate",     desc: "Schools hit 92% collection. ₦10M+ recovered per term." },
+  { icon: "📈", title: "Weekly Student Check-In",  desc: "Catch Tolu dropping in Maths before it's too late." },
 ];
 
 function LoginForm() {
   const router = useRouter();
-  const [role,    setRole]    = useState<Role>("teacher");
+  const [role,    setRole]    = useState<SessionRole>("teacher");
   const [phone,   setPhone]   = useState("");
-  const [pin,     setPin]     = useState("");
-  const [showPin, setShowPin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState("");
 
-  async function handleContinue() {
-    if (!phone.trim()) { setError("Enter your phone number"); return; }
-    if (!pin.trim())   { setError("Enter your PIN");          return; }
+  // Redirect already-authenticated users to their own portal
+  useEffect(() => {
+    const session = getSession();
+    if (session) router.replace(`/${session.role}`);
+  }, [router]);
+
+  async function handleSendOtp() {
+    const cleaned = phone.replace(/\s/g, "");
+    if (cleaned.length < 7) { setError("Enter a valid phone number"); return; }
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
-    localStorage.setItem("smartschool_session", JSON.stringify({ role, phone }));
+    await new Promise((r) => setTimeout(r, 700));
+    setPendingAuth({ role, phone: cleaned });
     setLoading(false);
-    router.push(ROLE_ROUTES[role]);
+    router.push("/login/otp");
   }
 
   return (
@@ -68,7 +59,7 @@ function LoginForm() {
           className="text-ink text-[22px] font-bold"
           style={{ fontFamily: "var(--font-syne)" }}
         >
-          Welcome back
+          Welcome to SmartSchool
         </h1>
         <p className="text-ink-4 text-[13px]">
           {SCHOOL_NAME}, {SCHOOL_LOCATION}
@@ -77,68 +68,46 @@ function LoginForm() {
 
       {/* Role selector */}
       <div className="flex flex-col gap-2">
-        <p
-          className="text-ink-4 text-[12px] font-medium"
-          style={{ fontFamily: "var(--font-dm-sans)" }}
-        >
+        <p className="text-ink-4 text-[12px] font-medium" style={{ fontFamily: "var(--font-dm-sans)" }}>
           Sign in as
         </p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {ROLES.map(({ id, label, emoji, sub }) => {
-            const isSelected = role === id;
+            const active = role === id;
             return (
               <button
                 key={id}
                 onClick={() => setRole(id)}
-                className="flex flex-col gap-1.5 p-[18px] rounded-xl border text-left transition-all duration-150"
+                className="flex flex-col gap-1.5 p-4 rounded-xl border text-left transition-all duration-150"
                 style={{
-                  background: "var(--color-surface)",
-                  borderColor: isSelected ? "var(--color-primary)" : "var(--color-border)",
-                  boxShadow: isSelected ? "0 0 0 1px var(--color-primary)" : "none",
-                  transform: isSelected ? "scale(1.02)" : "scale(1)",
+                  background:   "var(--color-surface)",
+                  borderColor:  active ? "var(--color-primary)" : "var(--color-border)",
+                  boxShadow:    active ? "0 0 0 1px var(--color-primary)" : "none",
+                  transform:    active ? "scale(1.02)" : "scale(1)",
                 }}
               >
-                <span className="text-[28px] leading-none">{emoji}</span>
-                <span
-                  className="text-ink text-[12px] font-bold"
-                  style={{ fontFamily: "var(--font-dm-sans)" }}
-                >
+                <span className="text-[22px] leading-none">{emoji}</span>
+                <span className="text-ink text-[11px] font-bold" style={{ fontFamily: "var(--font-dm-sans)" }}>
                   {label}
                 </span>
-                <span className="text-ink-4 text-[11px]">{sub}</span>
+                <span className="text-ink-4 text-[10px] leading-tight">{sub}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Form */}
+      {/* Phone input */}
       <div className="flex flex-col gap-3">
         <Input
           label="Phone Number"
           type="tel"
-          placeholder="Enter your school phone"
+          placeholder="+234 800 000 0000"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => { setPhone(e.target.value); setError(""); }}
           prefix={<Phone size={15} />}
-        />
-        <Input
-          label="PIN / 2FA Code"
-          type={showPin ? "text" : "password"}
-          placeholder="● ● ● ● ● ●"
-          value={pin}
-          onChange={(e) => setPin(e.target.value)}
-          prefix={<Lock size={15} />}
-          suffix={
-            <button
-              type="button"
-              onClick={() => setShowPin((v) => !v)}
-              className="text-ink-4 hover:text-ink transition-colors"
-            >
-              {showPin ? <EyeOff size={15} /> : <Eye size={15} />}
-            </button>
-          }
           error={error}
+          onKeyDown={(e) => e.key === "Enter" && handleSendOtp()}
         />
       </div>
 
@@ -148,21 +117,17 @@ function LoginForm() {
         size="lg"
         fullWidth
         loading={loading}
-        onClick={handleContinue}
+        onClick={handleSendOtp}
+        icon={<MessageCircle size={16} />}
+        style={{ background: "#10B981", borderColor: "#10B981" }}
       >
-        Continue →
+        Send WhatsApp OTP
       </Button>
 
-      {/* Forgot PIN */}
-      <div className="flex flex-col items-center gap-1 text-center">
-        <p className="text-ink-4 text-[13px]">Forgot PIN?</p>
-        <button
-          className="text-[13px] font-semibold"
-          style={{ color: "var(--color-primary-light)", fontFamily: "var(--font-dm-sans)" }}
-        >
-          WhatsApp support 💬
-        </button>
-      </div>
+      {/* Demo hint */}
+      <p className="text-center text-ink-5 text-[11px]" style={{ fontFamily: "var(--font-dm-mono)" }}>
+        Demo: any phone number works
+      </p>
     </div>
   );
 }
@@ -171,7 +136,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-base flex flex-col md:flex-row">
 
-      {/* ── Left branding panel (desktop only) ── */}
+      {/* Left branding panel (desktop) */}
       <div
         className="hidden md:flex md:w-[480px] lg:w-[540px] shrink-0 flex-col justify-between p-12 border-r border-border"
         style={{ background: "var(--color-sidebar)" }}
@@ -196,10 +161,7 @@ export default function LoginPage() {
               <div key={f.title} className="flex items-start gap-3">
                 <span className="text-[20px] leading-none mt-0.5 shrink-0">{f.icon}</span>
                 <div className="flex flex-col gap-0.5">
-                  <span
-                    className="text-ink text-[13px] font-semibold"
-                    style={{ fontFamily: "var(--font-dm-sans)" }}
-                  >
+                  <span className="text-ink text-[13px] font-semibold" style={{ fontFamily: "var(--font-dm-sans)" }}>
                     {f.title}
                   </span>
                   <span className="text-ink-4 text-[12px] leading-relaxed">{f.desc}</span>
@@ -209,30 +171,17 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p
-          className="text-ink-5 text-[11px] tracking-widest"
-          style={{ fontFamily: "var(--font-dm-mono)" }}
-        >
-          IRO · SmartSchool · v1.0
+        <p className="text-ink-5 text-[11px] tracking-widest" style={{ fontFamily: "var(--font-dm-mono)" }}>
+          SmartSchool · v1.0
         </p>
       </div>
 
-      {/* ── Right form panel ── */}
-      <div className="flex-1 flex flex-col">
-        <StatusBanner />
-
-        <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
-          <div className="w-full max-w-[420px]">
+      {/* Right form panel */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-10">
+        <div className="w-full max-w-[420px]">
+          <Suspense fallback={null}>
             <LoginForm />
-          </div>
-        </div>
-
-        {/* Offline badge — mobile only */}
-        <div
-          className="md:hidden flex items-center justify-center gap-1.5 py-4 text-ink-4 text-[11px]"
-          style={{ fontFamily: "var(--font-dm-mono)" }}
-        >
-          🔒 Offline mode · Login works without internet
+          </Suspense>
         </div>
       </div>
     </div>
