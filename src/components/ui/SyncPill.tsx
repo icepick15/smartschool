@@ -19,7 +19,7 @@ export function SyncPill() {
 
   return (
     <div
-      className="fixed top-4 right-4 z-50 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all duration-300"
+      className="fixed bottom-4 right-4 z-50 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all duration-300"
       style={{
         background:  status === "online" ? "#10B98115" : "#EF444420",
         color:       status === "online" ? "var(--color-success)" : "var(--color-danger)",

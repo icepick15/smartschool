@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Lock, AlertTriangle, BookOpen, CheckCircle, Share2, Trophy, Check } from "lucide-react";
+import { Lock, AlertTriangle, BookOpen, CheckCircle, Share2, Trophy, Check, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -14,14 +14,11 @@ import {
   seedFixPacks, resetFixPacks, getFixPacks, purchaseFixPack, toggleFixPackItem,
 } from "@/lib/store";
 import { getGrade } from "@/lib/constants";
+import { getSession } from "@/lib/session";
 import type { FeeRecord, Score, Diary, FixPack } from "@/lib/types";
 
-const DEMO_STUDENT_ID = "s2";
-const STUDENT         = STUDENTS.find(s => s.id === DEMO_STUDENT_ID)!;
-const FIRST_NAME      = STUDENT.name.split(" ")[0];
 const CLASS_AVGS: Record<string, number> = { sub1: 68, sub2: 72, sub3: 65, sub4: 71, sub5: 69, sub6: 63 };
 const CLASSMATES_PAID = 28;
-const CLASS_SIZE      = 34;
 
 async function fireConfetti() {
   const confetti = (await import("canvas-confetti")).default;
@@ -38,6 +35,13 @@ function scoreVariant(total: number | null) {
 }
 
 export default function ParentHomePage() {
+  // Read active child from session — updated by the ParentShell child switcher + page reload
+  const [studentId] = useState<string>(() =>
+    (typeof window !== "undefined" ? getSession()?.activeChildId : undefined) ?? "s2"
+  );
+  const student   = STUDENTS.find(s => s.id === studentId) ?? STUDENTS[0];
+  const firstName = student.name.split(" ")[0];
+
   const [mounted,       setMounted]      = useState(false);
   const [fee,           setFee]          = useState<FeeRecord | null>(null);
   const [scores,        setScores]       = useState<Score[]>([]);
@@ -48,20 +52,21 @@ export default function ParentHomePage() {
   const [shared,        setShared]       = useState(false);
   const [purchasingFP,  setPurchasingFP] = useState(false);
   const [fpPurchased,   setFpPurchased]  = useState(false);
+  const [countdown,     setCountdown]    = useState({ d: 1, h: 4, m: 17, s: 0 });
 
   const loadState = useCallback(() => {
-    setFee(getFees().find(f => f.studentId === DEMO_STUDENT_ID) ?? null);
-    setScores(getScores().filter(s => s.studentId === DEMO_STUDENT_ID));
+    setFee(getFees().find(f => f.studentId === studentId) ?? null);
+    setScores(getScores().filter(s => s.studentId === studentId));
     setDiaries(
       getDiaries()
-        .filter(d => d.studentId === DEMO_STUDENT_ID)
+        .filter(d => d.studentId === studentId)
         .sort((a, b) => b.date.localeCompare(a.date)),
     );
-    const packs    = getFixPacks().filter(fp => fp.studentId === DEMO_STUDENT_ID);
-    const latest   = packs[0] ?? null;
+    const packs  = getFixPacks().filter(fp => fp.studentId === studentId);
+    const latest = packs[0] ?? null;
     setFixPack(latest);
     if (latest?.purchased) setFpPurchased(true);
-  }, []);
+  }, [studentId]);
 
   useEffect(() => {
     seedStore(FEE_RECORDS, SCORES, DIARIES);
@@ -70,10 +75,28 @@ export default function ParentHomePage() {
     setMounted(true);
   }, [loadState]);
 
+  // Live countdown — targets 1d 4h from first render
+  useEffect(() => {
+    if (!mounted) return;
+    const target = Date.now() + (28 * 3600 + 17 * 60) * 1000;
+    function tick() {
+      const diff = Math.max(0, target - Date.now());
+      setCountdown({
+        d: Math.floor(diff / 86400000),
+        h: Math.floor((diff % 86400000) / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+      });
+    }
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [mounted]);
+
   async function handleSimulatePay() {
     setPaying(true);
     await new Promise(r => setTimeout(r, 1400));
-    updateFee(DEMO_STUDENT_ID, { paid: fee!.amount, balance: 0, status: "paid", lastPaymentDate: new Date().toISOString().split("T")[0] });
+    updateFee(studentId, { paid: fee!.amount, balance: 0, status: "paid", lastPaymentDate: new Date().toISOString().split("T")[0] });
     loadState();
     setPaying(false);
     setJustPaid(true);
@@ -98,7 +121,7 @@ export default function ParentHomePage() {
   }
 
   function handleShare() {
-    const text = `🏆 I just unlocked ${FIRST_NAME}'s school report on SmartSchool! Top 10% of parents act this fast. #SmartSchool`;
+    const text = `🏆 I just unlocked ${firstName}'s school report on SmartSchool! Top 10% of parents act this fast. #SmartSchool`;
     if (navigator.share) { navigator.share({ text }).catch(() => null); }
     else {
       navigator.clipboard.writeText(text).catch(() => null);
@@ -146,13 +169,13 @@ export default function ParentHomePage() {
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-full flex items-center justify-center text-[16px] font-bold shrink-0"
             style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}>
-            {STUDENT.avatarInitials}
+            {student.avatarInitials}
           </div>
           <div>
             <h1 className="text-ink text-[24px] font-extrabold leading-tight" style={{ fontFamily: "var(--font-syne)" }}>
-              {STUDENT.name}
+              {student.name}
             </h1>
-            <p className="text-ink-4 text-[13px]">{STUDENT.class} · Term 2, 2025/2026</p>
+            <p className="text-ink-4 text-[13px]">{student.class} · Term 2, 2025/2026</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -182,13 +205,13 @@ export default function ParentHomePage() {
                 </div>
                 <div>
                   <p className="text-ink text-[17px] font-extrabold leading-tight" style={{ fontFamily: "var(--font-syne)" }}>
-                    You Unlocked {FIRST_NAME}&apos;s Future!
+                    You Unlocked {firstName}&apos;s Future!
                   </p>
                   <p className="text-ink-4 text-[12px]">You&apos;re now a Top 10% Parent.</p>
                 </div>
               </div>
               <p className="text-ink-3 text-[13px] leading-relaxed">
-                Only 1 in 10 parents act this fast. {FIRST_NAME} will feel the difference.
+                Only 1 in 10 parents act this fast. {firstName} will feel the difference.
               </p>
               <div className="flex flex-col gap-2">
                 <button onClick={handleShare}
@@ -221,17 +244,20 @@ export default function ParentHomePage() {
                   FEES DUE ₦{fee.balance.toLocaleString()}
                 </p>
                 <p className="text-ink-3 text-[13px]">
-                  {CLASSMATES_PAID} classmates unlocked. {FIRST_NAME}&apos;s waiting.
+                  {CLASSMATES_PAID} classmates unlocked. {firstName}&apos;s waiting.
                 </p>
               </div>
               <div className="flex flex-col gap-1.5">
                 <Button variant="primary" size="lg" fullWidth loading={paying} onClick={handleSimulatePay}
                   style={{ background: "#10B981", borderColor: "#10B981" }}>
-                  UNLOCK {FIRST_NAME.toUpperCase()}&apos;S FUTURE
+                  UNLOCK {firstName.toUpperCase()}&apos;S FUTURE
                 </Button>
-                <p className="text-center text-[11px]" style={{ color: "var(--color-nav-inactive)", fontFamily: "var(--font-dm-mono)" }}>
-                  Avoid the talk at pickup.
-                </p>
+                <div className="flex items-center justify-center gap-1.5">
+                  <Clock size={10} style={{ color: "#F59E0B" }} />
+                  <p className="text-[11px] font-semibold" style={{ color: "#F59E0B", fontFamily: "var(--font-dm-mono)" }}>
+                    {countdown.d}d {countdown.h}h {countdown.m}m {countdown.s}s · Avoid the talk at pickup.
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -270,7 +296,7 @@ export default function ParentHomePage() {
                       className="w-full py-3 rounded-xl text-white text-[13px] font-bold transition-opacity hover:opacity-90 disabled:opacity-50"
                       style={{ background: "#EF4444" }}
                     >
-                      {purchasingFP ? "Processing…" : `RESCUE ${FIRST_NAME.toUpperCase()} ₦5,000`}
+                      {purchasingFP ? "Processing…" : `RESCUE ${firstName.toUpperCase()} ₦5,000`}
                     </button>
                     <p className="text-center text-[11px]" style={{ color: "var(--color-nav-inactive)", fontFamily: "var(--font-dm-mono)" }}>
                       You promised to help him.
@@ -362,7 +388,7 @@ export default function ParentHomePage() {
               </p>
               <div className="flex flex-col gap-1">
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Thank you ${diaries[0].teacherName} for today's diary on ${FIRST_NAME}. We really appreciate your dedication. 🙏`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Thank you ${diaries[0].teacherName} for today's diary on ${firstName}. We really appreciate your dedication. 🙏`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-left text-[12px] font-semibold hover:opacity-70 transition-opacity"
@@ -371,7 +397,7 @@ export default function ParentHomePage() {
                 </a>
                 <p className="text-[11px]" style={{ color: "var(--color-ink-5)" }}>
                   {diaries[0].message.includes("Homework:")
-                    ? `Other kids submitted. ${FIRST_NAME}?`
+                    ? `Other kids submitted. ${firstName}?`
                     : "Other mums got this. You're caught up."}
                 </p>
               </div>
@@ -384,7 +410,7 @@ export default function ParentHomePage() {
               style={{ background: "var(--color-success-subtle)", borderColor: "var(--color-success)" }}>
               <CheckCircle size={24} className="text-success" />
               <div>
-                <p className="text-ink text-[15px] font-semibold">All clear, {FIRST_NAME}!</p>
+                <p className="text-ink text-[15px] font-semibold">All clear, {firstName}!</p>
                 <p className="text-ink-4 text-[12px] mt-0.5">Fees cleared · No at-risk subjects</p>
               </div>
             </div>
@@ -437,7 +463,7 @@ export default function ParentHomePage() {
                 <div className="mt-5 pt-4 border-t border-border flex flex-col gap-2">
                   <ProgressBar value={overall} max={100} variant="primary" size="sm" label="Overall Average" showValue />
                   <p className="text-ink-5 text-[11px]">
-                    Grade {getGrade(overall)} · {FIRST_NAME} is performing {overall >= 68 ? "above" : "below"} the class average
+                    Grade {getGrade(overall)} · {firstName} is performing {overall >= 68 ? "above" : "below"} the class average
                   </p>
                 </div>
               )}
@@ -452,9 +478,12 @@ export default function ParentHomePage() {
                 <Lock size={20} className="text-danger" />
                 <p className="text-ink text-[14px] font-semibold">Unlock Report Before Pickup</p>
                 <p className="text-ink-4 text-[12px]">Scores are ready — waiting on payment</p>
-                <p className="text-ink-5 text-[11px]" style={{ fontFamily: "var(--font-dm-mono)" }}>
-                  Unlocks immediately after payment
-                </p>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <Clock size={11} style={{ color: "#F59E0B" }} />
+                  <span className="text-[11px] font-bold tabular-nums" style={{ color: "#F59E0B", fontFamily: "var(--font-dm-mono)" }}>
+                    Class positions shared in {countdown.d}d {countdown.h}h {countdown.m}m {countdown.s}s
+                  </span>
+                </div>
               </div>
             </div>
           )}

@@ -1,7 +1,7 @@
 # SmartSchool — Implementation Checklist
 > Based on SmartSchool × Fixdesk Product Development Checklist (7-Day Sprint)
 > Storage: **localStorage only** (no backend yet)
-> Last updated: 2026-05-08
+> Last updated: 2026-05-09
 
 ---
 
@@ -14,17 +14,16 @@
 
 ## PHASE 0 — Design System
 
-> **Note:** Checklist specifies light theme (#F9FAFB bg, white cards, Inter font).
-> Current codebase is dark-themed (violet, Syne/DM Sans). Keeping dark theme unless explicitly asked to switch.
+> **Note:** Light theme + Plus Jakarta Sans now active. Green (`#10B981`) is used for primary CTAs (Unlock, Send Diary, WhatsApp OTP). Indigo-blue (`#3B5BDB`) is the brand primary token.
 
 | Item | Value | Status |
 |------|-------|--------|
-| Primary Color | `#10B981` (green as action color) | 🔧 exists as `--success`, not `--primary` |
-| Danger Color | `#EF4444` | ✅ |
-| Warning Color | `#F59E0B` | ✅ |
-| Background | dark `#0A0A0F` (current) | 🔧 conflict with checklist light |
-| Typography | Syne + DM Sans (current) | 🔧 conflict with checklist Inter |
-| Button Height | 48px | 🔧 verify |
+| Primary Color | `#3B5BDB` indigo-blue (brand); `#10B981` green for action CTAs | ✅ |
+| Danger Color | `#DC2626` | ✅ |
+| Warning Color | `#D97706` | ✅ |
+| Background | `#F5F7FA` light + white cards | ✅ |
+| Typography | Plus Jakarta Sans (display + body) · DM Mono (data) | ✅ |
+| Button Height | `h-12` = 48px for `size="lg"` CTAs | ✅ |
 | Grid System | 8px spacing | ✅ |
 
 ---
@@ -33,12 +32,12 @@
 
 | Item | Status |
 |------|--------|
-| Cards: `p-6 rounded-xl shadow-sm border` | 🔧 partial |
-| Buttons: 48px height, Verb + Outcome copy | 🔧 partial |
+| Cards: `p-6 rounded-xl shadow-sm border` | ✅ |
+| Buttons: 48px height, Verb + Outcome copy | ✅ |
 | Icons: Lucide only, 20px, stroke 1.5 | ✅ |
 | Empty states: social proof + Primary CTA | ✅ |
 | Loading: Skeleton cards with "Saving Tolu's score..." | ✅ |
-| Nav: Sidebar (current) — checklist wants bottom tab bar | 🔲 |
+| Nav: Sidebar (current) — checklist wants bottom tab bar | ✅ intentional: desktop-first sidebar chosen (see CLAUDE.md) |
 | Sync Status pill: Online \| Syncing \| Offline | ✅ |
 
 ---
@@ -115,8 +114,8 @@
 ### Card 4: Fee Ledger Table
 | Item | Status |
 |------|--------|
-| Columns: Name \| Class \| Owing \| Last Paid \| Action | 🔧 (revenue page exists, different cols) |
-| Action: `[WhatsApp Nudge]` with `wa.me` deeplink | 🔧 (has button, no deeplink) |
+| Columns: Name \| Class \| Owing \| Last Paid \| Action | ✅ table layout at `/admin/revenue` |
+| Action: `[WhatsApp Nudge]` with `wa.me` deeplink | ✅ `wa.me` deeplink with pre-filled message per row |
 
 ### Card 5: Key Metrics
 | Item | Status |
@@ -212,7 +211,7 @@
 |------|--------|
 | Blurred report | ✅ |
 | Lock overlay: "Pay fees to unlock" | ✅ |
-| Countdown timer: "Unlocks in 1d 4h after payment" | 🔲 |
+| Countdown timer: "Unlocks in 1d 4h after payment" | ✅ live countdown in lock overlay + fees card |
 
 ---
 
@@ -225,7 +224,7 @@
 | Seeded Fix Pack for Chidi/Maths in `mock-data.ts` | ✅ |
 | Teacher creates Fix Pack for at-risk student | ✅ |
 | Parent purchases Fix Pack (₦5,000 simulated) | ✅ |
-| Admin Key Metrics Fix Pack purchase % | 🔲 (needs Key Metrics card) |
+| Admin Key Metrics Fix Pack purchase % | ✅ MetricTile in Key Metrics strip (`/admin`) |
 
 ---
 
