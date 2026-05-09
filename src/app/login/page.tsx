@@ -139,20 +139,20 @@ export default function LoginPage() {
       {/* Left branding panel (desktop) */}
       <div
         className="hidden md:flex md:w-[480px] lg:w-[540px] shrink-0 flex-col justify-between p-12 border-r border-border"
-        style={{ background: "var(--color-sidebar)" }}
+        style={{ background: "linear-gradient(180deg, #131F35 0%, #0D1829 100%)" }}
       >
-        <SmartSchoolWordmark size={16} />
+        <SmartSchoolWordmark size={16} color="#ECEEF8" />
 
         <div className="flex flex-col gap-8">
           <SmartSchoolMark size={64} />
           <div className="flex flex-col gap-3">
             <h2
-              className="text-ink text-[36px] font-extrabold leading-tight"
-              style={{ fontFamily: "var(--font-syne)" }}
+              className="text-[36px] font-extrabold leading-tight"
+              style={{ fontFamily: "var(--font-syne)", color: "#F0F2FF" }}
             >
               Stop losing ₦10M<br />per term to unpaid<br />fees &amp; manual chaos.
             </h2>
-            <p className="text-ink-4 text-[14px] leading-relaxed max-w-[320px]">
+            <p className="text-[14px] leading-relaxed max-w-[320px]" style={{ color: "#7880A0" }}>
               Results, rankings, and fee collection — automated so your staff stops drowning in paperwork.
             </p>
           </div>
@@ -161,17 +161,17 @@ export default function LoginPage() {
               <div key={f.title} className="flex items-start gap-3">
                 <span className="text-[20px] leading-none mt-0.5 shrink-0">{f.icon}</span>
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-ink text-[13px] font-semibold" style={{ fontFamily: "var(--font-dm-sans)" }}>
+                  <span className="text-[13px] font-semibold" style={{ color: "#D8DAF0", fontFamily: "var(--font-dm-sans)" }}>
                     {f.title}
                   </span>
-                  <span className="text-ink-4 text-[12px] leading-relaxed">{f.desc}</span>
+                  <span className="text-[12px] leading-relaxed" style={{ color: "#7880A0" }}>{f.desc}</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="text-ink-5 text-[11px] tracking-widest" style={{ fontFamily: "var(--font-dm-mono)" }}>
+        <p className="text-[11px] tracking-widest" style={{ color: "#3C3F5C", fontFamily: "var(--font-dm-mono)" }}>
           SmartSchool · v1.0
         </p>
       </div>

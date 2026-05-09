@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { STUDENTS, SUBJECTS, SCORES, FEE_RECORDS, DIARIES, FIX_PACKS } from "@/lib/mock-data";
 import {
   seedStore, resetStore, getFees, getScores, getDiaries, updateFee,
@@ -36,6 +38,7 @@ function scoreVariant(total: number | null) {
 }
 
 export default function ParentHomePage() {
+  const [mounted,       setMounted]      = useState(false);
   const [fee,           setFee]          = useState<FeeRecord | null>(null);
   const [scores,        setScores]       = useState<Score[]>([]);
   const [diaries,       setDiaries]      = useState<Diary[]>([]);
@@ -64,6 +67,7 @@ export default function ParentHomePage() {
     seedStore(FEE_RECORDS, SCORES, DIARIES);
     seedFixPacks(FIX_PACKS);
     loadState();
+    setMounted(true);
   }, [loadState]);
 
   async function handleSimulatePay() {
@@ -112,6 +116,16 @@ export default function ParentHomePage() {
     loadState();
   }
 
+  if (!mounted) {
+    return (
+      <div className="px-8 py-8 max-w-[1280px] mx-auto flex flex-col gap-6">
+        <SkeletonCard lines={2} />
+        <SkeletonCard lines={3} />
+        <SkeletonCard lines={4} />
+      </div>
+    );
+  }
+
   if (!fee) return null;
 
   const isLocked   = fee.balance > 0;
@@ -149,6 +163,8 @@ export default function ParentHomePage() {
           </button>
         </div>
       </div>
+
+      <OfflineBanner />
 
       {/* Body */}
       <div className="flex gap-6 items-start">
@@ -345,10 +361,14 @@ export default function ParentHomePage() {
                 &ldquo;{diaries[0].message}&rdquo;
               </p>
               <div className="flex flex-col gap-1">
-                <button className="text-left text-[12px] font-semibold hover:opacity-70 transition-opacity"
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`Thank you ${diaries[0].teacherName} for today's diary on ${FIRST_NAME}. We really appreciate your dedication. 🙏`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-left text-[12px] font-semibold hover:opacity-70 transition-opacity"
                   style={{ color: "var(--color-primary-light)", fontFamily: "var(--font-dm-sans)" }}>
                   Thank {diaries[0].teacherName.split(" ").pop()} →
-                </button>
+                </a>
                 <p className="text-[11px]" style={{ color: "var(--color-ink-5)" }}>
                   {diaries[0].message.includes("Homework:")
                     ? `Other kids submitted. ${FIRST_NAME}?`

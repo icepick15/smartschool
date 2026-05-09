@@ -1,15 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Syne, DM_Sans, DM_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
+// Plus Jakarta Sans replaces Syne for display — keeps --font-syne variable so
+// existing component references (`var(--font-syne)`) pick it up automatically.
+const jakartaDisplay = Plus_Jakarta_Sans({
   variable: "--font-syne",
   subsets: ["latin"],
   weight: ["600", "700", "800"],
   display: "swap",
 });
 
-const dmSans = DM_Sans({
+// Plus Jakarta Sans replaces DM Sans for body — same variable-reuse strategy.
+const jakartaBody = Plus_Jakarta_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
@@ -30,7 +33,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0A0A0F",
+  themeColor: "#0B0B10",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -42,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${dmSans.variable} ${dmMono.variable}`}
+      className={`${jakartaDisplay.variable} ${jakartaBody.variable} ${dmMono.variable}`}
     >
       <body className="min-h-screen bg-base text-ink antialiased">
         {children}

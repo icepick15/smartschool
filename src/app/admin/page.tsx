@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { ScoreCell } from "@/components/ui/ScoreCell";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import {
   STUDENTS, SUBJECTS, SCORES, FEE_RECORDS, DIARIES,
   TEACHER_COMPLIANCE, FIX_PACKS,
@@ -58,6 +60,7 @@ function MetricTile({
 }
 
 export default function CommandCenterPage() {
+  const [mounted,    setMounted]    = useState(false);
   const [fees,       setFees]       = useState<FeeRecord[]>([]);
   const [scores,     setScores]     = useState<Score[]>([]);
   const [diaryCount, setDiaryCount] = useState(0);
@@ -78,6 +81,7 @@ export default function CommandCenterPage() {
     seedTeacherCompliance(TEACHER_COMPLIANCE);
     seedFixPacks(FIX_PACKS);
     loadState();
+    setMounted(true);
   }, [loadState]);
 
   /* ─── Derived values ──────────────────────────────── */
@@ -118,6 +122,16 @@ export default function CommandCenterPage() {
 
   const recoveryRate = totalAmount > 0 ? Math.round(totalPaid / totalAmount * 100) : 0;
 
+  if (!mounted) {
+    return (
+      <div className="px-8 py-8 max-w-[1280px] mx-auto flex flex-col gap-6">
+        <SkeletonCard lines={2} />
+        <SkeletonCard lines={3} />
+        <SkeletonCard lines={4} />
+      </div>
+    );
+  }
+
   return (
     <div className="px-8 py-8 max-w-[1280px] mx-auto flex flex-col gap-7">
 
@@ -134,6 +148,8 @@ export default function CommandCenterPage() {
         </div>
         <Badge variant="default" size="md">TERM {CURRENT_TERM} · {CURRENT_SESSION}</Badge>
       </div>
+
+      <OfflineBanner />
 
       {/* ─── Action Cards ────────────────────────────── */}
       {(owingCount > 0 || atRiskCount > 0 || showTeacherAlert) && (

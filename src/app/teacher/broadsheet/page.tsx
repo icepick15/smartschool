@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { STUDENTS, SCORES, SUBJECTS } from "@/lib/mock-data";
 import { getGrade, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 import { Badge } from "@/components/ui/Badge";
@@ -38,7 +39,34 @@ export default function BroadsheetPage() {
         <Badge variant="primary" size="md">Term {CURRENT_TERM}</Badge>
       </div>
 
+      {/* Empty state */}
+      {ranked.every(r => r.sumTotal === 0) && (
+        <div
+          className="rounded-xl border border-border p-12 flex flex-col items-center gap-4 text-center"
+          style={{ background: "var(--color-surface)" }}
+        >
+          <span className="text-[40px]">📊</span>
+          <div className="flex flex-col gap-1.5">
+            <p className="text-ink text-[16px] font-bold" style={{ fontFamily: "var(--font-syne)" }}>
+              No scores entered yet
+            </p>
+            <p className="text-ink-3 text-[13px]">32 parents are waiting on Tolu&apos;s rank.</p>
+            <p className="text-ink-5 text-[11px]" style={{ fontFamily: "var(--font-dm-mono)" }}>
+              Top teachers post scores within 24h of class. Don&apos;t be last.
+            </p>
+          </div>
+          <Link
+            href="/teacher/scores"
+            className="px-5 py-2.5 rounded-xl text-white text-[13px] font-bold transition-opacity hover:opacity-90"
+            style={{ background: "var(--color-primary)", fontFamily: "var(--font-dm-sans)" }}
+          >
+            Enter Scores Now →
+          </Link>
+        </div>
+      )}
+
       {/* Ranking table */}
+      {ranked.some(r => r.sumTotal > 0) && (
       <div
         className="rounded-xl border border-border overflow-hidden"
         style={{ background: "var(--color-surface)" }}
@@ -153,13 +181,16 @@ export default function BroadsheetPage() {
           })}
         </div>
       </div>
+      )}
 
-      <p
-        className="text-ink-5 text-[11px] text-center"
-        style={{ fontFamily: "var(--font-dm-mono)" }}
-      >
-        Subject-level scores are visible to each subject teacher · Class Teacher view
-      </p>
+      {ranked.some(r => r.sumTotal > 0) && (
+        <p
+          className="text-ink-5 text-[11px] text-center"
+          style={{ fontFamily: "var(--font-dm-mono)" }}
+        >
+          Subject-level scores are visible to each subject teacher · Class Teacher view
+        </p>
+      )}
     </div>
   );
 }

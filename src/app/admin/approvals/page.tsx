@@ -123,6 +123,40 @@ export default function ApprovalsPage() {
         ))}
       </div>
 
+      {/* Empty state */}
+      {filtered.length === 0 && (
+        <div
+          className="rounded-xl border border-border p-12 flex flex-col items-center gap-4 text-center"
+          style={{ background: "var(--color-surface)" }}
+        >
+          <span className="text-[40px]">✅</span>
+          <div className="flex flex-col gap-1.5">
+            <p className="text-ink text-[16px] font-bold" style={{ fontFamily: "var(--font-syne)" }}>
+              {filter === "pending" ? "Queue cleared — nothing pending" : `No ${filter} requests`}
+            </p>
+            <p className="text-ink-3 text-[13px]">
+              {filter === "pending"
+                ? "Top principals clear their queue in under 2 hours."
+                : "Switch tabs to see other requests."}
+            </p>
+            {filter === "pending" && (
+              <p className="text-ink-5 text-[11px]" style={{ fontFamily: "var(--font-dm-mono)" }}>
+                Pending requests cost schools ₦3,200/day on average in delays.
+              </p>
+            )}
+          </div>
+          {filter !== "pending" && (
+            <button
+              onClick={() => setFilter("all")}
+              className="px-5 py-2.5 rounded-xl text-[13px] font-bold transition-opacity hover:opacity-90"
+              style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-sans)" }}
+            >
+              View All Requests
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Requests */}
       <div className="flex flex-col gap-3">
         {filtered.map((req) => {

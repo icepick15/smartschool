@@ -7,6 +7,8 @@ import { CircularProgress } from "@/components/ui/CircularProgress";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
+import { SkeletonCard } from "@/components/ui/SkeletonCard";
 import { STUDENTS, SCORES, FEE_RECORDS, DIARIES, SUBJECTS, TODAY_TIMETABLE, FIX_PACKS } from "@/lib/mock-data";
 import { seedStore, getScores, addDiary, seedFixPacks, getFixPacks, addFixPack } from "@/lib/store";
 import { SCHOOL_NAME, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
@@ -58,6 +60,7 @@ function getDefaultItems(subjectName: string): string[] {
 }
 
 export default function TeacherHomePage() {
+  const [mounted,        setMounted]        = useState(false);
   const [classState,     setClassState]     = useState<ClassState>("idle");
   const [attendance,     setAttendance]     = useState<Record<string, boolean>>(() =>
     Object.fromEntries(STUDENTS.map(s => [s.id, true]))
@@ -90,6 +93,7 @@ export default function TeacherHomePage() {
     seedStore(FEE_RECORDS, SCORES, DIARIES);
     seedFixPacks(FIX_PACKS);
     loadState();
+    setMounted(true);
   }, [loadState]);
 
   const atRiskScores    = scores.filter(s => s.total !== null && s.total < 40).sort((a, b) => (a.total ?? 0) - (b.total ?? 0));
@@ -174,6 +178,16 @@ export default function TeacherHomePage() {
     setTimeout(() => setFpSaved(false), 4000);
   }
 
+  if (!mounted) {
+    return (
+      <div className="px-8 py-8 max-w-[1280px] mx-auto flex flex-col gap-6">
+        <SkeletonCard lines={2} />
+        <SkeletonCard lines={3} />
+        <SkeletonCard lines={4} />
+      </div>
+    );
+  }
+
   return (
     <div className="px-8 py-8 max-w-[1280px] mx-auto flex flex-col gap-7">
 
@@ -191,6 +205,8 @@ export default function TeacherHomePage() {
           <Badge variant="default" size="md">Term {CURRENT_TERM} · {CURRENT_SESSION}</Badge>
         </div>
       </div>
+
+      <OfflineBanner />
 
       {/* ─── Main grid ───────────────────────────────── */}
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">

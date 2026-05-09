@@ -11,16 +11,16 @@ interface CardProps {
 }
 
 const variantStyles: Record<Variant, string> = {
-  surface:  "bg-surface  border border-border",
-  elevated: "bg-elevated border border-border",
-  overlay:  "bg-overlay  border border-border",
+  surface:  "bg-surface  border border-border shadow-sm",
+  elevated: "bg-elevated border border-border shadow-md",
+  overlay:  "bg-overlay  border border-border shadow-lg",
 };
 
 const paddingStyles: Record<Padding, string> = {
   none: "",
   sm:   "p-3",
-  md:   "p-4",
-  lg:   "p-5",
+  md:   "p-5",
+  lg:   "p-6",
 };
 
 export function Card({
@@ -47,6 +47,7 @@ export function Card({
       ]
         .filter(Boolean)
         .join(" ")}
+      style={{ boxShadow: "0 1px 3px rgba(15,17,35,0.07), 0 1px 2px rgba(15,17,35,0.04)" }}
     >
       {children}
     </div>
@@ -67,7 +68,7 @@ export function CardHeader({ title, subtitle, action, className = "" }: CardHead
       <div className="flex flex-col gap-0.5">
         <h3
           className="text-ink text-sm font-semibold"
-          style={{ fontFamily: "var(--font-syne)" }}
+          style={{ fontFamily: "var(--font-display)" }}
         >
           {title}
         </h3>

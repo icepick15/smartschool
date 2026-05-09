@@ -187,6 +187,32 @@ export default function MessagesPage() {
         <p className="text-ink-4 text-[12px] font-medium" style={{ fontFamily: "var(--font-dm-sans)" }}>
           Sent ({SENT_MESSAGES.length})
         </p>
+
+        {SENT_MESSAGES.length === 0 && (
+          <div
+            className="rounded-xl border border-border p-12 flex flex-col items-center gap-4 text-center"
+            style={{ background: "var(--color-surface)" }}
+          >
+            <span className="text-[40px]">💬</span>
+            <div className="flex flex-col gap-1.5">
+              <p className="text-ink text-[16px] font-bold" style={{ fontFamily: "var(--font-syne)" }}>
+                No messages sent yet
+              </p>
+              <p className="text-ink-3 text-[13px]">97% of top teachers message parents at least once a week.</p>
+              <p className="text-ink-5 text-[11px]" style={{ fontFamily: "var(--font-dm-mono)" }}>
+                Parents who get updates are 3× more likely to pay on time.
+              </p>
+            </div>
+            <button
+              onClick={() => setComposing(true)}
+              className="px-5 py-2.5 rounded-xl text-white text-[13px] font-bold transition-opacity hover:opacity-90"
+              style={{ background: "var(--color-primary)", fontFamily: "var(--font-dm-sans)" }}
+            >
+              Send First Message →
+            </button>
+          </div>
+        )}
+
         {SENT_MESSAGES.map((msg) => (
           <div
             key={msg.id}

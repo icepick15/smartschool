@@ -10,8 +10,8 @@ interface Props {
 export function SmartSchoolWordmark({
   size = 20,
   color = "var(--color-ink)",
-  accent = "#7C3AED",
-  accent2 = "#6366F1",
+  accent = "#3B5BDB",
+  accent2 = "#4C6EF5",
 }: Props) {
   return (
     <div className="flex items-center" style={{ gap: size * 0.3 }}>

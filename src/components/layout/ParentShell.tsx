@@ -81,7 +81,7 @@ function ChildSwitcher() {
             <button
               key={child.id}
               onClick={() => switchChild(child.id)}
-              className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-white/5 transition-colors"
+              className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-black/5 transition-colors"
             >
               <div className="flex flex-col gap-0.5">
                 <span
@@ -126,7 +126,7 @@ export function ParentShell({ children }: { children: React.ReactNode }) {
         {/* Desktop top bar — child switcher lives here */}
         <header
           className="hidden md:flex items-center justify-end gap-3 h-12 px-8 border-b border-border sticky top-0 z-20"
-          style={{ background: "var(--color-sidebar)" }}
+          style={{ background: "#131F35" }}
         >
           <ChildSwitcher />
         </header>
@@ -134,17 +134,17 @@ export function ParentShell({ children }: { children: React.ReactNode }) {
         {/* Mobile header */}
         <header
           className="flex md:hidden items-center justify-between gap-3 h-14 px-4 border-b border-border sticky top-0 z-20"
-          style={{ background: "var(--color-sidebar)" }}
+          style={{ background: "#131F35" }}
         >
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="p-1.5 rounded text-ink-4 hover:text-ink transition-colors"
+              className="p-1.5 rounded text-white/50 hover:text-white/90 transition-colors"
               aria-label="Open menu"
             >
               <Menu size={20} />
             </button>
-            <SmartSchoolWordmark size={14} />
+            <SmartSchoolWordmark size={14} color="#ECEEF8" />
           </div>
           <ChildSwitcher />
         </header>

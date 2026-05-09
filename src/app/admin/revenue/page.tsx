@@ -24,17 +24,14 @@ const STATUS_CONFIG: Record<FeeStatus, { label: string; color: string; bg: strin
   owing:   { label: "Owing",   color: "var(--color-danger)",  bg: "#EF444420",                   progressVariant: "danger"  },
 };
 
-export default function RevenueGatePage() {
-  const [filter,   setFilter]   = useState<FilterTab>("all");
-  const [sentIds,  setSentIds]  = useState<Set<string>>(new Set());
-  const [sending,  setSending]  = useState<string | null>(null);
+function nudgeUrl(studentName: string, balance: number): string {
+  const msg = `Dear Parent of ${studentName}, your child's school fees of ₦${balance.toLocaleString()} are outstanding. Please clear payment to unlock their academic report card. Contact us for payment options. Thank you.`;
+  return `https://wa.me/?text=${encodeURIComponent(msg)}`;
+}
 
-  async function handleWhatsApp(studentId: string) {
-    setSending(studentId);
-    await new Promise(r => setTimeout(r, 900));
-    setSending(null);
-    setSentIds(prev => new Set(prev).add(studentId));
-  }
+export default function RevenueGatePage() {
+  const [filter,  setFilter]  = useState<FilterTab>("all");
+  const [sentIds, setSentIds] = useState<Set<string>>(new Set());
 
   const records = FEE_RECORDS.map((fee) => ({
     fee,
@@ -204,15 +201,17 @@ export default function RevenueGatePage() {
                       WhatsApp sent
                     </div>
                   ) : (
-                    <button
-                      onClick={() => handleWhatsApp(student.id)}
-                      disabled={sending === student.id}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-                      style={{ background: "#25D366", fontFamily: "var(--font-dm-sans)" }}
+                    <a
+                      href={nudgeUrl(student.name, fee.balance)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setSentIds(prev => new Set(prev).add(student.id))}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold text-white transition-opacity hover:opacity-90"
+                      style={{ background: "#EF4444", fontFamily: "var(--font-dm-sans)" }}
                     >
                       <MessageCircle size={13} />
-                      {sending === student.id ? "Sending…" : "WhatsApp Reminder"}
-                    </button>
+                      WhatsApp Nudge
+                    </a>
                   )}
                   <Button variant="primary" size="sm">Record Payment</Button>
                 </div>

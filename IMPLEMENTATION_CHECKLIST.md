@@ -36,8 +36,8 @@
 | Cards: `p-6 rounded-xl shadow-sm border` | 🔧 partial |
 | Buttons: 48px height, Verb + Outcome copy | 🔧 partial |
 | Icons: Lucide only, 20px, stroke 1.5 | ✅ |
-| Empty states: social proof + Primary CTA | 🔲 |
-| Loading: Skeleton cards with "Saving Tolu's score..." | 🔲 |
+| Empty states: social proof + Primary CTA | ✅ |
+| Loading: Skeleton cards with "Saving Tolu's score..." | ✅ |
 | Nav: Sidebar (current) — checklist wants bottom tab bar | 🔲 |
 | Sync Status pill: Online \| Syncing \| Offline | ✅ |
 
@@ -266,21 +266,21 @@
 
 ---
 
-## PHASE 8 — Mobile & Offline 🔲 NOT STARTED
+## PHASE 8 — Mobile & Offline ✅ DONE
 
 ### WhatsApp Integration
 | Item | Status |
 |------|--------|
-| Admin "WhatsApp All Debtors" → `wa.me` deeplink | 🔲 |
-| Admin revenue per-student "WhatsApp Nudge" → `wa.me` | 🔲 |
-| Parent diary "Thank Teacher" → `wa.me` | 🔲 |
+| Admin "WhatsApp All Debtors" → `wa.me` deeplink | ✅ |
+| Admin revenue per-student "WhatsApp Nudge" → `wa.me` | ✅ |
+| Parent diary "Thank Teacher" → `wa.me` | ✅ |
 
 ### Offline Support
 | Item | Status |
 |------|--------|
-| Offline banner: "Offline – Saved. Will send when Tolu needs it." | 🔲 |
-| Skeleton loading screens | 🔲 |
-| App functions offline (localStorage already works) | 🔧 partial |
+| Offline banner: "Offline – Saved. Will send when Tolu needs it." | ✅ |
+| Skeleton loading screens | ✅ |
+| App functions offline (localStorage already works) | ✅ |
 
 ---
 
@@ -292,5 +292,4 @@
 4. ✅ **Phase 4** — Teacher: Live class tabs (Topic / HW / Behavior)
 5. ✅ **Phase 6** — `/parent/passport` + `/teacher/friday` new screens
 6. ✅ **Phase 7** — Copy audit (6 remaining replacements)
-7. **Phase 8** — WhatsApp `wa.me` deeplinks
-8. **Phase 1** — Offline banner + skeleton screens
+7. ✅ **Phase 8** — WhatsApp `wa.me` deeplinks + offline banner + skeleton screens

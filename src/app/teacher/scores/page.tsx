@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, WifiOff, AlertTriangle } from "lucide-react";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { OfflineBanner } from "@/components/ui/OfflineBanner";
 import { ScoreCell } from "@/components/ui/ScoreCell";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -57,16 +58,6 @@ function ScoreGridInner() {
 
   const [scores,     setScores]     = useState<ScoreMap>(() => initFromMock(subjectId));
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
-  const [isOffline,  setIsOffline]  = useState(false);
-
-  useEffect(() => {
-    setIsOffline(!navigator.onLine);
-    const on  = () => setIsOffline(false);
-    const off = () => setIsOffline(true);
-    window.addEventListener("online",  on);
-    window.addEventListener("offline", off);
-    return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); };
-  }, []);
 
   /* Seed the shared store once and load scores from it */
   useEffect(() => {
@@ -183,15 +174,7 @@ function ScoreGridInner() {
       </div>
 
       {/* ── Offline banner ────────────────────────────── */}
-      {isOffline && (
-        <div
-          className="flex items-center gap-2 px-4 py-3 rounded-xl text-warning text-[13px]"
-          style={{ background: "#F59E0B18" }}
-        >
-          <WifiOff size={15} />
-          Offline – All changes saving locally
-        </div>
-      )}
+      <OfflineBanner />
 
       {/* ── At-risk callout ───────────────────────────── */}
       {atRiskIds.length > 0 && (

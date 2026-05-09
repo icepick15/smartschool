@@ -27,16 +27,16 @@ export function TeacherShell({ children }: { children: React.ReactNode }) {
       <div className="flex-1 md:ml-[216px] min-h-screen flex flex-col">
         <header
           className="flex md:hidden items-center gap-3 h-14 px-4 border-b border-border sticky top-0 z-20"
-          style={{ background: "var(--color-sidebar)" }}
+          style={{ background: "#131F35" }}
         >
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-1.5 rounded text-ink-4 hover:text-ink transition-colors"
+            className="p-1.5 rounded text-white/50 hover:text-white/90 transition-colors"
             aria-label="Open menu"
           >
             <Menu size={20} />
           </button>
-          <SmartSchoolWordmark size={14} />
+          <SmartSchoolWordmark size={14} color="#ECEEF8" />
         </header>
 
         <main className="flex-1 overflow-y-auto">

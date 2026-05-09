@@ -160,6 +160,36 @@ export default function SmartSpendPage() {
         ))}
       </div>
 
+      {/* Empty state */}
+      {filtered.length === 0 && (
+        <div
+          className="rounded-xl border border-border p-12 flex flex-col items-center gap-4 text-center"
+          style={{ background: "var(--color-surface)" }}
+        >
+          <span className="text-[40px]">💼</span>
+          <div className="flex flex-col gap-1.5">
+            <p className="text-ink text-[16px] font-bold" style={{ fontFamily: "var(--font-syne)" }}>
+              {filter === "pending" ? "No pending requests" : `No ${filter} expense requests`}
+            </p>
+            <p className="text-ink-3 text-[13px]">
+              {filter === "pending"
+                ? "All expenses reviewed. SmartSpend keeps every naira accountable."
+                : "Switch tabs to see other requests."}
+            </p>
+            <p className="text-ink-5 text-[11px]" style={{ fontFamily: "var(--font-dm-mono)" }}>
+              Schools using SmartSpend cut untracked expenses by 34%.
+            </p>
+          </div>
+          <button
+            onClick={() => setFilter("all")}
+            className="px-5 py-2.5 rounded-xl text-[13px] font-bold transition-opacity hover:opacity-90"
+            style={{ background: "var(--color-primary-badge)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-sans)" }}
+          >
+            View All Requests
+          </button>
+        </div>
+      )}
+
       {/* Request list */}
       <div className="flex flex-col gap-3">
         {filtered.map((req) => {
