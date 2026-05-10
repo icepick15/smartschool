@@ -220,7 +220,9 @@ export default function ParentHomePage() {
                   <Share2 size={14} />
                   {shared ? "Copied to clipboard!" : "Share Badge"}
                 </button>
-                <button className="text-center text-[12px] font-medium hover:opacity-70 transition-opacity"
+                <button
+                  onClick={() => setJustPaid(false)}
+                  className="text-center text-[12px] font-medium hover:opacity-70 transition-opacity"
                   style={{ color: "var(--color-primary-light)", fontFamily: "var(--font-dm-sans)" }}>
                   View Report
                 </button>
@@ -306,9 +308,15 @@ export default function ParentHomePage() {
               )}
 
               {!showFixPackPurchase && !fpPurchased && (
-                <Button variant="secondary" size="md" fullWidth>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`Hello, I'd like to book a parent-teacher meeting to discuss ${firstName}'s academic performance this term. Please let me know your available times. Thank you.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-full px-4 py-2.5 rounded-xl text-[13px] font-semibold border transition-opacity hover:opacity-80"
+                  style={{ color: "var(--color-primary)", borderColor: "var(--color-primary)", background: "transparent", fontFamily: "var(--font-dm-sans)" }}
+                >
                   Book Parent-Teacher Meeting
-                </Button>
+                </a>
               )}
             </div>
           )}

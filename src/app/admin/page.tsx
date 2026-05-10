@@ -108,9 +108,12 @@ export default function CommandCenterPage() {
     : null;
   const showTeacherAlert = worstTeacher !== null && worstTeacher.onTimePercent < 70;
 
-  /* WhatsApp blast URL */
-  const debtorMessage = `Dear Parent, this is a reminder from SmartSchool. Your child's outstanding fees of ₦${totalBalance.toLocaleString()} are now due. Please clear payment to unlock their academic report. Thank you.`;
+  /* WhatsApp blast URLs */
+  const debtorMessage  = `Dear Parent, this is a reminder from SmartSchool. Your child's outstanding fees of ₦${totalBalance.toLocaleString()} are now due. Please clear payment to unlock their academic report. Thank you.`;
   const whatsappBlastUrl = `https://wa.me/?text=${encodeURIComponent(debtorMessage)}`;
+
+  const atRiskMessage  = `Dear Parent, SmartSchool has flagged your child as academically at-risk this term — ${atRiskCount} student(s) scored below 40 in key subjects. Please contact the school immediately to arrange support. Early intervention is critical.`;
+  const atRiskBlastUrl = `https://wa.me/?text=${encodeURIComponent(atRiskMessage)}`;
 
   /* Locked student = highest outstanding balance */
   const lockedFee = fees.reduce<FeeRecord | null>((best, f) => {
@@ -221,13 +224,16 @@ export default function CommandCenterPage() {
                   90% who don't fix Week 3 fail WAEC.
                 </p>
               </div>
-              <button
+              <a
+                href={atRiskBlastUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl text-[13px] font-bold text-white transition-opacity hover:opacity-90"
                 style={{ background: "#F59E0B", fontFamily: "var(--font-dm-sans)" }}
               >
                 <Users size={14} />
                 Blast Parents Now
-              </button>
+              </a>
               <p className="text-center text-ink-5 text-[11px]">TTI avg: 62 days. Target: 2 days.</p>
             </div>
           )}
@@ -341,8 +347,8 @@ export default function CommandCenterPage() {
             subtitle="Continuous assessment · live preview"
             action={
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm" icon={<Printer size={13} />}>Print</Button>
-                <Button variant="secondary" size="sm" icon={<FileText size={13} />}>Generate Reports</Button>
+                <Button variant="ghost" size="sm" icon={<Printer size={13} />} onClick={() => window.print()}>Print</Button>
+                <Button variant="secondary" size="sm" icon={<FileText size={13} />} onClick={() => { window.location.href = "/admin/revenue"; }}>Generate Reports</Button>
               </div>
             }
           />

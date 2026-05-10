@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { FileText, Grid3X3, TrendingUp, BarChart2, GraduationCap, LogOut } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
 import { SCHOOL_NAME, CURRENT_TERM, CURRENT_SESSION } from "@/lib/constants";
 import { STUDENTS } from "@/lib/mock-data";
+import { getSession } from "@/lib/session";
 
 const NAV_ITEMS = [
   { label: "Academic Report",   href: "/parent",          icon: FileText       },
@@ -15,8 +17,6 @@ const NAV_ITEMS = [
   { label: "Academic Passport", href: "/parent/passport", icon: GraduationCap  },
 ];
 
-const STUDENT = STUDENTS[0];
-
 interface ParentSideNavProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,6 +25,10 @@ interface ParentSideNavProps {
 export function ParentSideNav({ isOpen, onClose }: ParentSideNavProps) {
   const pathname = usePathname();
   const router   = useRouter();
+  const [student] = useState(() => {
+    const id = (typeof window !== "undefined" ? getSession()?.activeChildId : undefined) ?? "s2";
+    return STUDENTS.find(s => s.id === id) ?? STUDENTS[0];
+  });
 
   function handleSignOut() {
     localStorage.removeItem("smartschool_session");
@@ -75,11 +79,11 @@ export function ParentSideNav({ isOpen, onClose }: ParentSideNavProps) {
             fontFamily: "var(--font-dm-mono)",
           }}
         >
-          {STUDENT.avatarInitials}
+          {student.avatarInitials}
         </div>
         <div className="min-w-0">
-          <p className="text-[12px] font-semibold truncate" style={{ color: "#ECEEF8" }}>{STUDENT.name}</p>
-          <p className="text-[10px] truncate" style={{ color: "var(--color-ink-5)" }}>{STUDENT.class}</p>
+          <p className="text-[12px] font-semibold truncate" style={{ color: "#ECEEF8" }}>{student.name}</p>
+          <p className="text-[10px] truncate" style={{ color: "var(--color-ink-5)" }}>{student.class}</p>
         </div>
       </div>
 
