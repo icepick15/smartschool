@@ -1,4 +1,4 @@
-import type { FeeRecord, Score, Diary, FixPack, TeacherCompliance } from "./types";
+import type { FeeRecord, Score, Diary, FixPack, TeacherCompliance, CBTSession, CBTResult } from "./types";
 
 /* ─── Core store ─────────────────────────────────────── */
 
@@ -95,6 +95,68 @@ export function seedTeacherCompliance(data: TeacherCompliance[]): void {
 
 export function getTeacherCompliance(): TeacherCompliance[] {
   return JSON.parse(localStorage.getItem(TC_KEY) || "[]");
+}
+
+/* ─── CBT store ──────────────────────────────────────── */
+
+const CBT_SESSIONS_KEY = "smartschool_cbt_sessions";
+const CBT_RESULTS_KEY  = "smartschool_cbt_results";
+
+export function getCBTSessions(): CBTSession[] {
+  try { return JSON.parse(localStorage.getItem(CBT_SESSIONS_KEY) || "[]"); }
+  catch { return []; }
+}
+
+export function saveCBTSessions(sessions: CBTSession[]): void {
+  localStorage.setItem(CBT_SESSIONS_KEY, JSON.stringify(sessions));
+}
+
+export function getCBTSessionByCode(code: string): CBTSession | null {
+  return getCBTSessions().find(s => s.code === code.toUpperCase() && s.status === "active") ?? null;
+}
+
+export function getCBTResults(): CBTResult[] {
+  try { return JSON.parse(localStorage.getItem(CBT_RESULTS_KEY) || "[]"); }
+  catch { return []; }
+}
+
+export function saveCBTResult(result: CBTResult): void {
+  const results = getCBTResults();
+  const i = results.findIndex(r => r.sessionId === result.sessionId && r.studentId === result.studentId);
+  if (i >= 0) results[i] = result; else results.push(result);
+  localStorage.setItem(CBT_RESULTS_KEY, JSON.stringify(results));
+}
+
+export function releaseCBTResult(resultId: string): void {
+  const results = getCBTResults();
+  const i = results.findIndex(r => r.id === resultId);
+  if (i < 0) return;
+  results[i].released = true;
+  localStorage.setItem(CBT_RESULTS_KEY, JSON.stringify(results));
+  const r = results[i];
+  const existing = getScores().find(s => s.studentId === r.studentId && s.subjectId === r.subjectId);
+  upsertScore({
+    studentId: r.studentId,
+    subjectId: r.subjectId,
+    ca1:       existing?.ca1 === null ? r.caScore : (existing?.ca1 ?? r.caScore),
+    ca2:       existing?.ca1 !== null ? r.caScore : (existing?.ca2 ?? null),
+    exam:      existing?.exam ?? null,
+    total:     null,
+    grade:     null,
+  });
+}
+
+export function getTimerStart(sessionId: string, studentId: string): number | null {
+  const raw = localStorage.getItem(`cbt_start_${sessionId}_${studentId}`);
+  return raw ? Number(raw) : null;
+}
+
+export function setTimerStart(sessionId: string, studentId: string): number {
+  const existing = getTimerStart(sessionId, studentId);
+  if (existing) return existing;
+  const now = Date.now();
+  localStorage.setItem(`cbt_start_${sessionId}_${studentId}`, String(now));
+  return now;
 }
 
 export function toggleFixPackItem(packId: string, itemId: string): void {

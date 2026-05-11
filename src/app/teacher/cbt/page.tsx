@@ -144,6 +144,7 @@ export default function CBTPage() {
   const [shuffleO,       setShuffleO]       = useState(true);
   const [scoreRelease,   setScoreRelease]   = useState<CBTScoreRelease>("immediate");
   const [published,      setPublished]      = useState(false);
+  const [lastCode,       setLastCode]       = useState("");
 
   const ratioSum   = easy + medium + hard;
   const ratioValid = ratioSum === 100;
@@ -191,8 +192,10 @@ export default function CBTPage() {
     if (!canPublish) return;
     const subject = SUBJECTS.find(s => s.id === subjectId)!;
     const topic   = CBT_TOPICS.find(t => t.id === topicId);
+    const code    = `${subject.shortCode}-${String(Date.now()).slice(-4)}`;
     const session: CBTSession = {
       id:               `cbt-${Date.now()}`,
+      code,
       subjectId,
       subjectName:      subject.name,
       scope,
@@ -210,8 +213,9 @@ export default function CBTPage() {
     const next = [session, ...sessions];
     localStorage.setItem(LS_KEY, JSON.stringify(next));
     setSessions(next);
+    setLastCode(code);
     setPublished(true);
-    setTimeout(() => setPublished(false), 3500);
+    setTimeout(() => setPublished(false), 60000);
   }
 
   function closeSession(id: string) {
@@ -501,16 +505,27 @@ export default function CBTPage() {
           {/* Publish CTA */}
           {published ? (
             <div
-              className="rounded-xl border p-4 flex items-center gap-3"
+              className="rounded-xl border p-5 flex flex-col gap-3"
               style={{ background: "#10B98112", borderColor: "#10B981" }}
             >
-              <CheckCircle size={16} style={{ color: "#10B981", flexShrink: 0 }} />
-              <div>
+              <div className="flex items-center gap-2">
+                <CheckCircle size={16} style={{ color: "#10B981", flexShrink: 0 }} />
                 <p className="text-ink text-[13px] font-semibold">CBT Published!</p>
-                <p className="text-ink-4 text-[12px]">
-                  Students can now access the test. The {duration}-minute timer starts when the first student opens it and persists on refresh.
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-ink-4 text-[11px] uppercase tracking-widest" style={{ fontFamily: "var(--font-dm-mono)" }}>
+                  Session Code — write this on the board
+                </p>
+                <p
+                  className="text-[28px] font-extrabold tracking-widest"
+                  style={{ color: "#10B981", fontFamily: "var(--font-dm-mono)" }}
+                >
+                  {lastCode}
                 </p>
               </div>
+              <p className="text-ink-4 text-[11px]">
+                Students go to <span style={{ color: "var(--color-primary-light)" }}>/cbt/join</span> and enter this code. Timer starts on first open and persists on refresh.
+              </p>
             </div>
           ) : (
             <button
@@ -625,7 +640,17 @@ export default function CBTPage() {
                     }}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-ink text-[13px] font-semibold">{session.subjectName}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-ink text-[13px] font-semibold">{session.subjectName}</span>
+                        {session.status === "active" && (
+                          <span
+                            className="text-[11px] font-bold tracking-widest px-1.5 py-0.5 rounded"
+                            style={{ background: "var(--color-elevated)", color: "var(--color-primary-light)", fontFamily: "var(--font-dm-mono)" }}
+                          >
+                            {session.code}
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-1.5">
                         <span
                           className="text-[10px] font-bold px-1.5 py-0.5 rounded"

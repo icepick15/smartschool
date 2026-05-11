@@ -11,6 +11,7 @@ import {
   Users,
   CheckCircle,
   FileText,
+  BrainCircuit,
   LogOut,
 } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
@@ -21,7 +22,8 @@ const NAV_SECTIONS = [
     label: "CORE",
     items: [
       { label: "Dashboard",  href: "/admin",          icon: LayoutDashboard },
-      { label: "Academic",   href: "/admin/academic", icon: BookOpen },
+      { label: "Academic",   href: "/admin/academic", icon: BookOpen        },
+      { label: "CBT Results", href: "/admin/cbt",      icon: BrainCircuit    },
     ],
   },
   {

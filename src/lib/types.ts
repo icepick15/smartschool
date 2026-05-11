@@ -142,6 +142,7 @@ export interface CBTDifficultyRatio {
 
 export interface CBTSession {
   id: string;
+  code: string;
   subjectId: string;
   subjectName: string;
   scope: CBTScope;
@@ -155,7 +156,23 @@ export interface CBTSession {
   scoreRelease: CBTScoreRelease;
   status: CBTStatus;
   createdAt: string;
-  startedAt?: string;
+}
+
+export interface CBTResult {
+  id: string;
+  sessionId: string;
+  subjectId: string;
+  subjectName: string;
+  studentId: string;
+  studentName: string;
+  questionIds: string[];
+  answers: number[];
+  correct: number;
+  total: number;
+  percentage: number;
+  caScore: number;
+  completedAt: string;
+  released: boolean;
 }
 
 /* ─── Fix Pack ───────────────────────────────────────── */
