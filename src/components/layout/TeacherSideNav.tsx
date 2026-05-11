@@ -11,6 +11,7 @@ import {
   BarChart2,
   MessageSquare,
   CalendarCheck,
+  BrainCircuit,
   LogOut,
 } from "lucide-react";
 import { SmartSchoolWordmark } from "@/components/brand/SmartSchoolWordmark";
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { label: "Weekly Check-In", href: "/teacher/pulse",      icon: Star            },
   { label: "Weekly Report",   href: "/teacher/friday",     icon: CalendarCheck   },
   { label: "Analytics",       href: "/teacher/analytics",  icon: BarChart2       },
+  { label: "CBT Setup",       href: "/teacher/cbt",        icon: BrainCircuit    },
   { label: "Messages",        href: "/teacher/messages",   icon: MessageSquare   },
 ];
 

@@ -112,6 +112,52 @@ export interface TeacherCompliance {
   phone: string;
 }
 
+/* ─── CBT ────────────────────────────────────────────── */
+export type CBTDifficulty   = "easy" | "medium" | "hard";
+export type CBTScope        = "general" | "topic";
+export type CBTScoreRelease = "immediate" | "admin_release";
+export type CBTStatus       = "draft" | "active" | "closed";
+
+export interface CBTTopic {
+  id: string;
+  subjectId: string;
+  name: string;
+}
+
+export interface CBTQuestion {
+  id: string;
+  subjectId: string;
+  topicId: string;
+  text: string;
+  options: string[];
+  correctIndex: number;
+  difficulty: CBTDifficulty;
+}
+
+export interface CBTDifficultyRatio {
+  easy: number;
+  medium: number;
+  hard: number;
+}
+
+export interface CBTSession {
+  id: string;
+  subjectId: string;
+  subjectName: string;
+  scope: CBTScope;
+  topicId?: string;
+  topicName?: string;
+  difficultyRatio: CBTDifficultyRatio;
+  totalQuestions: number;
+  shuffleQuestions: boolean;
+  shuffleOptions: boolean;
+  durationMinutes: number;
+  scoreRelease: CBTScoreRelease;
+  status: CBTStatus;
+  createdAt: string;
+  startedAt?: string;
+}
+
 /* ─── Fix Pack ───────────────────────────────────────── */
 export interface FixPackItem {
   id: string;

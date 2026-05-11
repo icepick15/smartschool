@@ -1,4 +1,4 @@
-import type { Student, Subject, Score, FeeRecord, Transaction, KPI, Diary, FixPack, TeacherCompliance } from "./types";
+import type { Student, Subject, Score, FeeRecord, Transaction, KPI, Diary, FixPack, TeacherCompliance, CBTTopic, CBTQuestion } from "./types";
 import { getGrade } from "./constants";
 
 /* ─── Students ──────────────────────────────────────── */
@@ -136,4 +136,86 @@ export const FIX_PACKS: FixPack[] = [
     purchased: false,
     price:     5000,
   },
+];
+
+/* ─── CBT Topics ─────────────────────────────────────── */
+export const CBT_TOPICS: CBTTopic[] = [
+  { id: "t1",  subjectId: "sub1", name: "Fractions & Decimals"  },
+  { id: "t2",  subjectId: "sub1", name: "Quadratic Equations"   },
+  { id: "t3",  subjectId: "sub1", name: "Geometry & Angles"     },
+  { id: "t4",  subjectId: "sub2", name: "Grammar & Tenses"      },
+  { id: "t5",  subjectId: "sub2", name: "Comprehension"         },
+  { id: "t6",  subjectId: "sub2", name: "Vocabulary"            },
+  { id: "t7",  subjectId: "sub3", name: "Living Things"         },
+  { id: "t8",  subjectId: "sub3", name: "Forces & Motion"       },
+  { id: "t9",  subjectId: "sub3", name: "Basic Chemistry"       },
+  { id: "t10", subjectId: "sub4", name: "Nigeria's History"     },
+  { id: "t11", subjectId: "sub4", name: "Government & Civics"   },
+  { id: "t12", subjectId: "sub5", name: "Citizens' Rights"      },
+  { id: "t13", subjectId: "sub5", name: "Democratic Values"     },
+  { id: "t14", subjectId: "sub6", name: "Crop Production"       },
+  { id: "t15", subjectId: "sub6", name: "Animal Husbandry"      },
+];
+
+/* ─── CBT Question Bank ──────────────────────────────── */
+export const CBT_QUESTIONS: CBTQuestion[] = [
+  // ── Mathematics ──
+  { id: "q-s1-e1", subjectId: "sub1", topicId: "t1", difficulty: "easy",   correctIndex: 0, text: "What is ½ + ¼?",                                                          options: ["¾", "½", "1", "⅔"]                                          },
+  { id: "q-s1-e2", subjectId: "sub1", topicId: "t1", difficulty: "easy",   correctIndex: 1, text: "What is 25% of 200?",                                                     options: ["25", "50", "75", "100"]                                      },
+  { id: "q-s1-e3", subjectId: "sub1", topicId: "t3", difficulty: "easy",   correctIndex: 1, text: "What is the sum of angles in a triangle?",                               options: ["90°", "180°", "270°", "360°"]                                },
+  { id: "q-s1-m1", subjectId: "sub1", topicId: "t2", difficulty: "medium", correctIndex: 0, text: "Solve x² − 5x + 6 = 0. The roots are?",                                 options: ["2 and 3", "1 and 6", "−2 and −3", "2 and −3"]               },
+  { id: "q-s1-m2", subjectId: "sub1", topicId: "t3", difficulty: "medium", correctIndex: 2, text: "Area of a rectangle with length 8 cm and width 5 cm?",                   options: ["13 cm²", "26 cm²", "40 cm²", "80 cm²"]                       },
+  { id: "q-s1-m3", subjectId: "sub1", topicId: "t1", difficulty: "medium", correctIndex: 1, text: "What is 2.5 × 1.4?",                                                     options: ["3.0", "3.5", "4.0", "3.45"]                                  },
+  { id: "q-s1-h1", subjectId: "sub1", topicId: "t2", difficulty: "hard",   correctIndex: 1, text: "If x² + bx + 9 = 0 has equal roots, find b.",                            options: ["±3", "±6", "±9", "±18"]                                      },
+  { id: "q-s1-h2", subjectId: "sub1", topicId: "t3", difficulty: "hard",   correctIndex: 1, text: "A right triangle has one acute angle of 37°. Find the other acute angle.", options: ["43°", "53°", "63°", "73°"]                                   },
+
+  // ── English Language ──
+  { id: "q-s2-e1", subjectId: "sub2", topicId: "t4", difficulty: "easy",   correctIndex: 2, text: "Which word is a noun?",                                                   options: ["run", "beautiful", "teacher", "quickly"]                     },
+  { id: "q-s2-e2", subjectId: "sub2", topicId: "t6", difficulty: "easy",   correctIndex: 1, text: "Choose the correct spelling.",                                             options: ["recieve", "receive", "receve", "receeve"]                    },
+  { id: "q-s2-e3", subjectId: "sub2", topicId: "t4", difficulty: "easy",   correctIndex: 1, text: "In 'The cat sat on the mat', what is the verb?",                          options: ["cat", "sat", "mat", "the"]                                   },
+  { id: "q-s2-m1", subjectId: "sub2", topicId: "t4", difficulty: "medium", correctIndex: 1, text: "Which sentence is in the past continuous tense?",                         options: ["I eat rice", "I was eating rice", "I will eat rice", "I have eaten rice"] },
+  { id: "q-s2-m2", subjectId: "sub2", topicId: "t6", difficulty: "medium", correctIndex: 1, text: "What is the antonym of 'brave'?",                                         options: ["strong", "cowardly", "kind", "careful"]                      },
+  { id: "q-s2-m3", subjectId: "sub2", topicId: "t5", difficulty: "medium", correctIndex: 2, text: "Identify the figure of speech: 'The stars danced in the night sky.'",    options: ["Simile", "Metaphor", "Personification", "Alliteration"]      },
+  { id: "q-s2-h1", subjectId: "sub2", topicId: "t4", difficulty: "hard",   correctIndex: 2, text: "Choose the correct form: 'Neither the students nor the teacher __ present.'", options: ["are", "were", "is", "being"]                           },
+  { id: "q-s2-h2", subjectId: "sub2", topicId: "t6", difficulty: "hard",   correctIndex: 1, text: "The word 'pedagogy' means?",                                              options: ["Leadership", "Art of teaching", "Medical practice", "Legal argument"] },
+
+  // ── Basic Science ──
+  { id: "q-s3-e1", subjectId: "sub3", topicId: "t7", difficulty: "easy",   correctIndex: 2, text: "Which of these is a mammal?",                                             options: ["Snake", "Parrot", "Bat", "Frog"]                             },
+  { id: "q-s3-e2", subjectId: "sub3", topicId: "t8", difficulty: "easy",   correctIndex: 2, text: "What force pulls objects toward Earth?",                                  options: ["Friction", "Tension", "Gravity", "Magnetism"]                },
+  { id: "q-s3-e3", subjectId: "sub3", topicId: "t9", difficulty: "easy",   correctIndex: 1, text: "Water is composed of which elements?",                                    options: ["H and N", "H and O", "O and C", "Na and Cl"]                 },
+  { id: "q-s3-m1", subjectId: "sub3", topicId: "t7", difficulty: "medium", correctIndex: 1, text: "What is the function of the mitochondria?",                               options: ["Stores water", "Produces energy", "Controls cell division", "Makes proteins"] },
+  { id: "q-s3-m2", subjectId: "sub3", topicId: "t8", difficulty: "medium", correctIndex: 2, text: "A ball rolling on a rough surface slows due to?",                        options: ["Gravity", "Air resistance", "Friction", "Tension"]           },
+  { id: "q-s3-m3", subjectId: "sub3", topicId: "t9", difficulty: "medium", correctIndex: 2, text: "Gas produced when acid reacts with a carbonate?",                         options: ["Oxygen", "Hydrogen", "Carbon dioxide", "Nitrogen"]           },
+  { id: "q-s3-h1", subjectId: "sub3", topicId: "t7", difficulty: "hard",   correctIndex: 2, text: "During photosynthesis, which gas is absorbed by the plant?",              options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"]           },
+  { id: "q-s3-h2", subjectId: "sub3", topicId: "t9", difficulty: "hard",   correctIndex: 1, text: "What is the pH of pure water at 25°C?",                                  options: ["6", "7", "8", "9"]                                           },
+
+  // ── Social Studies ──
+  { id: "q-s4-e1", subjectId: "sub4", topicId: "t10", difficulty: "easy",   correctIndex: 0, text: "Nigeria gained independence in?",                                        options: ["1960", "1963", "1950", "1970"]                               },
+  { id: "q-s4-e2", subjectId: "sub4", topicId: "t10", difficulty: "easy",   correctIndex: 2, text: "What is the capital of Nigeria?",                                        options: ["Lagos", "Kano", "Abuja", "Ibadan"]                           },
+  { id: "q-s4-e3", subjectId: "sub4", topicId: "t11", difficulty: "easy",   correctIndex: 2, text: "How many states does Nigeria have?",                                     options: ["30", "35", "36", "40"]                                       },
+  { id: "q-s4-m1", subjectId: "sub4", topicId: "t10", difficulty: "medium", correctIndex: 1, text: "Who was Nigeria's first Prime Minister?",                                options: ["Nnamdi Azikiwe", "Tafawa Balewa", "Aguiyi-Ironsi", "Yakubu Gowon"] },
+  { id: "q-s4-m2", subjectId: "sub4", topicId: "t11", difficulty: "medium", correctIndex: 1, text: "What system of government does Nigeria practise?",                       options: ["Monarchy", "Federal", "Confederal", "Unitary"]               },
+  { id: "q-s4-m3", subjectId: "sub4", topicId: "t10", difficulty: "medium", correctIndex: 1, text: "ECOWAS was established in?",                                             options: ["1970", "1975", "1980", "1985"]                               },
+  { id: "q-s4-h1", subjectId: "sub4", topicId: "t11", difficulty: "hard",   correctIndex: 2, text: "Which tier of government manages local matters in Nigeria?",              options: ["Federal", "State", "Local Government", "National Assembly"]  },
+  { id: "q-s4-h2", subjectId: "sub4", topicId: "t11", difficulty: "hard",   correctIndex: 0, text: "Nigeria's current constitution was enacted in?",                         options: ["1999", "2003", "2010", "2015"]                               },
+
+  // ── Civic Education ──
+  { id: "q-s5-e1", subjectId: "sub5", topicId: "t12", difficulty: "easy",   correctIndex: 1, text: "Which document guarantees citizens' rights in Nigeria?",                 options: ["EFCC Act", "The Constitution", "Land Use Act", "CAMA"]       },
+  { id: "q-s5-e2", subjectId: "sub5", topicId: "t13", difficulty: "easy",   correctIndex: 1, text: "The right to vote is called?",                                           options: ["Civil right", "Franchise", "Citizenship", "Liberty"]         },
+  { id: "q-s5-e3", subjectId: "sub5", topicId: "t13", difficulty: "easy",   correctIndex: 2, text: "Democracy means government by?",                                         options: ["the military", "one person", "the people", "the rich"]       },
+  { id: "q-s5-m1", subjectId: "sub5", topicId: "t12", difficulty: "medium", correctIndex: 2, text: "Freedom of speech falls under which type of rights?",                    options: ["Economic rights", "Social rights", "Civil rights", "Cultural rights"] },
+  { id: "q-s5-m2", subjectId: "sub5", topicId: "t13", difficulty: "medium", correctIndex: 1, text: "Which is NOT a feature of democracy?",                                   options: ["Rule of law", "Dictatorship", "Free elections", "Majority rule"] },
+  { id: "q-s5-m3", subjectId: "sub5", topicId: "t12", difficulty: "medium", correctIndex: 1, text: "An ombudsman handles complaints about?",                                 options: ["school fees", "government officials", "private businesses", "religious matters"] },
+  { id: "q-s5-h1", subjectId: "sub5", topicId: "t13", difficulty: "hard",   correctIndex: 1, text: "The doctrine of 'separation of powers' was developed by?",               options: ["Karl Marx", "Montesquieu", "Plato", "Aristotle"]             },
+  { id: "q-s5-h2", subjectId: "sub5", topicId: "t12", difficulty: "hard",   correctIndex: 1, text: "Which UN convention specifically protects children's rights?",            options: ["UDHR", "CRC", "CEDAW", "CAT"]                                },
+
+  // ── Agricultural Science ──
+  { id: "q-s6-e1", subjectId: "sub6", topicId: "t14", difficulty: "easy",   correctIndex: 2, text: "Photosynthesis mainly takes place in?",                                  options: ["roots", "stem", "leaves", "seeds"]                           },
+  { id: "q-s6-e2", subjectId: "sub6", topicId: "t15", difficulty: "easy",   correctIndex: 2, text: "Which animal is a ruminant?",                                            options: ["Dog", "Rabbit", "Cow", "Pig"]                                },
+  { id: "q-s6-e3", subjectId: "sub6", topicId: "t14", difficulty: "easy",   correctIndex: 1, text: "Compost is used primarily to improve?",                                  options: ["water quality", "soil fertility", "seed germination", "climate"] },
+  { id: "q-s6-m1", subjectId: "sub6", topicId: "t14", difficulty: "medium", correctIndex: 2, text: "Which of these is a leguminous crop?",                                   options: ["Maize", "Sorghum", "Groundnut", "Cassava"]                   },
+  { id: "q-s6-m2", subjectId: "sub6", topicId: "t15", difficulty: "medium", correctIndex: 2, text: "A broiler is a type of?",                                                options: ["cow", "pig", "chicken", "fish"]                              },
+  { id: "q-s6-m3", subjectId: "sub6", topicId: "t14", difficulty: "medium", correctIndex: 1, text: "The process of removing weeds from farmland is called?",                 options: ["pruning", "weeding", "tilling", "mulching"]                  },
+  { id: "q-s6-h1", subjectId: "sub6", topicId: "t15", difficulty: "hard",   correctIndex: 1, text: "Which hormone controls milk production in cattle?",                      options: ["Insulin", "Prolactin", "Oxytocin", "Testosterone"]           },
+  { id: "q-s6-h2", subjectId: "sub6", topicId: "t14", difficulty: "hard",   correctIndex: 2, text: "In NPK fertilizer, what does K stand for?",                              options: ["Carbon", "Calcium", "Potassium", "Iron"]                     },
 ];
