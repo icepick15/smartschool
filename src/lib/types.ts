@@ -158,6 +158,15 @@ export interface CBTSession {
   createdAt: string;
 }
 
+export interface CBTAnswerRecord {
+  questionId:    string;
+  topicId:       string;
+  difficulty:    CBTDifficulty;
+  studentAnswer: number;   // -1 = unanswered
+  correctAnswer: number;
+  isCorrect:     boolean;
+}
+
 export interface CBTResult {
   id: string;
   sessionId: string;
@@ -167,12 +176,107 @@ export interface CBTResult {
   studentName: string;
   questionIds: string[];
   answers: number[];
+  breakdown: CBTAnswerRecord[];
   correct: number;
   total: number;
   percentage: number;
   caScore: number;
   completedAt: string;
   released: boolean;
+}
+
+/* ─── Cognitive / AI ────────────────────────────────── */
+
+export interface TopicMastery {
+  topicId: string;
+  subjectId: string;
+  mastery: number;        // 0-100
+  status: "red" | "amber" | "green";
+  attempts: number;
+  lastUpdated: string;
+}
+
+export interface StudentHeatmap {
+  studentId: string;
+  topics: Record<string, TopicMastery>;
+  lastUpdated: string;
+}
+
+export type LearningStyle = "visual" | "auditory" | "kinesthetic";
+
+export interface BrainMap {
+  studentId: string;
+  learningStyle: LearningStyle;
+  secondaryStyle: LearningStyle;
+  peakHoursStart: number;   // 0-23
+  peakHoursEnd: number;
+  attentionSpanMinutes: number;
+  cognitiveLoad: number;    // concepts per session
+  modalityPreference: string[];
+  createdAt: string;
+}
+
+export interface WAECTopicImpact {
+  topicId: string;
+  topicName: string;
+  subjectId: string;
+  currentMastery: number;
+  potentialGain: number;    // WAEC points gained if fixed
+}
+
+export interface WAECSubjectReadiness {
+  subjectId: string;
+  subjectName: string;
+  score: number;
+  topics: WAECTopicImpact[];
+}
+
+export interface WAECReadiness {
+  studentId: string;
+  overallScore: number;
+  subjects: WAECSubjectReadiness[];
+  projectedScore: number;   // if all RED topics fixed to 80%
+  lastUpdated: string;
+}
+
+export type CognitiveFPStatus = "pending" | "in_progress" | "completed" | "failed";
+export type SprintType       = "refresher" | "lesson";
+export type ContentModality  = "infographic" | "interactive" | "video" | "text";
+
+export interface CognitiveSprint {
+  id: string;
+  type: SprintType;
+  title: string;
+  content: string;
+  durationSeconds: number;
+  modality: ContentModality;
+  completed: boolean;
+}
+
+export interface CognitiveChallengeQ {
+  questionId: string;
+  question: string;
+  options: string[];
+  correctIndex: number;
+}
+
+export interface CognitiveFixPack {
+  id: string;
+  studentId: string;
+  topicId: string;
+  topicName: string;
+  subjectId: string;
+  subjectName: string;
+  masteryBefore: number;
+  masteryAfter: number | null;
+  waecImpact: number;
+  sprints: CognitiveSprint[];
+  challenge: CognitiveChallengeQ[];
+  status: CognitiveFPStatus;
+  deliverAt: string;
+  completedAt: string | null;
+  createdAt: string;
+  challengeScore: number | null;
 }
 
 /* ─── Fix Pack ───────────────────────────────────────── */

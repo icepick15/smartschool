@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { BrainCircuit, AlertTriangle } from "lucide-react";
 import { STUDENTS } from "@/lib/mock-data";
 import { getCBTSessionByCode } from "@/lib/store";
+import { getBrainMap } from "@/lib/cognitive-store";
 import { SmartSchoolMark } from "@/components/brand/SmartSchoolMark";
 
 export default function CBTJoinPage() {
@@ -31,6 +32,15 @@ export default function CBTJoinPage() {
     }
     const student = STUDENTS.find(s => s.id === studentId)!;
     sessionStorage.setItem("cbt_student", JSON.stringify({ id: student.id, name: student.name }));
+
+    // If student has no brain map, collect it first then return to test
+    const brainMap = getBrainMap(student.id);
+    if (!brainMap) {
+      sessionStorage.setItem("cbt_pending_join", JSON.stringify({ sessionId: session.id }));
+      router.push("/cbt/setup");
+      return;
+    }
+
     router.push(`/cbt/${session.id}`);
   }
 

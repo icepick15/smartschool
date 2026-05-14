@@ -12,6 +12,12 @@ import {
   setTimerStart,
   getScores,
 } from "@/lib/store";
+import {
+  updateHeatmapFromCBT,
+  recalculateWAEC,
+  generateCognitiveFixPacks,
+  getWAECReadiness,
+} from "@/lib/cognitive-store";
 import { getGrade } from "@/lib/constants";
 import type { CBTQuestion, CBTSession } from "@/lib/types";
 
@@ -72,7 +78,15 @@ export default function TakeTestPage({ params }: { params: Promise<{ sessionId: 
   const [mounted,   setMounted]   = useState(false);
 
   const handleSubmit = useCallback((qs: DisplayQuestion[], ans: (number | null)[], sess: CBTSession, sid: string, sname: string) => {
-    const correct  = qs.filter((q, i) => ans[i] === q.correctDisplay).length;
+    const breakdown = qs.map((q, i) => ({
+      questionId:    q.id,
+      topicId:       q.topicId,
+      difficulty:    q.difficulty,
+      studentAnswer: ans[i] ?? -1,
+      correctAnswer: q.correctDisplay,
+      isCorrect:     ans[i] === q.correctDisplay,
+    }));
+    const correct  = breakdown.filter(b => b.isCorrect).length;
     const total    = qs.length;
     const pct      = Math.round((correct / total) * 100);
     const caScore  = Math.round((correct / total) * 20);
@@ -86,6 +100,7 @@ export default function TakeTestPage({ params }: { params: Promise<{ sessionId: 
       studentName: sname,
       questionIds: qs.map(q => q.id),
       answers:     ans.map(a => a ?? -1),
+      breakdown,
       correct,
       total,
       percentage:  pct,
@@ -105,6 +120,19 @@ export default function TakeTestPage({ params }: { params: Promise<{ sessionId: 
         grade:     null,
       });
     }
+
+    // ── Cognitive pipeline ────────────────────────────
+    const waecBefore = getWAECReadiness(sid)?.overallScore ?? null;
+    updateHeatmapFromCBT(sid, breakdown);
+    const newWAEC    = recalculateWAEC(sid);
+    const fixPacks   = generateCognitiveFixPacks(sid);
+    sessionStorage.setItem("cbt_cognitive_delta", JSON.stringify({
+      waecBefore,
+      waecAfter:  newWAEC.overallScore,
+      fixPacksGenerated: fixPacks.length,
+    }));
+    // ─────────────────────────────────────────────────
+
     setSubmitted(true);
     router.push(`/cbt/${sess.id}/result`);
   }, [router]);

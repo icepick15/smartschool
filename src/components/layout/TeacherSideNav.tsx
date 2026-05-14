@@ -26,6 +26,7 @@ const NAV_ITEMS = [
   { label: "Weekly Report",   href: "/teacher/friday",     icon: CalendarCheck   },
   { label: "Analytics",       href: "/teacher/analytics",  icon: BarChart2       },
   { label: "CBT Setup",       href: "/teacher/cbt",        icon: BrainCircuit    },
+  { label: "Class Heatmap",   href: "/teacher/heatmap",    icon: BarChart2       },
   { label: "Messages",        href: "/teacher/messages",   icon: MessageSquare   },
 ];
 
